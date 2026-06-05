@@ -37,6 +37,11 @@
                  background:var(--accent);box-shadow:0 0 0 3px var(--bg)}
   .tl .when{color:var(--accent);font-weight:700;font-size:.9rem}
   .disc{font-size:.8rem;color:var(--sub);border-top:1px solid var(--line);margin-top:26px;padding-top:14px}
+  .bar{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:.9rem}
+  .bar .bn{width:84px;flex:0 0 84px;color:#cdd3dc}
+  .bar .bt{flex:1;background:rgba(255,255,255,.05);border-radius:4px;height:14px;overflow:hidden}
+  .bar .bt i{display:block;height:100%;background:#26a69a;border-radius:4px}
+  .bar .bv{width:52px;text-align:right;color:#26a69a;font-weight:700}
 </style>
 </head>
 <body>
@@ -44,38 +49,14 @@
 
   <a class="back" href="./">← 回首頁</a>
   <h1>4938 和碩 — 股票分析</h1>
-  <div class="sub">上市 TWSE・EMS/ODM 代工（NB・手機・AI 伺服器・車用・網通）　|　圖表即時更新</div>
+  <div class="sub">上市 TWSE・EMS/ODM 代工（NB・手機・AI 伺服器・車用・網通）</div>
 
-  <div class="tv">
-    <div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
-      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-info.js" async>
-      {"symbol":"TWSE:4938","width":"100%","locale":"zh_TW","colorTheme":"dark","isTransparent":true}</script>
-    </div>
+  <div class="card" style="display:flex;justify-content:space-between;align-items:baseline">
+    <div><b style="font-size:1.7rem" id="qPrice">—</b> <span id="qChg" class="dim"></span></div>
+    <div class="dim" id="qAsof"></div>
   </div>
-
-  <div class="tv" style="height:420px">
-    <div class="tradingview-widget-container" style="height:100%"><div class="tradingview-widget-container__widget" style="height:100%"></div>
-      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
-      {"symbol":"TWSE:4938","interval":"D","timezone":"Asia/Taipei","theme":"dark","style":"1","locale":"zh_TW",
-       "hide_top_toolbar":false,"hide_legend":false,"allow_symbol_change":false,"studies":["STD;EMA","STD;MACD"],
-       "width":"100%","height":"100%"}</script>
-    </div>
-  </div>
-
-  <div class="grid">
-    <div class="tv" style="height:380px">
-      <div class="tradingview-widget-container" style="height:100%"><div class="tradingview-widget-container__widget" style="height:100%"></div>
-        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" async>
-        {"interval":"1D","symbol":"TWSE:4938","showIntervalTabs":true,"locale":"zh_TW","colorTheme":"dark","isTransparent":true,"width":"100%","height":"100%"}</script>
-      </div>
-    </div>
-    <div class="tv" style="height:380px">
-      <div class="tradingview-widget-container" style="height:100%"><div class="tradingview-widget-container__widget" style="height:100%"></div>
-        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-financials.js" async>
-        {"symbol":"TWSE:4938","colorTheme":"dark","isTransparent":true,"displayMode":"compact","width":"100%","height":"100%","locale":"zh_TW"}</script>
-      </div>
-    </div>
-  </div>
+  <div class="tv" style="height:430px"><div id="chart" style="height:100%;width:100%"></div></div>
+  <div class="dim">日 K 線（橘＝EMA20 月線、藍＝EMA60 季線）。資料：Yahoo，重建頁面時更新。</div>
 
   <h2>重點數據（快照）</h2>
   <div class="card">
@@ -105,18 +86,18 @@
     <div class="dim" style="margin-top:8px">*近1年漲幅為 2026/06/05 快照（Yahoo）。重點：<b>和碩是 AI 伺服器代工族群裡漲最少的</b>，這既是「便宜/落後補漲」的多方理由，也反映市場認為它 AI 受惠程度不如同業。</div>
   </div>
 
-  <div class="tv" style="height:440px">
-    <div class="tradingview-widget-container" style="height:100%"><div class="tradingview-widget-container__widget" style="height:100%"></div>
-      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js" async>
-      {"symbols":[["和碩 4938","TWSE:4938|12M"],["緯穎 6669","TWSE:6669|12M"],["英業達 2356","TWSE:2356|12M"],["鴻海 2317","TWSE:2317|12M"],["緯創 3231","TWSE:3231|12M"],["仁寶 2324","TWSE:2324|12M"],["廣達 2382","TWSE:2382|12M"],["技嘉 2376","TWSE:2376|12M"]],
-       "chartOnly":false,"width":"100%","height":"100%","locale":"zh_TW","colorTheme":"dark","autosize":true,
-       "showVolume":false,"showMA":false,"hideDateRanges":false,"scaleMode":"Percentage","scalePosition":"right",
-       "fontColor":"#9aa4b2","gridLineColor":"rgba(37,43,56,0.6)","valuesTracking":"1","changeMode":"price-and-percent",
-       "dateRanges":["12m|1D","3m|1D","60m|30"],"isTransparent":true,"lineWidth":2,"headerFontSize":"medium"}
-      </script>
-    </div>
+  <div class="card">
+    <div class="dim" style="margin-bottom:8px">族群近 1 年漲幅比較（Yahoo 快照）：</div>
+    <div class="bar"><span class="bn">緯穎 6669</span><span class="bt"><i style="width:100%"></i></span><span class="bv">+127%</span></div>
+    <div class="bar"><span class="bn">英業達 2356</span><span class="bt"><i style="width:67%"></i></span><span class="bv">+85%</span></div>
+    <div class="bar"><span class="bn">鴻海 2317</span><span class="bt"><i style="width:66%"></i></span><span class="bv">+84%</span></div>
+    <div class="bar"><span class="bn">緯創 3231</span><span class="bt"><i style="width:39%"></i></span><span class="bv">+50%</span></div>
+    <div class="bar"><span class="bn">仁寶 2324</span><span class="bt"><i style="width:36%"></i></span><span class="bv">+46%</span></div>
+    <div class="bar"><span class="bn">廣達 2382</span><span class="bt"><i style="width:31%"></i></span><span class="bv">+39%</span></div>
+    <div class="bar"><span class="bn">技嘉 2376</span><span class="bt"><i style="width:21%"></i></span><span class="bv">+27%</span></div>
+    <div class="bar"><span class="bn" style="color:#f5b301">和碩 4938</span><span class="bt"><i style="width:11%;background:#f5b301"></i></span><span class="bv" style="color:#f5b301">+14%</span></div>
   </div>
-  <div class="dim">↑ 族群近一年「漲幅%」比較（即時）。和碩明顯墊底，落後補漲是這檔的主軸故事。</div>
+  <div class="dim">↑ 和碩明顯墊底，落後補漲是這檔的主軸故事。</div>
 
   <h2>急漲催化事件（時間軸）</h2>
   <div class="card">
@@ -179,5 +160,35 @@
   </div>
 
 </div>
+<script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
+<script>
+(function(){
+  fetch('./4938_ohlc.json').then(r=>r.json()).then(function(d){
+    var up = d.chgPct >= 0;
+    document.getElementById('qPrice').textContent = Number(d.latest).toLocaleString();
+    var chg = document.getElementById('qChg');
+    chg.textContent = (up?'▲ +':'▼ ') + d.chg + ' (' + (up?'+':'') + d.chgPct + '%)';
+    chg.style.color = up ? '#26a69a' : '#ef5350';
+    document.getElementById('qAsof').textContent = '收盤 ' + d.asof + '（非即時）';
+    var el = document.getElementById('chart');
+    var chart = LightweightCharts.createChart(el, {
+      autoSize: true,
+      layout:{ background:{color:'transparent'}, textColor:'#9aa4b2', fontFamily:'inherit' },
+      grid:{ vertLines:{color:'rgba(37,43,56,0.5)'}, horzLines:{color:'rgba(37,43,56,0.5)'} },
+      rightPriceScale:{ borderColor:'#252b38' },
+      timeScale:{ borderColor:'#252b38' },
+      crosshair:{ mode:0 }
+    });
+    var cs = chart.addCandlestickSeries({ upColor:'#26a69a', downColor:'#ef5350',
+      borderUpColor:'#26a69a', borderDownColor:'#ef5350', wickUpColor:'#26a69a', wickDownColor:'#ef5350' });
+    cs.setData(d.ohlc);
+    chart.addLineSeries({ color:'#f5b301', lineWidth:1, priceLineVisible:false, crosshairMarkerVisible:false }).setData(d.ema20);
+    chart.addLineSeries({ color:'#6cb2ff', lineWidth:1, priceLineVisible:false, crosshairMarkerVisible:false }).setData(d.ema60);
+    chart.timeScale().fitContent();
+  }).catch(function(e){
+    document.getElementById('chart').innerHTML = '<div style="padding:24px;color:#9aa4b2">圖表載入失敗：' + e + '</div>';
+  });
+})();
+</script>
 </body>
 </html>

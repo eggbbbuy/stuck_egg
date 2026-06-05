@@ -38,6 +38,11 @@
                  background:var(--accent);box-shadow:0 0 0 3px var(--bg)}
   .tl .when{color:var(--accent);font-weight:700;font-size:.9rem}
   .disc{font-size:.8rem;color:var(--sub);border-top:1px solid var(--line);margin-top:26px;padding-top:14px}
+  .bar{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:.9rem}
+  .bar .bn{width:90px;flex:0 0 90px;color:#cdd3dc}
+  .bar .bt{flex:1;background:rgba(255,255,255,.05);border-radius:4px;height:14px;overflow:hidden}
+  .bar .bt i{display:block;height:100%;background:#26a69a;border-radius:4px}
+  .bar .bv{width:56px;text-align:right;color:#26a69a;font-weight:700}
 </style>
 </head>
 <body>
@@ -45,38 +50,14 @@
 
   <a class="back" href="./">← 回首頁</a>
   <h1>3081 聯亞 — 股票分析</h1>
-  <div class="sub">上櫃 TPEx・InP 矽光子 CW 雷射磊晶片（AI 光通訊 / 光收發上游）　|　圖表即時更新</div>
+  <div class="sub">上櫃 TPEx・InP 矽光子 CW 雷射磊晶片（AI 光通訊 / 光收發上游）</div>
 
-  <div class="tv">
-    <div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
-      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-info.js" async>
-      {"symbol":"TPEX:3081","width":"100%","locale":"zh_TW","colorTheme":"dark","isTransparent":true}</script>
-    </div>
+  <div class="card" style="display:flex;justify-content:space-between;align-items:baseline">
+    <div><b style="font-size:1.7rem" id="qPrice">—</b> <span id="qChg" class="dim"></span></div>
+    <div class="dim" id="qAsof"></div>
   </div>
-
-  <div class="tv" style="height:420px">
-    <div class="tradingview-widget-container" style="height:100%"><div class="tradingview-widget-container__widget" style="height:100%"></div>
-      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
-      {"symbol":"TPEX:3081","interval":"D","timezone":"Asia/Taipei","theme":"dark","style":"1","locale":"zh_TW",
-       "hide_top_toolbar":false,"hide_legend":false,"allow_symbol_change":false,"studies":["STD;EMA","STD;MACD"],
-       "width":"100%","height":"100%"}</script>
-    </div>
-  </div>
-
-  <div class="grid">
-    <div class="tv" style="height:380px">
-      <div class="tradingview-widget-container" style="height:100%"><div class="tradingview-widget-container__widget" style="height:100%"></div>
-        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" async>
-        {"interval":"1D","symbol":"TPEX:3081","showIntervalTabs":true,"locale":"zh_TW","colorTheme":"dark","isTransparent":true,"width":"100%","height":"100%"}</script>
-      </div>
-    </div>
-    <div class="tv" style="height:380px">
-      <div class="tradingview-widget-container" style="height:100%"><div class="tradingview-widget-container__widget" style="height:100%"></div>
-        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-financials.js" async>
-        {"symbol":"TPEX:3081","colorTheme":"dark","isTransparent":true,"displayMode":"compact","width":"100%","height":"100%","locale":"zh_TW"}</script>
-      </div>
-    </div>
-  </div>
+  <div class="tv" style="height:430px"><div id="chart" style="height:100%;width:100%"></div></div>
+  <div class="dim">日 K 線（橘＝EMA20 月線、藍＝EMA60 季線）。資料：Yahoo，重建頁面時更新。</div>
 
   <h2>重點數據（快照）</h2>
   <div class="card">
@@ -105,19 +86,18 @@
     <div class="dim" style="margin-top:8px">*近1年漲幅為 2026/06/05 快照（資料：Yahoo），最新以下方即時比較圖為準。整族群一年來全部翻倍以上，聯亞漲最兇。</div>
   </div>
 
-  <!-- 族群近一年走勢比較 (即時, %) -->
-  <div class="tv" style="height:440px">
-    <div class="tradingview-widget-container" style="height:100%"><div class="tradingview-widget-container__widget" style="height:100%"></div>
-      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js" async>
-      {"symbols":[["聯亞 3081","TPEX:3081|12M"],["環宇 4991","TPEX:4991|12M"],["波若威 3163","TPEX:3163|12M"],["光聖 6442","TWSE:6442|12M"],["光環 3234","TPEX:3234|12M"],["全新 2455","TWSE:2455|12M"],["華星光 4979","TPEX:4979|12M"],["聯鈞 3450","TWSE:3450|12M"]],
-       "chartOnly":false,"width":"100%","height":"100%","locale":"zh_TW","colorTheme":"dark","autosize":true,
-       "showVolume":false,"showMA":false,"hideDateRanges":false,"scaleMode":"Percentage","scalePosition":"right",
-       "fontColor":"#9aa4b2","gridLineColor":"rgba(37,43,56,0.6)","valuesTracking":"1","changeMode":"price-and-percent",
-       "dateRanges":["12m|1D","3m|1D","60m|30"],"isTransparent":true,"lineWidth":2,"headerFontSize":"medium"}
-      </script>
-    </div>
+  <div class="card">
+    <div class="dim" style="margin-bottom:8px">族群近 1 年漲幅比較（Yahoo 快照）：</div>
+    <div class="bar"><span class="bn" style="color:#f5b301">聯亞 3081</span><span class="bt"><i style="width:100%;background:#f5b301"></i></span><span class="bv" style="color:#f5b301">+932%</span></div>
+    <div class="bar"><span class="bn">環宇 4991</span><span class="bt"><i style="width:84%"></i></span><span class="bv">+783%</span></div>
+    <div class="bar"><span class="bn">波若威 3163</span><span class="bt"><i style="width:57%"></i></span><span class="bv">+534%</span></div>
+    <div class="bar"><span class="bn">光聖 6442</span><span class="bt"><i style="width:39%"></i></span><span class="bv">+366%</span></div>
+    <div class="bar"><span class="bn">光環 3234</span><span class="bt"><i style="width:32%"></i></span><span class="bv">+295%</span></div>
+    <div class="bar"><span class="bn">全新 2455</span><span class="bt"><i style="width:29%"></i></span><span class="bv">+271%</span></div>
+    <div class="bar"><span class="bn">華星光 4979</span><span class="bt"><i style="width:27%"></i></span><span class="bv">+248%</span></div>
+    <div class="bar"><span class="bn">聯鈞 3450</span><span class="bt"><i style="width:21%"></i></span><span class="bv">+197%</span></div>
   </div>
-  <div class="dim">↑ 族群近一年「漲幅%」比較（即時、可切時間範圍）。同族群連動性高、一起噴一起殺。想看其中某檔的同款分析頁，給我代號即可。</div>
+  <div class="dim">↑ 整族群一年來全部翻倍以上，聯亞漲最兇。想看其中某檔的同款分析頁，給我代號即可。</div>
 
   <h2>急漲催化事件（時間軸）</h2>
   <div class="card">
@@ -181,5 +161,32 @@
   </div>
 
 </div>
+<script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
+<script>
+(function(){
+  fetch('./3081_ohlc.json').then(r=>r.json()).then(function(d){
+    var up = d.chgPct >= 0;
+    document.getElementById('qPrice').textContent = Number(d.latest).toLocaleString();
+    var chg = document.getElementById('qChg');
+    chg.textContent = (up?'▲ +':'▼ ') + d.chg + ' (' + (up?'+':'') + d.chgPct + '%)';
+    chg.style.color = up ? '#26a69a' : '#ef5350';
+    document.getElementById('qAsof').textContent = '收盤 ' + d.asof + '（非即時）';
+    var chart = LightweightCharts.createChart(document.getElementById('chart'), {
+      autoSize: true,
+      layout:{ background:{color:'transparent'}, textColor:'#9aa4b2', fontFamily:'inherit' },
+      grid:{ vertLines:{color:'rgba(37,43,56,0.5)'}, horzLines:{color:'rgba(37,43,56,0.5)'} },
+      rightPriceScale:{ borderColor:'#252b38' }, timeScale:{ borderColor:'#252b38' }, crosshair:{ mode:0 }
+    });
+    var cs = chart.addCandlestickSeries({ upColor:'#26a69a', downColor:'#ef5350',
+      borderUpColor:'#26a69a', borderDownColor:'#ef5350', wickUpColor:'#26a69a', wickDownColor:'#ef5350' });
+    cs.setData(d.ohlc);
+    chart.addLineSeries({ color:'#f5b301', lineWidth:1, priceLineVisible:false, crosshairMarkerVisible:false }).setData(d.ema20);
+    chart.addLineSeries({ color:'#6cb2ff', lineWidth:1, priceLineVisible:false, crosshairMarkerVisible:false }).setData(d.ema60);
+    chart.timeScale().fitContent();
+  }).catch(function(e){
+    document.getElementById('chart').innerHTML = '<div style="padding:24px;color:#9aa4b2">圖表載入失敗：' + e + '</div>';
+  });
+})();
+</script>
 </body>
 </html>

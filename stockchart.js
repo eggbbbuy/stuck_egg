@@ -1,37 +1,31 @@
-/* stuck_egg 共用股價圖：日/週/月K + MA5/10/20/60 疊圖 + MACD 副圖 + 技術面摘要
-   需要頁面提供：#qPrice #qChg #qAsof #tfToggle #chart #macd #techSummary
+/* stuck_egg 共用股價圖 + 技術面 + 基本面
+   頁面需提供：#qPrice #qChg #qAsof #tfToggle #ovToggle #chart #macd #techSummary #fundamental
    用法：StockChart.init('4938') */
 (function (global) {
   var MA = [
-    { n: 5,  color: '#e6e9ef' },
-    { n: 10, color: '#f5b301' },
-    { n: 20, color: '#ff8a65' },
-    { n: 60, color: '#6cb2ff' },
+    { n: 5,  color: '#e6e9ef' }, { n: 10, color: '#f5b301' },
+    { n: 20, color: '#ff8a65' }, { n: 60, color: '#6cb2ff' },
   ];
   var FRAMES = [['D', '日K'], ['W', '週K'], ['M', '月K']];
 
   function el(id) { return document.getElementById(id); }
 
   function init(code) {
-    fetch('./' + code + '_tech.json').then(function (r) { return r.json(); }).then(function (d) {
-      render(d);
-    }).catch(function (e) {
-      if (el('chart')) el('chart').innerHTML = '<div style="padding:24px;color:#9aa4b2">圖表載入失敗：' + e + '</div>';
-    });
+    fetch('./' + code + '_tech.json').then(function (r) { return r.json(); })
+      .then(function (d) { renderChart(d); }).catch(function (e) {
+        if (el('chart')) el('chart').innerHTML = '<div style="padding:24px;color:#9aa4b2">圖表載入失敗：' + e + '</div>';
+      });
+    fetch('./' + code + '_fund.json').then(function (r) { return r.json(); })
+      .then(function (d) { renderFund(d); }).catch(function (e) {
+        if (el('fundamental')) el('fundamental').innerHTML = '<div class="dim">基本面載入失敗：' + e + '</div>';
+      });
   }
 
-  function render(d) {
-    // ── 報價 ──
+  function renderChart(d) {
     var up = d.chgPct >= 0;
     if (el('qPrice')) el('qPrice').textContent = Number(d.latest).toLocaleString();
-    if (el('qChg')) {
-      var c = el('qChg');
-      c.textContent = (up ? '▲ +' : '▼ ') + d.chg + ' (' + (up ? '+' : '') + d.chgPct + '%)';
-      c.style.color = up ? '#26a69a' : '#ef5350';
-    }
+    if (el('qChg')) { var c = el('qChg'); c.textContent = (up ? '▲ +' : '▼ ') + d.chg + ' (' + (up ? '+' : '') + d.chgPct + '%)'; c.style.color = up ? '#26a69a' : '#ef5350'; }
     if (el('qAsof')) el('qAsof').textContent = '收盤 ' + d.asof + '（非即時）';
-
-    // ── 技術面摘要 ──
     if (el('techSummary')) el('techSummary').innerHTML = techHtml(d.tech);
 
     var LC = global.LightweightCharts;
@@ -39,84 +33,95 @@
       autoSize: true,
       layout: { background: { color: 'transparent' }, textColor: '#9aa4b2', fontFamily: 'inherit' },
       grid: { vertLines: { color: 'rgba(37,43,56,0.5)' }, horzLines: { color: 'rgba(37,43,56,0.5)' } },
-      rightPriceScale: { borderColor: '#252b38' },
-      timeScale: { borderColor: '#252b38' },
-      crosshair: { mode: 0 },
+      rightPriceScale: { borderColor: '#252b38' }, timeScale: { borderColor: '#252b38' }, crosshair: { mode: 0 },
     };
-
     var main = LC.createChart(el('chart'), common);
-    var candle = main.addCandlestickSeries({
-      upColor: '#26a69a', downColor: '#ef5350', borderUpColor: '#26a69a',
-      borderDownColor: '#ef5350', wickUpColor: '#26a69a', wickDownColor: '#ef5350',
-    });
-    var maSeries = MA.map(function (m) {
-      return main.addLineSeries({ color: m.color, lineWidth: 1, priceLineVisible: false,
-        lastValueVisible: false, crosshairMarkerVisible: false });
-    });
+    var candle = main.addCandlestickSeries({ upColor: '#26a69a', downColor: '#ef5350', borderUpColor: '#26a69a', borderDownColor: '#ef5350', wickUpColor: '#26a69a', wickDownColor: '#ef5350' });
+    var maSeries = MA.map(function (m) { return main.addLineSeries({ color: m.color, lineWidth: 1, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false }); });
+    var bollUp = main.addLineSeries({ color: '#b39ddb', lineWidth: 1, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false, visible: false });
+    var bollMid = main.addLineSeries({ color: '#9aa4b2', lineWidth: 1, lineStyle: 2, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false, visible: false });
+    var bollLo = main.addLineSeries({ color: '#b39ddb', lineWidth: 1, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false, visible: false });
 
     var macdChart = LC.createChart(el('macd'), common);
-    var histSeries = macdChart.addHistogramSeries({ priceLineVisible: false });
-    var difSeries = macdChart.addLineSeries({ color: '#f5b301', lineWidth: 1, priceLineVisible: false, lastValueVisible: false });
-    var deaSeries = macdChart.addLineSeries({ color: '#6cb2ff', lineWidth: 1, priceLineVisible: false, lastValueVisible: false });
+    var histS = macdChart.addHistogramSeries({ priceLineVisible: false });
+    var difS = macdChart.addLineSeries({ color: '#f5b301', lineWidth: 1, priceLineVisible: false, lastValueVisible: false });
+    var deaS = macdChart.addLineSeries({ color: '#6cb2ff', lineWidth: 1, priceLineVisible: false, lastValueVisible: false });
 
-    // 同步兩張圖的時間軸
     var lock = false;
-    function sync(a, b) {
-      a.timeScale().subscribeVisibleLogicalRangeChange(function (rg) {
-        if (lock || !rg) return; lock = true; b.timeScale().setVisibleLogicalRange(rg); lock = false;
-      });
-    }
+    function sync(a, b) { a.timeScale().subscribeVisibleLogicalRangeChange(function (rg) { if (lock || !rg) return; lock = true; b.timeScale().setVisibleLogicalRange(rg); lock = false; }); }
     sync(main, macdChart); sync(macdChart, main);
 
-    function load(frameKey) {
-      var f = d.frames[frameKey];
+    function load(fk) {
+      var f = d.frames[fk];
       candle.setData(f.ohlc);
       maSeries.forEach(function (s, i) { s.setData(f.ma[MA[i].n] || []); });
-      histSeries.setData(f.macd.hist);
-      difSeries.setData(f.macd.dif);
-      deaSeries.setData(f.macd.dea);
-      main.timeScale().fitContent();
-      macdChart.timeScale().fitContent();
+      bollUp.setData(f.boll.up); bollMid.setData(f.boll.mid); bollLo.setData(f.boll.lo);
+      histS.setData(f.macd.hist); difS.setData(f.macd.dif); deaS.setData(f.macd.dea);
+      main.timeScale().fitContent(); macdChart.timeScale().fitContent();
+    }
+    function setOverlay(mode) {
+      var ma = mode === 'ma';
+      maSeries.forEach(function (s) { s.applyOptions({ visible: ma }); });
+      bollUp.applyOptions({ visible: !ma }); bollMid.applyOptions({ visible: !ma }); bollLo.applyOptions({ visible: !ma });
+      if (el('maLegend')) el('maLegend').style.display = ma ? 'flex' : 'none';
+      if (el('bollLegend')) el('bollLegend').style.display = ma ? 'none' : 'flex';
     }
 
-    // ── 週期切換鈕 ──
-    if (el('tfToggle')) {
-      el('tfToggle').innerHTML = '';
-      FRAMES.forEach(function (fr, idx) {
-        if (!d.frames[fr[0]]) return;
-        var b = document.createElement('button');
-        b.textContent = fr[1]; b.className = 'tfbtn' + (idx === 0 ? ' active' : '');
-        b.onclick = function () {
-          Array.prototype.forEach.call(el('tfToggle').children, function (x) { x.classList.remove('active'); });
-          b.classList.add('active'); load(fr[0]);
-        };
-        el('tfToggle').appendChild(b);
-      });
-    }
-    load('D');
+    buildToggle('tfToggle', FRAMES.filter(function (f) { return d.frames[f[0]]; }), function (k) { load(k); }, 'D');
+    buildToggle('ovToggle', [['ma', '均線'], ['boll', '布林']], function (k) { setOverlay(k); }, 'ma');
+    load('D'); setOverlay('ma');
+  }
+
+  function buildToggle(id, items, cb, def) {
+    var box = el(id); if (!box) return; box.innerHTML = '';
+    items.forEach(function (it) {
+      var b = document.createElement('button');
+      b.textContent = it[1]; b.className = 'tfbtn' + (it[0] === def ? ' active' : '');
+      b.onclick = function () { Array.prototype.forEach.call(box.children, function (x) { x.classList.remove('active'); }); b.classList.add('active'); cb(it[0]); };
+      box.appendChild(b);
+    });
   }
 
   function techHtml(t) {
-    function cell(label, val, color) {
-      return '<div class="tk"><span>' + label + '</span><b style="color:' + (color || '#fff') + '">' + val + '</b></div>';
-    }
-    var sigColor = t.signal === '偏多' ? '#26a69a' : (t.signal === '偏空' ? '#ef5350' : '#f5b301');
-    var maOrder = (t.ma5 > t.ma20 && t.ma20 > t.ma60) ? '多頭排列' :
-                  ((t.ma5 < t.ma20 && t.ma20 < t.ma60) ? '空頭排列' : '糾結');
-    var rsiC = t.rsi14 >= 70 ? '#ef5350' : (t.rsi14 <= 30 ? '#26a69a' : '#fff');
-    var kdC = (t.k > t.d) ? '#26a69a' : '#ef5350';
-    var macdC = (t.hist >= 0) ? '#26a69a' : '#ef5350';
+    function cell(l, v, col) { return '<div class="tk"><span>' + l + '</span><b style="color:' + (col || '#fff') + '">' + v + '</b></div>'; }
+    var sc = t.signal === '偏多' ? '#26a69a' : (t.signal === '偏空' ? '#ef5350' : '#f5b301');
+    var order = (t.ma5 > t.ma20 && t.ma20 > t.ma60) ? '多頭排列' : ((t.ma5 < t.ma20 && t.ma20 < t.ma60) ? '空頭排列' : '糾結');
+    var oc = order === '多頭排列' ? '#26a69a' : (order === '空頭排列' ? '#ef5350' : '#f5b301');
+    var rc = t.rsi14 >= 70 ? '#ef5350' : (t.rsi14 <= 30 ? '#26a69a' : '#fff');
+    function bc(x) { return x >= 0 ? '#26a69a' : '#ef5350'; }
     return '<div class="techgrid">' +
-      cell('綜合訊號', t.signal + '（' + t.score + '/6）', sigColor) +
-      cell('均線排列', maOrder, maOrder === '多頭排列' ? '#26a69a' : (maOrder === '空頭排列' ? '#ef5350' : '#f5b301')) +
-      cell('RSI(14)', t.rsi14, rsiC) +
-      cell('KD', 'K ' + t.k + ' / D ' + t.d, kdC) +
-      cell('MACD柱', t.hist, macdC) +
-      cell('MA5 / MA10', t.ma5 + ' / ' + t.ma10) +
-      cell('MA20(月) / MA60(季)', t.ma20 + ' / ' + t.ma60) +
-      cell('DIF / DEA', t.dif + ' / ' + t.dea) +
+      cell('綜合訊號', t.signal + '（' + t.score + '/6）', sc) +
+      cell('均線排列', order, oc) +
+      cell('RSI(14)', t.rsi14 + (t.rsi14 >= 70 ? '（過熱）' : (t.rsi14 <= 30 ? '（超賣）' : '')), rc) +
+      cell('KD', 'K ' + t.k + ' / D ' + t.d, t.k > t.d ? '#26a69a' : '#ef5350') +
+      cell('MACD柱', t.hist, bc(t.hist)) +
+      cell('乖離率 10日', (t.bias10 >= 0 ? '+' : '') + t.bias10 + '%', bc(t.bias10)) +
+      cell('乖離率 20日', (t.bias20 >= 0 ? '+' : '') + t.bias20 + '%', bc(t.bias20)) +
+      cell('MA20月 / MA60季', t.ma20 + ' / ' + t.ma60) +
       '</div>' +
-      '<div class="dim" style="margin-top:6px">綜合訊號＝6 項技術條件（站上月線/季線、MA5>MA20、MACD柱>0、K>D、RSI>50）的多空計分，僅供參考。</div>';
+      '<div class="dim" style="margin-top:6px">綜合訊號＝站上月線/季線、MA5>MA20、MACD柱>0、K>D、RSI>50 共 6 項計分；乖離率過大代表偏離均線、易拉回。僅供參考。</div>';
+  }
+
+  function renderFund(d) {
+    var box = el('fundamental'); if (!box) return;
+    var html = '';
+    if (d.monthRevenue && d.monthRevenue.length) {
+      var mr = d.monthRevenue.slice(-12);
+      html += '<div class="dim" style="margin-bottom:6px">月營收（億元）與年增率 — 近 ' + mr.length + ' 月：</div><table class="ftab"><tr><th>月份</th><th style="text-align:right">營收</th><th style="text-align:right">年增(YoY)</th><th style="text-align:right">月增(MoM)</th></tr>';
+      mr.slice().reverse().forEach(function (r) {
+        function pc(v) { return v == null ? '-' : '<span style="color:' + (v >= 0 ? '#26a69a' : '#ef5350') + '">' + (v >= 0 ? '+' : '') + v + '%</span>'; }
+        html += '<tr><td>' + r.ym + '</td><td style="text-align:right">' + r.rev + '</td><td style="text-align:right">' + pc(r.yoy) + '</td><td style="text-align:right">' + pc(r.mom) + '</td></tr>';
+      });
+      html += '</table>';
+    }
+    if (d.quarterly && d.quarterly.length) {
+      html += '<div class="dim" style="margin:14px 0 6px">季度財報 — 營收(億)/毛利率/營益率/EPS：</div><table class="ftab"><tr><th>季別</th><th style="text-align:right">營收</th><th style="text-align:right">毛利率</th><th style="text-align:right">營益率</th><th style="text-align:right">EPS</th></tr>';
+      d.quarterly.slice().reverse().forEach(function (q) {
+        html += '<tr><td>' + q.q + '</td><td style="text-align:right">' + (q.rev != null ? q.rev : '-') + '</td><td style="text-align:right">' + (q.gm != null ? q.gm + '%' : '-') + '</td><td style="text-align:right">' + (q.om != null ? q.om + '%' : '-') + '</td><td style="text-align:right">' + (q.eps != null ? q.eps : '-') + '</td></tr>';
+      });
+      html += '</table>';
+    }
+    box.innerHTML = html || '<div class="dim">查無基本面資料</div>';
   }
 
   global.StockChart = { init: init };

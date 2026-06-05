@@ -88,6 +88,19 @@ def kd(rows, n=9):
     return ks, ds
 
 
+def boll(closes, n=20, k=2):
+    mid, up, lo = [], [], []
+    for i in range(len(closes)):
+        if i + 1 < n:
+            mid.append(None); up.append(None); lo.append(None); continue
+        win = closes[i + 1 - n:i + 1]
+        m = sum(win) / n
+        var = sum((x - m) ** 2 for x in win) / n
+        sd = var ** 0.5
+        mid.append(round(m, 2)); up.append(round(m + k * sd, 2)); lo.append(round(m - k * sd, 2))
+    return mid, up, lo
+
+
 def line(times, vals):
     return [{"time": times[i], "value": vals[i]} for i in range(len(times)) if vals[i] is not None]
 
@@ -96,9 +109,11 @@ def build_frame(rows):
     times = [r["time"] for r in rows]
     closes = [r["close"] for r in rows]
     dif, dea, hist = macd(closes)
+    bmid, bup, blo = boll(closes)
     return {
         "ohlc": rows,
         "ma": {n: line(times, sma(closes, n)) for n in (5, 10, 20, 60)},
+        "boll": {"mid": line(times, bmid), "up": line(times, bup), "lo": line(times, blo)},
         "macd": {
             "dif": line(times, dif), "dea": line(times, dea),
             "hist": [{"time": times[i], "value": hist[i],
@@ -145,6 +160,8 @@ def main():
             "close": close, "ma5": ma[5], "ma10": ma[10], "ma20": ma[20], "ma60": ma[60],
             "rsi14": r14[last], "k": kk[last], "d": dd[last],
             "dif": dif[last], "dea": dea[last], "hist": hist[last],
+            "bias10": round((close / ma[10] - 1) * 100, 2) if ma[10] else None,
+            "bias20": round((close / ma[20] - 1) * 100, 2) if ma[20] else None,
             "signal": signal, "score": score,
         },
     }

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3081 聯亞 股票分析 | stuck_egg</title>
+<style>
+  :root{ --bg:#0e1117; --card:#171c26; --line:#252b38; --txt:#e6e9ef; --sub:#9aa4b2;
+         --up:#26a69a; --down:#ef5350; --accent:#f5b301; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);
+       font-family:-apple-system,"Noto Sans TC","Microsoft JhengHei",Segoe UI,Roboto,sans-serif;line-height:1.7;}
+  .wrap{max-width:880px;margin:0 auto;padding:18px 16px 60px;}
+  a.back{color:var(--sub);font-size:.85rem;text-decoration:none}
+  h1{font-size:1.5rem;margin:.2em 0 .1em}
+  h2{font-size:1.15rem;margin:1.7em 0 .5em;border-left:4px solid var(--accent);padding-left:10px}
+  .sub{color:var(--sub);font-size:.9rem;margin-bottom:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:12px 0;}
+  .tv{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:12px 0}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:620px){.grid{grid-template-columns:1fr}}
+  .kpi{display:flex;justify-content:space-between;border-bottom:1px dashed var(--line);padding:7px 0}
+  .kpi:last-child{border-bottom:0}.kpi b{color:#fff}
+  table{width:100%;border-collapse:collapse;font-size:.92rem}
+  th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}
+  th{color:var(--sub);font-weight:600}
+  td.code{font-weight:700;color:#6cb2ff;white-space:nowrap}
+  .tag{display:inline-block;font-size:.78rem;padding:2px 9px;border-radius:999px;margin:2px 4px 2px 0}
+  .bull{background:rgba(38,166,154,.15);color:var(--up);border:1px solid var(--up)}
+  .bear{background:rgba(239,83,80,.15);color:var(--down);border:1px solid var(--down)}
+  .warn{background:rgba(245,179,1,.12);border:1px solid var(--accent);color:#f7c948}
+  ul{margin:.3em 0 .3em 1.1em;padding:0}li{margin:.35em 0}
+  .dim{color:var(--sub);font-size:.82rem}a{color:#6cb2ff}
+  /* timeline */
+  .tl{position:relative;margin:6px 0 0 6px;padding-left:18px;border-left:2px solid var(--line)}
+  .tl .ev{position:relative;margin:0 0 14px}
+  .tl .ev:before{content:"";position:absolute;left:-25px;top:5px;width:11px;height:11px;border-radius:50%;
+                 background:var(--accent);box-shadow:0 0 0 3px var(--bg)}
+  .tl .when{color:var(--accent);font-weight:700;font-size:.9rem}
+  .disc{font-size:.8rem;color:var(--sub);border-top:1px solid var(--line);margin-top:26px;padding-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="./">← 回首頁</a>
+  <h1>3081 聯亞 — 股票分析</h1>
+  <div class="sub">上櫃 TPEx・InP 矽光子 CW 雷射磊晶片（AI 光通訊 / 光收發上游）　|　圖表即時更新</div>
+
+  <div class="tv">
+    <div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-info.js" async>
+      {"symbol":"TPEX:3081","width":"100%","locale":"zh_TW","colorTheme":"dark","isTransparent":true}</script>
+    </div>
+  </div>
+
+  <div class="tv" style="height:420px">
+    <div class="tradingview-widget-container" style="height:100%"><div class="tradingview-widget-container__widget" style="height:100%"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+      {"symbol":"TPEX:3081","interval":"D","timezone":"Asia/Taipei","theme":"dark","style":"1","locale":"zh_TW",
+       "hide_top_toolbar":false,"hide_legend":false,"allow_symbol_change":false,"studies":["STD;EMA","STD;MACD"],
+       "width":"100%","height":"100%"}</script>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="tv" style="height:380px">
+      <div class="tradingview-widget-container" style="height:100%"><div class="tradingview-widget-container__widget" style="height:100%"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" async>
+        {"interval":"1D","symbol":"TPEX:3081","showIntervalTabs":true,"locale":"zh_TW","colorTheme":"dark","isTransparent":true,"width":"100%","height":"100%"}</script>
+      </div>
+    </div>
+    <div class="tv" style="height:380px">
+      <div class="tradingview-widget-container" style="height:100%"><div class="tradingview-widget-container__widget" style="height:100%"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-financials.js" async>
+        {"symbol":"TPEX:3081","colorTheme":"dark","isTransparent":true,"displayMode":"compact","width":"100%","height":"100%","locale":"zh_TW"}</script>
+      </div>
+    </div>
+  </div>
+
+  <h2>重點數據（快照）</h2>
+  <div class="card">
+    <div class="kpi"><span>市場</span><b>上櫃 TPEx</b></div>
+    <div class="kpi"><span>主力產品</span><b>InP 矽光子 CW 雷射磊晶片（台廠技術壁壘最高）</b></div>
+    <div class="kpi"><span>近期股價</span><b>約 2,655～2,830（6/3 +9.9% → 6/5 −9.85%，兩天 ±10%）</b></div>
+    <div class="kpi"><span>2026 Q1</span><b>營收 9.04 億（年增≈99%）、毛利率 54.8%（8 年新高）</b></div>
+    <div class="kpi"><span>2026 Q1 EPS</span><b>3.44 元（稅後淨利年增 651%）</b></div>
+    <div class="kpi"><span>本益比 (PER)</span><b>約 338 倍（同業均 ≈ 68）</b></div>
+    <div class="dim" style="margin-top:8px">數據為撰寫當下快照（2026/06/05），最新以上方即時圖表為準。</div>
+  </div>
+
+  <h2>族群 / 同類公司（AI 光通訊・雷射・CPO/矽光子）</h2>
+  <div class="card">
+    <table>
+      <tr><th>代號</th><th>名稱</th><th>族群定位</th></tr>
+      <tr><td class="code">3081</td><td>聯亞</td><td>InP CW 雷射磊晶片（上游光源，本檔）</td></tr>
+      <tr><td class="code">2455</td><td>全新</td><td>磊晶 / 化合物半導體，雷射磊晶</td></tr>
+      <tr><td class="code">3234</td><td>光環</td><td>雷射二極體 / 光通訊元件</td></tr>
+      <tr><td class="code">4979</td><td>華星光</td><td>光收發模組 / 光通訊</td></tr>
+      <tr><td class="code">4991</td><td>環宇-KY</td><td>化合物半導體磊晶 / 雷射</td></tr>
+      <tr><td class="code">3450</td><td>聯鈞</td><td>光通訊雷射 / 模組</td></tr>
+      <tr><td class="code">3163</td><td>波若威</td><td>光通訊主被動元件 / 模組 OEM·ODM</td></tr>
+      <tr><td class="code">6442</td><td>光聖</td><td>高密度光纖連接器 / 被動元件（獲利品質佳）</td></tr>
+    </table>
+    <div class="dim" style="margin-top:8px">同族群連動性高、一起噴一起殺。想看其中某檔的同款分析頁，跟我說代號即可。</div>
+  </div>
+
+  <h2>急漲催化事件（時間軸）</h2>
+  <div class="card">
+    <div class="tl">
+      <div class="ev"><div class="when">2025 下半年起</div>
+        AI 資料中心對 800G+ 光收發模組需求爆發（2025 約 2,400 萬支 → 2026 預估 ~6,300 萬組，年增 2.6 倍），<b>最上游雷射光源供給吃緊</b> → 聯亞（CW 雷射磊晶）直接受惠。</div>
+      <div class="ev"><div class="when">NVIDIA 戰略佈局</div>
+        輝達把光互連列為 AI 基建戰略核心，對 Lumentum、Coherent 大額投資並簽長約（至 2030），且<b>包下 EML 雷射產能、交期排到 2027 後</b> → 帶動整個光通訊雷射族群與替代方案。</div>
+      <div class="ev"><div class="when">2025/12（約 12 月中）</div>
+        今周刊報導：光通訊雷射概念股（聯亞、華星光、光環、環宇、全新）<b>當年來累漲 52~104%</b>，市場聚焦缺貨潮。</div>
+      <div class="ev"><div class="when">法人活動 / 法說</div>
+        聯亞參與 Goldman Sachs「GS Taiwan Computex & Corporate Day」等法人場合，<b>法人關注度與外資買盤升溫</b>。</div>
+      <div class="ev"><div class="when">2026 Q1 財報（法說）</div>
+        繳出<b>毛利率 54.8%（8 年新高）、稅後淨利年增 651%、EPS 3.44</b> 遠超市場共識的成績 → 財報利多催化續強。</div>
+      <div class="ev"><div class="when">2026/06 初</div>
+        股價衝上 ~2,830 後<b>劇烈震盪</b>（6/3 近漲停、6/5 近跌停）→ 進入高檔高波動、籌碼換手階段。</div>
+    </div>
+    <div class="dim" style="margin-top:10px">⚠️ 上面是「可對照急漲段的主要催化事件」，是事件與走勢的時間關聯，<b>不等於單一事件就 100% 造成某日漲跌</b>。想精準對某一根 K 棒的日期查當天發生什麼，把日期或圖上位置告訴我，我再幫你挖那天的新聞。</div>
+  </div>
+
+  <h2>多空分析</h2>
+  <div class="card">
+    <div><span class="tag bull">多方</span></div>
+    <ul>
+      <li><b>獲利爆發</b>：2026 Q1 淨利年增 651%、毛利率創 8 年新高，動能極強。</li>
+      <li><b>卡位上游</b>：InP CW 雷射磊晶技術壁壘高，吃 AI 光通訊缺貨財。</li>
+      <li><b>題材+趨勢</b>：NVIDIA 光互連戰略 + 族群缺貨潮，資金聚焦。</li>
+    </ul>
+    <div style="margin-top:10px"><span class="tag bear">空方 / 風險</span></div>
+    <ul>
+      <li><b>估值極貴</b>：PER ≈ 338 倍（同業 ~68），已反映大量未來成長，容錯低。</li>
+      <li><b>高價股 + 上櫃</b>：逾 2,600 元、波動劇烈、流動性較淺，殺盤急。</li>
+      <li><b>追高風險</b>：剛經歷 ±10% 上沖下洗，情緒過熱進場易套短高。</li>
+      <li><b>成長持續性</b>：高基期後若單季不如預期，超高估值會快速修正。</li>
+    </ul>
+  </div>
+
+  <h2>買進建議（思考框架，非投顧建議）</h2>
+  <div class="card">
+    <ul>
+      <li><b>定位</b>：高成長+高估值的<strong>高風險高報酬</strong>成長股，適合可承受大波動、看好 AI 光通訊長線者；不適合保守/重押。</li>
+      <li><b>部位</b>：高價股<strong>小部位、分批</strong>，以「可承受虧損金額」回推張數。</li>
+      <li><b>進場</b>：避免噴出當天追高；較佳是<strong>回檔不破關鍵均線（月線/季線）且量縮止穩</strong>分批（看上方 EMA）。</li>
+      <li><b>停損</b>：先設好（跌破進場參考均線或前低就走），高估值股最忌凹單。</li>
+      <li><b>觀察</b>：每月營收、下季 EPS 是否續強、法人買賣超 — 成長轉弱估值回修很快。</li>
+    </ul>
+    <div class="warn card" style="margin-top:6px">⚠️ 一句話：這是「賭成長撐不撐得住超高本益比」的股票。看對報酬大，看錯或成長放緩，因估值太高、回檔也很兇。務必小部位、設停損。</div>
+  </div>
+
+  <div class="disc">
+    📌 免責聲明：本頁為個人資訊整理與技術/基本面/事件彙整，<b>非投資顧問建議、非買賣推薦</b>；事件時間軸為公開新聞之關聯整理，不保證因果。數據以即時圖表與下列來源為準，盈虧自負。<br>
+    來源：
+    <a href="https://tw.stock.yahoo.com/quote/3081.TWO/technical-analysis" target="_blank">Yahoo股市</a>、
+    <a href="https://statementdog.com/analysis/3081" target="_blank">財報狗</a>、
+    <a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=3081" target="_blank">Goodinfo</a>、
+    <a href="https://www.businesstoday.com.tw/article/category/183015/post/202512150022/" target="_blank">今周刊（族群飆漲）</a>、
+    <a href="https://www.sinotrade.com.tw/richclub/hotstock/" target="_blank">永豐豐雲學堂（光通訊供應鏈）</a>。
+    圖表由 <a href="https://www.tradingview.com/" target="_blank">TradingView</a> 提供。<br>
+    頁面建立：2026/06/05（分析與事件為當下整理，圖表為即時）。
+  </div>
+
+</div>
+</body>
+</html>

@@ -3,153 +3,33 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>3081 聯亞 股票分析 | stuck_egg</title>
+<title>stuck_egg — 個股分析</title>
 <style>
-  :root{ --bg:#0e1117; --card:#171c26; --line:#252b38; --txt:#e6e9ef; --sub:#9aa4b2;
-         --up:#26a69a; --down:#ef5350; --accent:#f5b301; }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--txt);
-       font-family:-apple-system,"Noto Sans TC","Microsoft JhengHei",Segoe UI,Roboto,sans-serif;
-       line-height:1.7;}
-  .wrap{max-width:880px;margin:0 auto;padding:18px 16px 60px;}
-  h1{font-size:1.5rem;margin:.2em 0 .1em}
-  h2{font-size:1.15rem;margin:1.6em 0 .5em;border-left:4px solid var(--accent);padding-left:10px}
-  .sub{color:var(--sub);font-size:.9rem;margin-bottom:14px}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;
-        padding:14px 16px;margin:12px 0;}
-  .tv{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:12px 0}
-  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  @media(max-width:620px){.grid{grid-template-columns:1fr}}
-  .kpi{display:flex;justify-content:space-between;border-bottom:1px dashed var(--line);padding:7px 0}
-  .kpi:last-child{border-bottom:0}
-  .kpi b{color:#fff}
-  .tag{display:inline-block;font-size:.78rem;padding:2px 9px;border-radius:999px;margin:2px 4px 2px 0}
-  .bull{background:rgba(38,166,154,.15);color:var(--up);border:1px solid var(--up)}
-  .bear{background:rgba(239,83,80,.15);color:var(--down);border:1px solid var(--down)}
-  .warn{background:rgba(245,179,1,.12);border:1px solid var(--accent);color:#f7c948}
-  ul{margin:.3em 0 .3em 1.1em;padding:0}
-  li{margin:.35em 0}
-  .dim{color:var(--sub);font-size:.82rem}
-  a{color:#6cb2ff}
-  .disc{font-size:.8rem;color:var(--sub);border-top:1px solid var(--line);margin-top:26px;padding-top:14px}
+  body{margin:0;background:#0e1117;color:#e6e9ef;
+       font-family:-apple-system,"Noto Sans TC","Microsoft JhengHei",Segoe UI,Roboto,sans-serif;line-height:1.7}
+  .wrap{max-width:680px;margin:0 auto;padding:28px 18px 60px}
+  h1{font-size:1.6rem;margin:.2em 0}
+  .sub{color:#9aa4b2;margin-bottom:18px}
+  a.item{display:flex;justify-content:space-between;align-items:center;background:#171c26;
+         border:1px solid #252b38;border-radius:12px;padding:14px 16px;margin:10px 0;
+         text-decoration:none;color:#e6e9ef}
+  a.item:hover{border-color:#f5b301}
+  a.item .code{font-weight:700;color:#6cb2ff;font-size:1.1rem}
+  a.item .arr{color:#9aa4b2}
+  .note{color:#9aa4b2;font-size:.85rem;margin-top:22px;border-top:1px solid #252b38;padding-top:14px}
 </style>
 </head>
 <body>
 <div class="wrap">
+  <h1>🥚 stuck_egg</h1>
+  <div class="sub">個股分析頁集合。網址規則：<b>stuck_egg/股號.html</b></div>
 
-  <h1>3081 聯亞 — 股票分析</h1>
-  <div class="sub">上櫃 TPEx・光通訊 / 雷射二極體晶片　|　即時行情下方圖表會自動更新</div>
+  <a class="item" href="./3081.html"><span><span class="code">3081</span>　聯亞（AI 光通訊 / 雷射磊晶）</span><span class="arr">看分析 →</span></a>
 
-  <!-- 即時報價 -->
-  <div class="tv">
-    <div class="tradingview-widget-container">
-      <div class="tradingview-widget-container__widget"></div>
-      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-info.js" async>
-      {"symbol":"TPEX:3081","width":"100%","locale":"zh_TW","colorTheme":"dark","isTransparent":true}
-      </script>
-    </div>
+  <div class="note">
+    要新增一檔：跟我（小助理）說股號，我會建一頁 <b>股號.html</b>，內含即時圖表、族群同類股、急漲催化事件時間軸、多空與買進框架。<br>
+    📌 所有內容為資訊整理，非投資顧問建議、非買賣推薦，盈虧自負。
   </div>
-
-  <!-- K 線圖 -->
-  <div class="tv" style="height:420px">
-    <div class="tradingview-widget-container" style="height:100%">
-      <div class="tradingview-widget-container__widget" style="height:100%"></div>
-      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
-      {"symbol":"TPEX:3081","interval":"D","timezone":"Asia/Taipei","theme":"dark","style":"1",
-       "locale":"zh_TW","hide_top_toolbar":false,"hide_legend":false,"allow_symbol_change":false,
-       "studies":["STD;EMA","STD;MACD"],"width":"100%","height":"100%"}
-      </script>
-    </div>
-  </div>
-
-  <div class="grid">
-    <!-- 技術面評等 -->
-    <div class="tv" style="height:380px">
-      <div class="tradingview-widget-container" style="height:100%">
-        <div class="tradingview-widget-container__widget" style="height:100%"></div>
-        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" async>
-        {"interval":"1D","symbol":"TPEX:3081","showIntervalTabs":true,"locale":"zh_TW",
-         "colorTheme":"dark","isTransparent":true,"width":"100%","height":"100%"}
-        </script>
-      </div>
-    </div>
-    <!-- 基本面 -->
-    <div class="tv" style="height:380px">
-      <div class="tradingview-widget-container" style="height:100%">
-        <div class="tradingview-widget-container__widget" style="height:100%"></div>
-        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-financials.js" async>
-        {"symbol":"TPEX:3081","colorTheme":"dark","isTransparent":true,"largeChartUrl":"",
-         "displayMode":"compact","width":"100%","height":"100%","locale":"zh_TW"}
-        </script>
-      </div>
-    </div>
-  </div>
-
-  <!-- 重點數據 (快照) -->
-  <h2>重點數據（快照）</h2>
-  <div class="card">
-    <div class="kpi"><span>市場</span><b>上櫃 TPEx</b></div>
-    <div class="kpi"><span>產業 / 題材</span><b>光通訊・雷射二極體晶片（AI 光收發、矽光子）</b></div>
-    <div class="kpi"><span>近期股價</span><b>約 2,655～2,830 元（6/3 +9.9% → 6/5 −9.85%，兩天上沖下洗 ±10%）</b></div>
-    <div class="kpi"><span>2026 Q1 EPS</span><b>3.44 元（季增 66% / 年增 648%）</b></div>
-    <div class="kpi"><span>2025 全年 EPS</span><b>4.66 元</b></div>
-    <div class="kpi"><span>本益比 (PER)</span><b>約 338 倍（同業均 ≈ 68）</b></div>
-    <div class="kpi"><span>估值訊號</span><b>PER 河流圖偏低 / PBR 河流圖偏高（分歧）</b></div>
-    <div class="dim" style="margin-top:8px">數據為撰寫當下快照，最新請以上方即時圖表與下方來源為準。</div>
-  </div>
-
-  <!-- 分析 -->
-  <h2>多空分析</h2>
-  <div class="card">
-    <div>
-      <span class="tag bull">多方</span>
-    </div>
-    <ul>
-      <li><b>獲利爆發</b>：2026 Q1 EPS 年增 648%、季增 66%，成長動能極強。</li>
-      <li><b>題材正中紅心</b>：AI 帶動光通訊 / 高速光收發、雷射晶片需求，產業順風。</li>
-      <li><b>趨勢強勢</b>：股價處於上升段、法人關注度高（詳見上方技術評等）。</li>
-    </ul>
-    <div style="margin-top:10px">
-      <span class="tag bear">空方 / 風險</span>
-    </div>
-    <ul>
-      <li><b>估值極貴</b>：PER ≈ 338 倍，遠高於同業 ~68，已反映大量未來成長，容錯空間低。</li>
-      <li><b>高價股 + 上櫃</b>：單股逾 2,800 元、波動劇烈，上櫃流動性較淺，殺盤更急。</li>
-      <li><b>追高風險</b>：近期單日曾近漲停（+9.9%），情緒過熱時進場易套在短線高點。</li>
-      <li><b>獲利持續性未知</b>：年增 648% 基期低，需觀察後續單季能否續強，一旦不如預期估值會快速修正。</li>
-    </ul>
-  </div>
-
-  <!-- 買進建議 -->
-  <h2>買進建議（思考框架，非投顧建議）</h2>
-  <div class="card">
-    <ul>
-      <li><b>定位</b>：屬「高成長 + 高估值」的<strong>高風險高報酬</strong>成長股，適合可承受大波動、看好 AI 光通訊長線的資金；不適合保守 / 重押。</li>
-      <li><b>部位</b>：高價股建議<strong>小部位、分批</strong>進場，別一次重壓；以總資產可承受虧損的比例回推張數。</li>
-      <li><b>進場點</b>：避免在大漲噴出當天追高；較佳是<strong>回檔不破關鍵均線（如月線 / 季線）</strong>且量縮止穩時分批佈局（用上方圖表的 EMA 觀察）。</li>
-      <li><b>停損</b>：先設好停損（例如跌破你進場參考的均線或前波低點就走），高估值股最忌凹單。</li>
-      <li><b>觀察點</b>：每月營收、下一季 EPS 是否續強、法人買賣超方向 — 成長一旦轉弱，估值回修會很快。</li>
-    </ul>
-    <div class="warn card" style="margin-top:6px">
-      ⚠️ 一句話：這是「賭成長能不能撐住超高本益比」的股票。看對方向報酬大，但看錯或成長放緩，因為估值太高、回檔也會很兇。務必小部位、設停損。
-    </div>
-  </div>
-
-  <div class="disc">
-    📌 免責聲明：本頁為個人資訊整理與技術/基本面彙整，<b>非投資顧問建議、非買賣推薦</b>。所有數據以即時圖表與下列來源為準，投資決策與盈虧由你自行負責。<br>
-    資料來源：
-    <a href="https://tw.stock.yahoo.com/quote/3081.TWO/technical-analysis" target="_blank">Yahoo 股市</a>、
-    <a href="https://www.wantgoo.com/stock/3081" target="_blank">Wantgoo</a>、
-    <a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=3081" target="_blank">Goodinfo</a>、
-    <a href="https://invest.cnyes.com/twstock/tws/3081" target="_blank">鉅亨網</a>。
-    即時圖表由 <a href="https://www.tradingview.com/" target="_blank">TradingView</a> 提供。<br>
-    <span id="updated"></span>
-  </div>
-
 </div>
-<script>
-  document.getElementById('updated').textContent =
-    '頁面建立：2026/06/05（分析文字為當下快照，圖表為即時）';
-</script>
 </body>
 </html>

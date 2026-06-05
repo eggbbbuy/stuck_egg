@@ -42,6 +42,14 @@
   .bar .bt{flex:1;background:rgba(255,255,255,.05);border-radius:4px;height:14px;overflow:hidden}
   .bar .bt i{display:block;height:100%;background:#26a69a;border-radius:4px}
   .bar .bv{width:52px;text-align:right;color:#26a69a;font-weight:700}
+  .tfbar{display:flex;gap:6px;margin:4px 0 8px}
+  .tfbtn{background:#171c26;border:1px solid #252b38;color:#9aa4b2;border-radius:8px;padding:5px 16px;font-size:.9rem;cursor:pointer}
+  .tfbtn.active{background:#f5b301;color:#0e1117;border-color:#f5b301;font-weight:700}
+  .malegend{display:flex;gap:14px;flex-wrap:wrap;font-size:.78rem;color:#9aa4b2;margin-bottom:6px}
+  .malegend i{display:inline-block;width:14px;height:3px;vertical-align:middle;margin-right:4px;border-radius:2px}
+  .techgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px 18px}
+  @media(max-width:620px){.techgrid{grid-template-columns:1fr}}
+  .tk{display:flex;justify-content:space-between;border-bottom:1px dashed var(--line);padding:6px 0}
 </style>
 </head>
 <body>
@@ -55,8 +63,17 @@
     <div><b style="font-size:1.7rem" id="qPrice">—</b> <span id="qChg" class="dim"></span></div>
     <div class="dim" id="qAsof"></div>
   </div>
-  <div class="tv" style="height:430px"><div id="chart" style="height:100%;width:100%"></div></div>
-  <div class="dim">日 K 線（橘＝EMA20 月線、藍＝EMA60 季線）。資料：Yahoo，重建頁面時更新。</div>
+  <div id="tfToggle" class="tfbar"></div>
+  <div class="malegend">
+    <span><i style="background:#e6e9ef"></i>MA5</span><span><i style="background:#f5b301"></i>MA10</span>
+    <span><i style="background:#ff8a65"></i>MA20 月線</span><span><i style="background:#6cb2ff"></i>MA60 季線</span>
+  </div>
+  <div class="tv" style="height:360px"><div id="chart" style="height:100%;width:100%"></div></div>
+  <div class="tv" style="height:150px;margin-top:6px"><div id="macd" style="height:100%;width:100%"></div></div>
+  <div class="dim">上：日/週/月 K + 均線疊圖；下：MACD（柱狀＋DIF 橘 / DEA 藍）。資料：Yahoo，重建頁面時更新。</div>
+
+  <h2>技術面</h2>
+  <div class="card" id="techSummary"></div>
 
   <h2>重點數據（快照）</h2>
   <div class="card">
@@ -161,34 +178,7 @@
 
 </div>
 <script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
-<script>
-(function(){
-  fetch('./4938_ohlc.json').then(r=>r.json()).then(function(d){
-    var up = d.chgPct >= 0;
-    document.getElementById('qPrice').textContent = Number(d.latest).toLocaleString();
-    var chg = document.getElementById('qChg');
-    chg.textContent = (up?'▲ +':'▼ ') + d.chg + ' (' + (up?'+':'') + d.chgPct + '%)';
-    chg.style.color = up ? '#26a69a' : '#ef5350';
-    document.getElementById('qAsof').textContent = '收盤 ' + d.asof + '（非即時）';
-    var el = document.getElementById('chart');
-    var chart = LightweightCharts.createChart(el, {
-      autoSize: true,
-      layout:{ background:{color:'transparent'}, textColor:'#9aa4b2', fontFamily:'inherit' },
-      grid:{ vertLines:{color:'rgba(37,43,56,0.5)'}, horzLines:{color:'rgba(37,43,56,0.5)'} },
-      rightPriceScale:{ borderColor:'#252b38' },
-      timeScale:{ borderColor:'#252b38' },
-      crosshair:{ mode:0 }
-    });
-    var cs = chart.addCandlestickSeries({ upColor:'#26a69a', downColor:'#ef5350',
-      borderUpColor:'#26a69a', borderDownColor:'#ef5350', wickUpColor:'#26a69a', wickDownColor:'#ef5350' });
-    cs.setData(d.ohlc);
-    chart.addLineSeries({ color:'#f5b301', lineWidth:1, priceLineVisible:false, crosshairMarkerVisible:false }).setData(d.ema20);
-    chart.addLineSeries({ color:'#6cb2ff', lineWidth:1, priceLineVisible:false, crosshairMarkerVisible:false }).setData(d.ema60);
-    chart.timeScale().fitContent();
-  }).catch(function(e){
-    document.getElementById('chart').innerHTML = '<div style="padding:24px;color:#9aa4b2">圖表載入失敗：' + e + '</div>';
-  });
-})();
-</script>
+<script src="./stockchart.js"></script>
+<script>StockChart.init('4938');</script>
 </body>
 </html>

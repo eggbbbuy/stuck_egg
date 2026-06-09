@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3060 銘異 股票分析 | stuck_egg</title>
+<style>
+  :root{ --bg:#0e1117; --card:#171c26; --line:#252b38; --txt:#e6e9ef; --sub:#9aa4b2;
+         --up:#26a69a; --down:#ef5350; --accent:#f5b301; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);
+       font-family:-apple-system,"Noto Sans TC","Microsoft JhengHei",Segoe UI,Roboto,sans-serif;line-height:1.7;}
+  .wrap{max-width:880px;margin:0 auto;padding:18px 16px 60px;}
+  a.back{color:var(--sub);font-size:.85rem;text-decoration:none}
+  h1{font-size:1.5rem;margin:.2em 0 .1em}
+  h2{font-size:1.15rem;margin:1.7em 0 .5em;border-left:4px solid var(--accent);padding-left:10px}
+  .sub{color:var(--sub);font-size:.9rem;margin-bottom:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:12px 0;}
+  .tv{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:12px 0}
+  .kpi{display:flex;justify-content:space-between;border-bottom:1px dashed var(--line);padding:7px 0}
+  .kpi:last-child{border-bottom:0}.kpi b{color:#fff}
+  table{width:100%;border-collapse:collapse;font-size:.92rem}
+  th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}
+  th{color:var(--sub);font-weight:600}
+  td.code{font-weight:700;color:#6cb2ff;white-space:nowrap}
+  .tag{display:inline-block;font-size:.78rem;padding:2px 9px;border-radius:999px;margin:2px 4px 2px 0}
+  .bull{background:rgba(38,166,154,.15);color:var(--up);border:1px solid var(--up)}
+  .bear{background:rgba(239,83,80,.15);color:var(--down);border:1px solid var(--down)}
+  .warn{background:rgba(245,179,1,.12);border:1px solid var(--accent);color:#f7c948}
+  ul{margin:.3em 0 .3em 1.1em;padding:0}li{margin:.35em 0}
+  .dim{color:var(--sub);font-size:.82rem}a{color:#6cb2ff}
+  .tl{position:relative;margin:6px 0 0 6px;padding-left:18px;border-left:2px solid var(--line)}
+  .tl .ev{position:relative;margin:0 0 14px}
+  .tl .ev:before{content:"";position:absolute;left:-25px;top:5px;width:11px;height:11px;border-radius:50%;
+                 background:var(--accent);box-shadow:0 0 0 3px var(--bg)}
+  .tl .when{color:var(--accent);font-weight:700;font-size:.9rem}
+  .disc{font-size:.8rem;color:var(--sub);border-top:1px solid var(--line);margin-top:26px;padding-top:14px}
+  .bar{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:.9rem}
+  .bar .bn{width:88px;flex:0 0 88px;color:#cdd3dc}
+  .bar .bt{flex:1;background:rgba(255,255,255,.05);border-radius:4px;height:14px;overflow:hidden}
+  .bar .bt i{display:block;height:100%;background:#26a69a;border-radius:4px}
+  .bar .bv{width:56px;text-align:right;color:#26a69a;font-weight:700}
+  .tfbar{display:flex;gap:6px;margin:4px 0 8px}
+  .tfbtn{background:#171c26;border:1px solid #252b38;color:#9aa4b2;border-radius:8px;padding:5px 16px;font-size:.9rem;cursor:pointer}
+  .tfbtn.active{background:#f5b301;color:#0e1117;border-color:#f5b301;font-weight:700}
+  .malegend{display:flex;gap:14px;flex-wrap:wrap;font-size:.78rem;color:#9aa4b2;margin-bottom:6px}
+  .malegend i{display:inline-block;width:14px;height:3px;vertical-align:middle;margin-right:4px;border-radius:2px}
+  .techgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px 18px}
+  @media(max-width:620px){.techgrid{grid-template-columns:1fr}}
+  .tk{display:flex;justify-content:space-between;border-bottom:1px dashed var(--line);padding:6px 0}
+  .ftab{width:100%;border-collapse:collapse;font-size:.88rem}
+  .ftab th{color:var(--sub);font-weight:600;padding:6px 6px;border-bottom:1px solid var(--line)}
+  .ftab td{padding:6px 6px;border-bottom:1px solid var(--line)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="./">← 回首頁</a>
+  <h1>3060 銘異 — 股票分析</h1>
+  <div class="sub">上市 TWSE・HDD 精密機構件（VCM 音圈馬達 / 硬碟蓋）— AI 大容量儲存供應鏈</div>
+
+  <div class="card" style="display:flex;justify-content:space-between;align-items:baseline">
+    <div><b style="font-size:1.7rem" id="qPrice">—</b> <span id="qChg" class="dim"></span></div>
+    <div class="dim" id="qAsof"></div>
+  </div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+    <div id="tfToggle" class="tfbar"></div>
+    <div id="ovToggle" class="tfbar"></div>
+  </div>
+  <div id="maLegend" class="malegend">
+    <span><i style="background:#e6e9ef"></i>MA5</span><span><i style="background:#f5b301"></i>MA10</span>
+    <span><i style="background:#ff8a65"></i>MA20 月線</span><span><i style="background:#6cb2ff"></i>MA60 季線</span>
+  </div>
+  <div id="bollLegend" class="malegend" style="display:none">
+    <span><i style="background:#b39ddb"></i>布林上軌</span><span><i style="background:#9aa4b2"></i>中軌 MA20</span><span><i style="background:#b39ddb"></i>下軌</span>
+  </div>
+  <div class="tv" style="height:360px"><div id="chart" style="height:100%;width:100%"></div></div>
+  <div class="tv" style="height:150px;margin-top:6px"><div id="macd" style="height:100%;width:100%"></div></div>
+  <div class="dim">上：日/週/月 K + 均線疊圖；下：MACD（柱狀＋DIF 橘 / DEA 藍）。資料：Yahoo，重建頁面時更新。</div>
+
+  <h2>技術面</h2>
+  <div class="card" id="techSummary"></div>
+
+  <h2>基本面（月營收 / 季度毛利 / EPS）</h2>
+  <div class="card" id="fundamental"><div class="dim">載入中…</div></div>
+
+  <h2>重點數據（快照）</h2>
+  <div class="card">
+    <div class="kpi"><span>市場</span><b>上市 TWSE</b></div>
+    <div class="kpi"><span>本業</span><b>HDD 精密機構件：VCM 音圈馬達（控制磁頭）+ 硬碟蓋</b></div>
+    <div class="kpi"><span>定位</span><b>谷底翻身「轉機股」（2025 還虧，2026 起翻盈）</b></div>
+    <div class="kpi"><span>近期股價</span><b>~29（低價股；2025/10 ~22 → 2026/01 ~36 後回檔盤整）</b></div>
+    <div class="kpi"><span>2025 全年</span><b>EPS −0.39（虧損），Q4 轉小盈</b></div>
+    <div class="kpi"><span>2026 Q1</span><b>營收 10.8 億、毛利率 15.4%、EPS 0.33（季增 371%、年增 50%）</b></div>
+    <div class="kpi"><span>2026/05 月營收</span><b>3.81 億（年增 +27.8%）</b></div>
+    <div class="kpi"><span>題材</span><b>WD / Seagate AI 大容量 Nearline HDD 需求回升、HAMR</b></div>
+    <div class="dim" style="margin-top:8px">數據為撰寫當下快照（2026/06/09），最新以上方即時圖表為準。</div>
+  </div>
+
+  <h2>族群 / 同類公司（HDD 機械硬碟供應鏈）</h2>
+  <div class="card">
+    <table>
+      <tr><th>代號</th><th>名稱</th><th>定位</th><th style="text-align:right">近1年漲幅*</th></tr>
+      <tr><td class="code">3060</td><td>銘異</td><td>VCM 音圈馬達 / 硬碟蓋（最純 HDD，本檔）</td><td style="text-align:right;color:#f5b301">+27%</td></tr>
+      <tr><td class="code">3149</td><td>正達</td><td>HAMR 玻璃碟片基板</td><td style="text-align:right;color:#26a69a">+161%</td></tr>
+      <tr><td class="code">1785</td><td>光洋科</td><td>HAMR 靶材（磁片/磁頭材料）</td><td style="text-align:right;color:#26a69a">+114%</td></tr>
+      <tr><td class="code">4979</td><td>華星光</td><td>HAMR 雷射模組（主力其實是光通訊）</td><td style="text-align:right;color:#26a69a">+251%</td></tr>
+      <tr><td class="code">6188</td><td>廣明</td><td>儲存/自動化（HDD 關聯較弱）</td><td style="text-align:right;color:#ef5350">−8%</td></tr>
+    </table>
+    <div class="dim" style="margin-top:8px">*近1年漲幅為 2026/06/09 快照（Yahoo）。<b>注意：HDD ≠ SSD</b>。SSD/NAND 是群聯8299、威剛、宜鼎那群（記憶體），題材不同。銘異是「機械硬碟」零件最純的一檔，但它在自己族群裡漲幅墊底（轉機股、起步較慢）。</div>
+  </div>
+  <div class="card">
+    <div class="dim" style="margin-bottom:8px">族群近 1 年漲幅比較：</div>
+    <div class="bar"><span class="bn">華星光 4979</span><span class="bt"><i style="width:100%"></i></span><span class="bv">+251%</span></div>
+    <div class="bar"><span class="bn">正達 3149</span><span class="bt"><i style="width:64%"></i></span><span class="bv">+161%</span></div>
+    <div class="bar"><span class="bn">光洋科 1785</span><span class="bt"><i style="width:45%"></i></span><span class="bv">+114%</span></div>
+    <div class="bar"><span class="bn" style="color:#f5b301">銘異 3060</span><span class="bt"><i style="width:11%;background:#f5b301"></i></span><span class="bv" style="color:#f5b301">+27%</span></div>
+    <div class="bar"><span class="bn">廣明 6188</span><span class="bt"><i style="width:3%;background:#ef5350"></i></span><span class="bv" style="color:#ef5350">−8%</span></div>
+  </div>
+
+  <h2>急漲催化事件（時間軸）</h2>
+  <div class="card">
+    <div class="dim" style="margin-bottom:8px">日期與漲跌幅為實際日 K（Yahoo）；事件為公開新聞對照。漲停 ≈ 單日 +10%。</div>
+    <div class="tl">
+      <div class="ev"><div class="when">2025/04/23　+9.9%（漲停）</div>
+        HDD 題材早期閃現，但隨後仍在低檔整理（公司當時還在虧損）。</div>
+      <div class="ev"><div class="when">2025/11–12　HDD 回升題材升溫</div>
+        AI 大容量儲存需求帶動 HDD 回溫 → <b>11 月 +27%、12 月（12/9、12/18 兩根漲停）</b>，股價自 ~22 噴到 ~35。</div>
+      <div class="ev"><div class="when">2026/01/07　漲停到 36.3（波段高）</div>
+        AI 儲存 / HDD 缺貨漲價熱潮最旺，股價見近期高點。</div>
+      <div class="ev"><div class="when">2026/02–03　回檔（−4% / −16%）</div>
+        漲多獲利了結 + 轉機題材仍待財報驗證，回到 ~28。</div>
+      <div class="ev"><div class="when">2026/06/02　+9.9%（漲停）</div>
+        Q1 財報亮眼（<b>EPS 0.33 谷底翻盈、毛利率 15.4%、季增 371%</b>）→ 確認走出谷底，再拉漲停。</div>
+    </div>
+    <div class="dim" style="margin-top:10px">⚠️ 日期與漲跌是硬數據；「事件→漲跌」是時間關聯，不等於單一事件 100% 造成該日漲跌。要精準查某根 K 棒當天新聞，把日期給我即可。</div>
+  </div>
+
+  <h2>多空分析</h2>
+  <div class="card">
+    <div><span class="tag bull">多方</span></div>
+    <ul>
+      <li><b>直接受惠</b>：VCM 音圈馬達全球主要供應商，HDD 出貨回升直接帶動。</li>
+      <li><b>谷底翻身</b>：2025 虧損 → 2026 Q1 翻盈、毛利率跳升，動能轉強。</li>
+      <li><b>剛性需求</b>：AI 冷資料暴增，PB 級長期儲存 HDD 成本優勢不可取代。</li>
+      <li><b>低價彈性</b>：股價基期低，題材一來彈性大（常見漲停）。</li>
+    </ul>
+    <div style="margin-top:10px"><span class="tag bear">空方 / 風險</span></div>
+    <ul>
+      <li><b>轉機股未定</b>：2025 全年仍虧損，獲利「能不能持續」要時間驗證。</li>
+      <li><b>毛利薄</b>：毛利率約 15%，遠低於控制 IC/記憶體（群聯 60%+）。</li>
+      <li><b>產業循環</b>：HDD 是成本導向的循環產業，需求/報價會反覆。</li>
+      <li><b>投機性高</b>：低價股波動大、籌碼亂，1 年漲幅在族群墊底。</li>
+    </ul>
+  </div>
+
+  <h2>買進建議（思考框架，非投顧建議）</h2>
+  <div class="card">
+    <ul>
+      <li><b>定位</b>：典型「<strong>低基期轉機股</strong>」——故事是「HDD 回升 + 谷底翻盈」，但獲利連續性還沒被完全證明。</li>
+      <li><b>進場</b>：轉機股最好等「連續幾季獲利轉好」確認，再分批；避免在漲停噴出當天追高。現在剛回檔盤整，可觀察止穩。</li>
+      <li><b>關鍵觀察</b>：每月營收年增、毛利率能否續揚、季報 EPS 是否續盈 —— 這些是「轉機是否成真」的證據。</li>
+      <li><b>停損 / 部位</b>：低價投機股波動大、容易被洗，務必小部位、設好停損，別把它當穩健股重押。</li>
+    </ul>
+    <div class="warn card" style="margin-top:6px">⚠️ 一句話：銘異是「賭 HDD 回升 + 公司谷底翻身」的轉機股，彈性大但風險也大（去年才虧、毛利薄、投機性高）。題材對、想參與可以，但要小部位＋設停損，等獲利持續轉好再加碼。</div>
+  </div>
+
+  <div class="disc">
+    📌 免責聲明：本頁為個人資訊整理與技術/基本面/事件彙整，<b>非投資顧問建議、非買賣推薦</b>；事件時間軸為公開新聞之關聯整理，不保證因果。數據以即時圖表與下列來源為準，盈虧自負。<br>
+    來源：
+    <a href="https://tw.stock.yahoo.com/quote/3060.TW" target="_blank">Yahoo股市</a>、
+    <a href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=3060" target="_blank">Goodinfo</a>、
+    <a href="https://winvest.tw/Stock/Symbol/Comment/3060" target="_blank">Win投資</a>、
+    <a href="https://n.yam.com/Article/20260602725236" target="_blank">蕃新聞（Q1獲利暴衝）</a>。
+    圖表由 <a href="https://www.tradingview.com/" target="_blank">TradingView lightweight-charts</a> 繪製。<br>
+    頁面建立：2026/06/09（分析與事件為當下整理，圖表資料每日自動更新）。
+  </div>
+
+</div>
+<script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
+<script src="./stockchart.js"></script>
+<script>StockChart.init('3060');</script>
+</body>
+</html>

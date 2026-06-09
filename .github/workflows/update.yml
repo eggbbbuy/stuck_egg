@@ -25,7 +25,7 @@ jobs:
         run: |
           git config user.name "stuck_egg-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add -- *_tech.json *_fund.json
+          git add -- *_tech.json *_fund.json *_val.json
           if git diff --staged --quiet; then
             echo "no changes"
           else

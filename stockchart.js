@@ -19,6 +19,38 @@
       .then(function (d) { renderFund(d); }).catch(function (e) {
         if (el('fundamental')) el('fundamental').innerHTML = '<div class="dim">基本面載入失敗：' + e + '</div>';
       });
+    fetch('./' + code + '_val.json').then(function (r) { return r.json(); })
+      .then(function (d) { renderVal(d); }).catch(function (e) {
+        if (el('valuation')) el('valuation').innerHTML = '<div class="dim">估值載入失敗：' + e + '</div>';
+      });
+  }
+
+  function renderVal(v) {
+    var box = el('valuation'); if (!box) return;
+    if (!v.pe) {
+      box.innerHTML = '<div class="tk"><span>本益比 (PE)</span><b style="color:#f5b301">不適用</b></div>' +
+        '<div class="dim" style="margin-top:6px">' + (v.note || '近4季虧損或 EPS 過小，PE 無意義。') + '</div>';
+      return;
+    }
+    var r = v.peRange;
+    var pctColor = r ? (r.pctile >= 80 ? '#ef5350' : (r.pctile <= 30 ? '#26a69a' : '#fff')) : '#fff';
+    var level = r ? (r.pctile >= 80 ? '偏貴' : (r.pctile <= 30 ? '相對便宜' : '中性')) : '';
+    var html = '<div class="techgrid">';
+    html += '<div class="tk"><span>本益比 PE（近4季 TTM）</span><b>' + v.pe + ' 倍</b></div>';
+    html += '<div class="tk"><span>每股盈餘 EPS（TTM）</span><b>' + v.ttmEps + ' 元</b></div>';
+    if (v.peg != null) html += '<div class="tk"><span>PEG（盈餘年增 ' + v.growth + '%）</span><b>' + v.peg + '</b></div>';
+    else html += '<div class="tk"><span>PEG</span><b style="color:#9aa4b2">—（無正成長，不適用）</b></div>';
+    if (r) html += '<div class="tk"><span>近2年PE位階</span><b style="color:' + pctColor + '">' + r.pctile + '%（' + level + '）</b></div>';
+    html += '</div>';
+    if (r) {
+      var pos = Math.max(0, Math.min(100, Math.round((v.pe - r.min) / (r.max - r.min) * 100)));
+      html += '<div class="dim" style="margin:10px 0 4px">近2年本益比區間：' + r.min + '（低）～ ' + r.max + '（高），中位 ' + r.med + '</div>';
+      html += '<div style="position:relative;height:16px;background:linear-gradient(90deg,#26a69a,#f5b301,#ef5350);border-radius:8px;opacity:.85">' +
+        '<div style="position:absolute;left:' + pos + '%;top:-3px;width:3px;height:22px;background:#fff;border-radius:2px;box-shadow:0 0 4px #000"></div></div>' +
+        '<div class="dim" style="display:flex;justify-content:space-between;margin-top:2px"><span>便宜</span><span>↑ 現在 PE ' + v.pe + '</span><span>貴</span></div>';
+    }
+    html += '<div class="dim" style="margin-top:8px">判讀：PE 位階越低（靠左綠）相對越便宜、越高（靠右紅）相對越貴；搭配 PEG（&lt;1 通常合理）。<b style="color:#f5b301">⚠️ 但景氣循環股（記憶體/HDD…）獲利在高峰時 PE 會假性偏低，低 PE 反而要小心循環反轉。</b></div>';
+    box.innerHTML = html;
   }
 
   function renderChart(d) {

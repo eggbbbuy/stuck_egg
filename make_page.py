@@ -46,6 +46,9 @@ TEMPLATE = """<!DOCTYPE html>
   .kpi:last-child{{border-bottom:0}}.kpi b{{color:#fff}}
   .dim{{color:var(--sub);font-size:.82rem}}a{{color:#6cb2ff}}
   .warn{{background:rgba(245,179,1,.12);border:1px solid var(--accent);color:#f7c948}}
+  .tag{{display:inline-block;font-size:.78rem;padding:2px 9px;border-radius:999px;margin:2px 4px 2px 0}}
+  .bull{{background:rgba(38,166,154,.15);color:var(--up);border:1px solid var(--up)}}
+  .bear{{background:rgba(239,83,80,.15);color:var(--down);border:1px solid var(--down)}}
   ul{{margin:.3em 0 .3em 1.1em;padding:0}}li{{margin:.35em 0}}
   .disc{{font-size:.8rem;color:var(--sub);border-top:1px solid var(--line);margin-top:26px;padding-top:14px}}
   .nav{{display:flex;flex-wrap:wrap;gap:6px}}
@@ -85,8 +88,10 @@ TEMPLATE = """<!DOCTYPE html>
     <span><i style="background:#b39ddb"></i>布林上軌</span><span><i style="background:#9aa4b2"></i>中軌 MA20</span><span><i style="background:#b39ddb"></i>下軌</span>
   </div>
   <div class="tv" style="height:360px"><div id="chart" style="height:100%;width:100%"></div></div>
-  <div class="tv" style="height:150px;margin-top:6px"><div id="macd" style="height:100%;width:100%"></div></div>
-  <div class="dim">上：日/週/月 K + 均線疊圖；下：MACD（柱＋DIF 橘 / DEA 藍）。資料：Yahoo，每日自動更新。</div>
+  <div class="tv" style="height:140px;margin-top:6px"><div id="macd" style="height:100%;width:100%"></div></div>
+  <div class="dim">MACD（柱＋DIF 橘 / DEA 藍）</div>
+  <div class="tv" style="height:130px;margin-top:6px"><div id="kd" style="height:100%;width:100%"></div></div>
+  <div class="dim">KD（K 橘 / D 藍；80 上方超買、20 下方超賣）。三張圖時間軸同步、可切日/週/月。資料：Yahoo，每日自動更新。</div>
 
   <h2>技術面</h2>
   <div class="card" id="techSummary"></div>
@@ -97,11 +102,19 @@ TEMPLATE = """<!DOCTYPE html>
   <h2>估值（本益比 / PEG / 近2年PE區間）</h2>
   <div class="card" id="valuation"><div class="dim">載入中…</div></div>
 
+  <h2>籌碼面（三大法人 / 融資融券）</h2>
+  <div class="card" id="chip"><div class="dim">載入中…</div></div>
+
+  <h2>催化時間軸（最大單日漲跌日）</h2>
+  <div class="card" id="autoTimeline"><div class="dim">載入中…</div></div>
+
+  <h2>多空分析（資料自動）</h2>
+  <div class="card" id="autoVerdict"><div class="dim">載入中…</div></div>
+
   <h2>公司定位</h2>
   <div class="card">
     <div class="kpi"><span>定位</span><b>{SUB}</b></div>
     <div class="kpi"><span>題材</span><b>AI PC 換機潮（NVIDIA RTX Spark / N1X 帶動）</b></div>
-    <div class="dim" style="margin-top:8px">想看這檔的「深入催化時間軸 / 多空分析」就跟小助理說，我再單獨幫你深做。</div>
   </div>
 
   <h2>AI PC 同類股（點擊切換）</h2>

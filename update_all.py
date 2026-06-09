@@ -24,6 +24,7 @@ def main():
                 run("gen_tech.py", [code, suf])
                 run("gen_fund.py", [code])
                 run("gen_val.py", [code, suf])
+                run("gen_chip.py", [code])
             except Exception as e:
                 print(f"!! {code} 失敗: {e}", flush=True)
 

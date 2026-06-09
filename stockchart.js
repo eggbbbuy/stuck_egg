@@ -11,17 +11,25 @@
   function el(id) { return document.getElementById(id); }
 
   function init(code) {
+    var store = {};
+    function tryVerdict() {
+      if (store.tech && store.fund && store.val) renderVerdict(store.tech, store.fund, store.val);
+    }
     fetch('./' + code + '_tech.json').then(function (r) { return r.json(); })
-      .then(function (d) { renderChart(d); }).catch(function (e) {
+      .then(function (d) { store.tech = d; renderChart(d); renderTimeline(d); tryVerdict(); }).catch(function (e) {
         if (el('chart')) el('chart').innerHTML = '<div style="padding:24px;color:#9aa4b2">圖表載入失敗：' + e + '</div>';
       });
     fetch('./' + code + '_fund.json').then(function (r) { return r.json(); })
-      .then(function (d) { renderFund(d); }).catch(function (e) {
+      .then(function (d) { store.fund = d; renderFund(d); tryVerdict(); }).catch(function (e) {
         if (el('fundamental')) el('fundamental').innerHTML = '<div class="dim">基本面載入失敗：' + e + '</div>';
       });
     fetch('./' + code + '_val.json').then(function (r) { return r.json(); })
-      .then(function (d) { renderVal(d); }).catch(function (e) {
+      .then(function (d) { store.val = d; renderVal(d); tryVerdict(); }).catch(function (e) {
         if (el('valuation')) el('valuation').innerHTML = '<div class="dim">估值載入失敗：' + e + '</div>';
+      });
+    fetch('./' + code + '_chip.json').then(function (r) { return r.json(); })
+      .then(function (d) { renderChip(d); }).catch(function (e) {
+        if (el('chip')) el('chip').innerHTML = '<div class="dim">籌碼面載入失敗：' + e + '</div>';
       });
   }
 
@@ -79,9 +87,21 @@
     var difS = macdChart.addLineSeries({ color: '#f5b301', lineWidth: 1, priceLineVisible: false, lastValueVisible: false });
     var deaS = macdChart.addLineSeries({ color: '#6cb2ff', lineWidth: 1, priceLineVisible: false, lastValueVisible: false });
 
+    // KD 副圖（若頁面有 #kd）
+    var kdChart = null, kSer = null, dSer = null;
+    if (el('kd')) {
+      kdChart = LC.createChart(el('kd'), common);
+      kSer = kdChart.addLineSeries({ color: '#f5b301', lineWidth: 1, priceLineVisible: false, lastValueVisible: true });
+      dSer = kdChart.addLineSeries({ color: '#6cb2ff', lineWidth: 1, priceLineVisible: false, lastValueVisible: true });
+      var ref80 = kdChart.addLineSeries({ color: 'rgba(239,83,80,0.4)', lineWidth: 1, lineStyle: 2, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false });
+      var ref20 = kdChart.addLineSeries({ color: 'rgba(38,166,154,0.4)', lineWidth: 1, lineStyle: 2, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false });
+      kdChart._ref = function (times) { ref80.setData(times.map(function (t) { return { time: t, value: 80 }; })); ref20.setData(times.map(function (t) { return { time: t, value: 20 }; })); };
+    }
+
     var lock = false;
     function sync(a, b) { a.timeScale().subscribeVisibleLogicalRangeChange(function (rg) { if (lock || !rg) return; lock = true; b.timeScale().setVisibleLogicalRange(rg); lock = false; }); }
-    sync(main, macdChart); sync(macdChart, main);
+    var charts = [main, macdChart].concat(kdChart ? [kdChart] : []);
+    charts.forEach(function (a) { charts.forEach(function (b) { if (a !== b) sync(a, b); }); });
 
     function load(fk) {
       var f = d.frames[fk];
@@ -89,6 +109,11 @@
       maSeries.forEach(function (s, i) { s.setData(f.ma[MA[i].n] || []); });
       bollUp.setData(f.boll.up); bollMid.setData(f.boll.mid); bollLo.setData(f.boll.lo);
       histS.setData(f.macd.hist); difS.setData(f.macd.dif); deaS.setData(f.macd.dea);
+      if (kdChart && f.kd) {
+        kSer.setData(f.kd.k); dSer.setData(f.kd.d);
+        kdChart._ref(f.ohlc.map(function (o) { return o.time; }));
+        kdChart.timeScale().fitContent();
+      }
       main.timeScale().fitContent(); macdChart.timeScale().fitContent();
     }
     function setOverlay(mode) {
@@ -154,6 +179,93 @@
       html += '</table>';
     }
     box.innerHTML = html || '<div class="dim">查無基本面資料</div>';
+  }
+
+  // 自動催化時間軸：用真實K線最大單日漲跌日（事件對照交給使用者，不亂掰）
+  function renderTimeline(d) {
+    var box = el('autoTimeline'); if (!box) return;
+    var tm = d.topMoves || [];
+    if (!tm.length) { box.innerHTML = '<div class="dim">資料不足</div>'; return; }
+    var html = '<div class="dim" style="margin-bottom:8px">近一年「最大單日漲幅」日（硬數據，可對照當天新聞找催化）：</div><table class="ftab"><tr><th>日期</th><th style="text-align:right">收盤</th><th style="text-align:right">單日</th></tr>';
+    tm.slice().reverse().forEach(function (m) {
+      var col = m.pct >= 0 ? '#26a69a' : '#ef5350';
+      html += '<tr><td>' + m.time + '</td><td style="text-align:right">' + m.close + '</td><td style="text-align:right;color:' + col + '">' + (m.pct >= 0 ? '+' : '') + m.pct + '%</td></tr>';
+    });
+    html += '</table><div class="dim" style="margin-top:6px">⚠️ 這是「股價自己跳最多的日子」，多半對應法說/題材/族群消息。想知道某一天發生什麼，把日期給小助理，我幫你查當天新聞。</div>';
+    box.innerHTML = html;
+  }
+
+  // 自動多空：用 技術面 + 月營收年增 + 估值 + 毛利 資料產生
+  function renderVerdict(tech, fund, val) {
+    var box = el('autoVerdict'); if (!box) return;
+    var bulls = [], bears = [];
+    var t = (tech && tech.tech) || {};
+    // 技術面
+    if (t.signal === '偏多') bulls.push('技術面綜合偏多（' + t.score + '/6）、' + (t.ma5 > t.ma20 ? '均線多頭' : '均線轉強'));
+    if (t.signal === '偏空') bears.push('技術面綜合偏空（' + t.score + '/6）、動能轉弱');
+    if (t.rsi14 >= 70) bears.push('RSI ' + t.rsi14 + ' 偏熱（短線過熱、易拉回）');
+    if (t.rsi14 <= 30) bulls.push('RSI ' + t.rsi14 + ' 超賣（短線跌深）');
+    if (t.bias20 != null && t.bias20 > 15) bears.push('正乖離大（離月線 +' + t.bias20 + '%），漲多易回檔');
+    // 基本面（最新月營收年增、最新季毛利）
+    if (fund && fund.monthRevenue && fund.monthRevenue.length) {
+      var lastm = fund.monthRevenue[fund.monthRevenue.length - 1];
+      if (lastm.yoy != null) {
+        if (lastm.yoy >= 20) bulls.push('最新月營收（' + lastm.ym + '）年增 +' + lastm.yoy + '%，營運成長');
+        else if (lastm.yoy < 0) bears.push('最新月營收（' + lastm.ym + '）年減 ' + lastm.yoy + '%，本業逆風');
+      }
+    }
+    if (fund && fund.quarterly && fund.quarterly.length) {
+      var q = fund.quarterly[fund.quarterly.length - 1];
+      if (q.gm != null) (q.gm < 12 ? bears : bulls).push('近一季毛利率 ' + q.gm + '%' + (q.gm < 12 ? '（偏薄）' : ''));
+    }
+    // 估值
+    if (val) {
+      if (val.pe && val.peRange) {
+        if (val.peRange.pctile >= 80) bears.push('本益比位階 ' + val.peRange.pctile + '%（近2年偏貴）');
+        else if (val.peRange.pctile <= 30) bulls.push('本益比位階 ' + val.peRange.pctile + '%（近2年相對便宜）');
+      }
+      if (!val.pe) bears.push('近4季虧損 / EPS 過小，估值無法用 PE 評（轉機股風險）');
+      if (val.peg != null && val.peg < 1) bulls.push('PEG ' + val.peg + '（<1，相對成長合理）');
+    }
+    if (!bulls.length) bulls.push('—');
+    if (!bears.length) bears.push('—');
+    function ul(arr) { return '<ul>' + arr.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul>'; }
+    box.innerHTML = '<div><span class="tag bull">多方</span></div>' + ul(bulls) +
+      '<div style="margin-top:8px"><span class="tag bear">空方 / 風險</span></div>' + ul(bears) +
+      '<div class="dim" style="margin-top:6px">⚠️ 此多空為「技術＋營收＋估值」資料自動產生的訊號，非深度產業分析；循環股/轉機股別只看單一指標。</div>';
+  }
+
+  // 籌碼面：三大法人買賣超 + 融資融券
+  function renderChip(c) {
+    var box = el('chip'); if (!box) return;
+    var html = '';
+    if (c.inst5) {
+      function nb(v) { return '<b style="color:' + (v >= 0 ? '#26a69a' : '#ef5350') + '">' + (v >= 0 ? '+' : '') + Number(v).toLocaleString() + '</b>'; }
+      html += '<div class="techgrid">' +
+        '<div class="tk"><span>外資 近5日</span>' + nb(c.inst5.foreign || 0) + ' 張</div>' +
+        '<div class="tk"><span>投信 近5日</span>' + nb(c.inst5.trust || 0) + ' 張</div>' +
+        '<div class="tk"><span>自營 近5日</span>' + nb(c.inst5.dealer || 0) + ' 張</div>' +
+        '<div class="tk"><span>三大法人合計</span>' + nb((c.inst5.foreign || 0) + (c.inst5.trust || 0) + (c.inst5.dealer || 0)) + ' 張</div>' +
+        '</div>';
+    }
+    if (c.institutional && c.institutional.length) {
+      html += '<div class="dim" style="margin:12px 0 6px">三大法人買賣超（張，正=買超）：</div><table class="ftab"><tr><th>日期</th><th style="text-align:right">外資</th><th style="text-align:right">投信</th><th style="text-align:right">自營</th><th style="text-align:right">合計</th></tr>';
+      c.institutional.slice(-6).reverse().forEach(function (r) {
+        function cc(v) { return '<span style="color:' + (v >= 0 ? '#26a69a' : '#ef5350') + '">' + (v >= 0 ? '+' : '') + Number(v).toLocaleString() + '</span>'; }
+        html += '<tr><td>' + r.date + '</td><td style="text-align:right">' + cc(r.foreign) + '</td><td style="text-align:right">' + cc(r.trust) + '</td><td style="text-align:right">' + cc(r.dealer) + '</td><td style="text-align:right">' + cc(r.total) + '</td></tr>';
+      });
+      html += '</table>';
+    }
+    if (c.margin && c.margin.length) {
+      var mlast = c.margin[c.margin.length - 1], mfirst = c.margin[0];
+      var mTrend = (mlast.marginBal != null && mfirst.marginBal != null) ? (mlast.marginBal - mfirst.marginBal) : null;
+      html += '<div class="dim" style="margin:12px 0 6px">融資融券（張）：</div>' +
+        '<div class="techgrid"><div class="tk"><span>融資餘額</span><b>' + (mlast.marginBal != null ? Number(mlast.marginBal).toLocaleString() : '-') +
+        (mTrend != null ? '（近期 ' + (mTrend >= 0 ? '+' : '') + Number(mTrend).toLocaleString() + '）' : '') + '</b></div>' +
+        '<div class="tk"><span>融券餘額</span><b>' + (mlast.shortBal != null ? Number(mlast.shortBal).toLocaleString() : '-') + '</b></div></div>';
+    }
+    html += '<div class="dim" style="margin-top:6px">外資/投信「連續買超」通常偏多；融資大增有時是散戶追高訊號。資料：FinMind，每日更新。</div>';
+    box.innerHTML = html || '<div class="dim">查無籌碼資料</div>';
   }
 
   global.StockChart = { init: init };

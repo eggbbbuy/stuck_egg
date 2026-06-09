@@ -110,10 +110,12 @@ def build_frame(rows):
     closes = [r["close"] for r in rows]
     dif, dea, hist = macd(closes)
     bmid, bup, blo = boll(closes)
+    kk, dd = kd(rows)
     return {
         "ohlc": rows,
         "ma": {n: line(times, sma(closes, n)) for n in (5, 10, 20, 60)},
         "boll": {"mid": line(times, bmid), "up": line(times, bup), "lo": line(times, blo)},
+        "kd": {"k": line(times, kk), "d": line(times, dd)},
         "macd": {
             "dif": line(times, dif), "dea": line(times, dea),
             "hist": [{"time": times[i], "value": hist[i],
@@ -149,13 +151,24 @@ def main():
     if r14[last] and r14[last] > 50: score += 1
     signal = "偏多" if score >= 4 else ("偏空" if score <= 2 else "中性")
 
+    # 最大單日漲幅日（自動催化時間軸用）— 近一年
+    moves = []
+    recent = drows[-250:] if len(drows) > 250 else drows
+    for i in range(1, len(recent)):
+        pc = recent[i - 1]["close"]
+        if pc:
+            moves.append({"time": recent[i]["time"], "close": recent[i]["close"],
+                          "pct": round((recent[i]["close"] / pc - 1) * 100, 1)})
+    top_moves = sorted(moves, key=lambda m: -m["pct"])[:6]
+    top_moves.sort(key=lambda m: m["time"])
+
     latest = close
     prev = dcloses[-2] if len(dcloses) > 1 else close
     out = {
         "code": code, "suffix": used_suf,
         "latest": latest, "prevClose": prev, "chg": round(latest - prev, 2),
         "chgPct": round((latest / prev - 1) * 100, 2), "asof": drows[-1]["time"],
-        "frames": frames,
+        "frames": frames, "topMoves": top_moves,
         "tech": {
             "close": close, "ma5": ma[5], "ma10": ma[10], "ma20": ma[20], "ma60": ma[60],
             "rsi14": r14[last], "k": kk[last], "d": dd[last],

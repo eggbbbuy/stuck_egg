@@ -44,8 +44,24 @@
 
   <div class="note">
     要新增一檔：跟我（小助理）說股號，我會建一頁 <b>股號.html</b>，內含即時圖表、族群同類股、急漲催化事件時間軸、多空與買進框架。<br>
-    📌 所有內容為資訊整理，非投資顧問建議、非買賣推薦，盈虧自負。
+    📌 股價/月線為前一交易日收盤（每日自動更新），非即時。所有內容為資訊整理，非投資顧問建議、非買賣推薦，盈虧自負。
   </div>
 </div>
+<script>
+  document.querySelectorAll('a.item').forEach(function (a) {
+    var m = (a.getAttribute('href') || '').match(/(\d+)\.html/);
+    if (!m) return;
+    fetch('./' + m[1] + '_tech.json').then(function (r) { return r.json(); }).then(function (d) {
+      var up = d.chgPct >= 0, t = d.tech || {};
+      var arr = a.querySelector('.arr'); if (!arr) return;
+      arr.style.textAlign = 'right';
+      arr.style.minWidth = '108px';
+      arr.innerHTML =
+        '<div><b style="color:#fff">' + Number(d.latest).toLocaleString() + '</b> ' +
+        '<span style="color:' + (up ? '#26a69a' : '#ef5350') + '">' + (up ? '+' : '') + d.chgPct + '%</span></div>' +
+        (t.ma20 ? '<div style="color:#9aa4b2;font-size:.72rem">月線 ' + Number(t.ma20).toLocaleString() + '</div>' : '');
+    }).catch(function () {});
+  });
+</script>
 </body>
 </html>

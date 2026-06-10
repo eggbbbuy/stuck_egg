@@ -1,0 +1,40 @@
+name: intraday-quotes
+
+on:
+  schedule:
+    # 台股盤中 09:00–13:50（= UTC 01:00–05:50）每 10 分鐘更新即時報價
+    # 註：GitHub 排程不保證準時，實際可能延遲數分鐘
+    - cron: '*/10 1-5 * * 1-5'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: stuck-egg-quotes
+  cancel-in-progress: false
+
+jobs:
+  quote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install deps
+        run: pip install --quiet curl_cffi
+      - name: Fetch live quotes
+        run: python gen_quote.py
+      - name: Commit & push if changed
+        run: |
+          git config user.name "stuck_egg-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -- quotes.json
+          if git diff --staged --quiet; then
+            echo "no changes"
+          else
+            git commit -m "intraday: 盤中報價 $(date -u +%H:%M)Z"
+            git pull --rebase --autostash || true
+            git push
+          fi

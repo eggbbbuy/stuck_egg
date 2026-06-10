@@ -64,7 +64,7 @@
   function renderChart(d) {
     var up = d.chgPct >= 0;
     if (el('qPrice')) el('qPrice').textContent = Number(d.latest).toLocaleString();
-    if (el('qChg')) { var c = el('qChg'); c.textContent = (up ? '▲ +' : '▼ ') + d.chg + ' (' + (up ? '+' : '') + d.chgPct + '%)'; c.style.color = up ? '#26a69a' : '#ef5350'; }
+    if (el('qChg')) { var c = el('qChg'); c.textContent = (up ? '▲ +' : '▼ ') + d.chg + ' (' + (up ? '+' : '') + d.chgPct + '%)'; c.style.color = up ? '#ef5350' : '#26a69a'; }
     if (el('qAsof')) el('qAsof').textContent = '收盤 ' + d.asof + '（非即時）';
     if (el('techSummary')) el('techSummary').innerHTML = techHtml(d.tech);
 
@@ -76,7 +76,7 @@
       rightPriceScale: { borderColor: '#252b38' }, timeScale: { borderColor: '#252b38' }, crosshair: { mode: 0 },
     };
     var main = LC.createChart(el('chart'), common);
-    var candle = main.addCandlestickSeries({ upColor: '#26a69a', downColor: '#ef5350', borderUpColor: '#26a69a', borderDownColor: '#ef5350', wickUpColor: '#26a69a', wickDownColor: '#ef5350' });
+    var candle = main.addCandlestickSeries({ upColor: '#ef5350', downColor: '#26a69a', borderUpColor: '#ef5350', borderDownColor: '#26a69a', wickUpColor: '#ef5350', wickDownColor: '#26a69a' });
     var maSeries = MA.map(function (m) { return main.addLineSeries({ color: m.color, lineWidth: 1, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false }); });
     var bollUp = main.addLineSeries({ color: '#b39ddb', lineWidth: 1, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false, visible: false });
     var bollMid = main.addLineSeries({ color: '#9aa4b2', lineWidth: 1, lineStyle: 2, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false, visible: false });
@@ -108,7 +108,8 @@
       candle.setData(f.ohlc);
       maSeries.forEach(function (s, i) { s.setData(f.ma[MA[i].n] || []); });
       bollUp.setData(f.boll.up); bollMid.setData(f.boll.mid); bollLo.setData(f.boll.lo);
-      histS.setData(f.macd.hist); difS.setData(f.macd.dif); deaS.setData(f.macd.dea);
+      histS.setData(f.macd.hist.map(function (h) { return { time: h.time, value: h.value, color: h.value >= 0 ? '#ef5350' : '#26a69a' }; }));
+      difS.setData(f.macd.dif); deaS.setData(f.macd.dea);
       if (kdChart && f.kd) {
         kSer.setData(f.kd.k); dSer.setData(f.kd.d);
         kdChart._ref(f.ohlc.map(function (o) { return o.time; }));
@@ -141,16 +142,16 @@
 
   function techHtml(t) {
     function cell(l, v, col) { return '<div class="tk"><span>' + l + '</span><b style="color:' + (col || '#fff') + '">' + v + '</b></div>'; }
-    var sc = t.signal === '偏多' ? '#26a69a' : (t.signal === '偏空' ? '#ef5350' : '#f5b301');
+    var sc = t.signal === '偏多' ? '#ef5350' : (t.signal === '偏空' ? '#26a69a' : '#f5b301');
     var order = (t.ma5 > t.ma20 && t.ma20 > t.ma60) ? '多頭排列' : ((t.ma5 < t.ma20 && t.ma20 < t.ma60) ? '空頭排列' : '糾結');
-    var oc = order === '多頭排列' ? '#26a69a' : (order === '空頭排列' ? '#ef5350' : '#f5b301');
+    var oc = order === '多頭排列' ? '#ef5350' : (order === '空頭排列' ? '#26a69a' : '#f5b301');
     var rc = t.rsi14 >= 70 ? '#ef5350' : (t.rsi14 <= 30 ? '#26a69a' : '#fff');
-    function bc(x) { return x >= 0 ? '#26a69a' : '#ef5350'; }
+    function bc(x) { return x >= 0 ? '#ef5350' : '#26a69a'; }
     return '<div class="techgrid">' +
       cell('綜合訊號', t.signal + '（' + t.score + '/6）', sc) +
       cell('均線排列', order, oc) +
       cell('RSI(14)', t.rsi14 + (t.rsi14 >= 70 ? '（過熱）' : (t.rsi14 <= 30 ? '（超賣）' : '')), rc) +
-      cell('KD', 'K ' + t.k + ' / D ' + t.d, t.k > t.d ? '#26a69a' : '#ef5350') +
+      cell('KD', 'K ' + t.k + ' / D ' + t.d, t.k > t.d ? '#ef5350' : '#26a69a') +
       cell('MACD柱', t.hist, bc(t.hist)) +
       cell('乖離率 10日', (t.bias10 >= 0 ? '+' : '') + t.bias10 + '%', bc(t.bias10)) +
       cell('乖離率 20日', (t.bias20 >= 0 ? '+' : '') + t.bias20 + '%', bc(t.bias20)) +
@@ -166,7 +167,7 @@
       var mr = d.monthRevenue.slice(-12);
       html += '<div class="dim" style="margin-bottom:6px">月營收（億元）與年增率 — 近 ' + mr.length + ' 月：</div><table class="ftab"><tr><th>月份</th><th style="text-align:right">營收</th><th style="text-align:right">年增(YoY)</th><th style="text-align:right">月增(MoM)</th></tr>';
       mr.slice().reverse().forEach(function (r) {
-        function pc(v) { return v == null ? '-' : '<span style="color:' + (v >= 0 ? '#26a69a' : '#ef5350') + '">' + (v >= 0 ? '+' : '') + v + '%</span>'; }
+        function pc(v) { return v == null ? '-' : '<span style="color:' + (v >= 0 ? '#ef5350' : '#26a69a') + '">' + (v >= 0 ? '+' : '') + v + '%</span>'; }
         html += '<tr><td>' + r.ym + '</td><td style="text-align:right">' + r.rev + '</td><td style="text-align:right">' + pc(r.yoy) + '</td><td style="text-align:right">' + pc(r.mom) + '</td></tr>';
       });
       html += '</table>';
@@ -188,7 +189,7 @@
     if (!tm.length) { box.innerHTML = '<div class="dim">資料不足</div>'; return; }
     var html = '<div class="dim" style="margin-bottom:8px">近一年「最大單日漲幅」日（硬數據，可對照當天新聞找催化）：</div><table class="ftab"><tr><th>日期</th><th style="text-align:right">收盤</th><th style="text-align:right">單日</th></tr>';
     tm.slice().reverse().forEach(function (m) {
-      var col = m.pct >= 0 ? '#26a69a' : '#ef5350';
+      var col = m.pct >= 0 ? '#ef5350' : '#26a69a';
       html += '<tr><td>' + m.time + '</td><td style="text-align:right">' + m.close + '</td><td style="text-align:right;color:' + col + '">' + (m.pct >= 0 ? '+' : '') + m.pct + '%</td></tr>';
     });
     html += '</table><div class="dim" style="margin-top:6px">⚠️ 這是「股價自己跳最多的日子」，多半對應法說/題材/族群消息。想知道某一天發生什麼，把日期給小助理，我幫你查當天新聞。</div>';
@@ -240,7 +241,7 @@
     var box = el('chip'); if (!box) return;
     var html = '';
     if (c.inst5) {
-      function nb(v) { return '<b style="color:' + (v >= 0 ? '#26a69a' : '#ef5350') + '">' + (v >= 0 ? '+' : '') + Number(v).toLocaleString() + '</b>'; }
+      function nb(v) { return '<b style="color:' + (v >= 0 ? '#ef5350' : '#26a69a') + '">' + (v >= 0 ? '+' : '') + Number(v).toLocaleString() + '</b>'; }
       html += '<div class="techgrid">' +
         '<div class="tk"><span>外資 近5日</span>' + nb(c.inst5.foreign || 0) + ' 張</div>' +
         '<div class="tk"><span>投信 近5日</span>' + nb(c.inst5.trust || 0) + ' 張</div>' +
@@ -251,7 +252,7 @@
     if (c.institutional && c.institutional.length) {
       html += '<div class="dim" style="margin:12px 0 6px">三大法人買賣超（張，正=買超）：</div><table class="ftab"><tr><th>日期</th><th style="text-align:right">外資</th><th style="text-align:right">投信</th><th style="text-align:right">自營</th><th style="text-align:right">合計</th></tr>';
       c.institutional.slice(-6).reverse().forEach(function (r) {
-        function cc(v) { return '<span style="color:' + (v >= 0 ? '#26a69a' : '#ef5350') + '">' + (v >= 0 ? '+' : '') + Number(v).toLocaleString() + '</span>'; }
+        function cc(v) { return '<span style="color:' + (v >= 0 ? '#ef5350' : '#26a69a') + '">' + (v >= 0 ? '+' : '') + Number(v).toLocaleString() + '</span>'; }
         html += '<tr><td>' + r.date + '</td><td style="text-align:right">' + cc(r.foreign) + '</td><td style="text-align:right">' + cc(r.trust) + '</td><td style="text-align:right">' + cc(r.dealer) + '</td><td style="text-align:right">' + cc(r.total) + '</td></tr>';
       });
       html += '</table>';

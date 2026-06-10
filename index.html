@@ -74,7 +74,7 @@
         arr.style.minWidth = '108px';
         arr.innerHTML =
           '<div><b style="color:#fff">' + Number(price).toLocaleString() + '</b> ' +
-          '<span style="color:' + (up ? '#26a69a' : '#ef5350') + '">' + (up ? '+' : '') + pct + '%</span></div>' +
+          '<span style="color:' + (up ? '#ef5350' : '#26a69a') + '">' + (up ? '+' : '') + pct + '%</span></div>' +
           (t.ma20 ? '<div style="color:#9aa4b2;font-size:.72rem">月線 ' + Number(t.ma20).toLocaleString() + '</div>' : '');
       }).catch(function () {});
     });

@@ -119,7 +119,7 @@ def build_frame(rows):
         "macd": {
             "dif": line(times, dif), "dea": line(times, dea),
             "hist": [{"time": times[i], "value": hist[i],
-                      "color": "#26a69a" if hist[i] >= 0 else "#ef5350"} for i in range(len(times))],
+                      "color": "#ef5350" if hist[i] >= 0 else "#26a69a"} for i in range(len(times))],
         },
     }
 

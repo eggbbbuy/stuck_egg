@@ -50,7 +50,7 @@
 </div>
 <script>
   // 先抓盤中即時報價（quotes.json），抓不到再退回各股 tech.json 的收盤
-  fetch('./quotes.json').then(function (r) { return r.json(); })
+  fetch('./quotes.json?t=' + Date.now()).then(function (r) { return r.json(); })
     .then(function (q) { render(q.quotes || {}, q.asof, q.tz); })
     .catch(function () { render({}, null, null); });
 

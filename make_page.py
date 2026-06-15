@@ -152,8 +152,9 @@ TEMPLATE = """<!DOCTYPE html>
 def main():
     for code, name, sub in STOCKS:
         group = "被動元件" if "被動" in sub else "AI PC 概念股"
-        html = (TEMPLATE.replace("{CODE}", code).replace("{NAME}", name)
-                .replace("{SUB}", sub).replace("{GROUP}", group).replace("{NAV}", NAV))
+        # 模板是 .format 風格(CSS/JS 字面括號用 {{}}、佔位符用 {CODE});務必用 format,
+        # 用 .replace 會留下 {{ 變成非法 CSS → 整頁變白底(深色主題失效)
+        html = TEMPLATE.format(CODE=code, NAME=name, SUB=sub, GROUP=group, NAV=NAV)
         with open(f"{code}.html", "w", encoding="utf-8") as f:
             f.write(html)
         print("wrote", code + ".html", name)

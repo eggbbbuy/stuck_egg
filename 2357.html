@@ -5,40 +5,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>2357 華碩 股票分析 | stuck_egg</title>
 <style>
-  :root{{ --bg:#0e1117; --card:#171c26; --line:#252b38; --txt:#e6e9ef; --sub:#9aa4b2;
-         --up:#ef5350; --down:#26a69a; --accent:#f5b301; }}
-  *{{box-sizing:border-box}}
-  body{{margin:0;background:var(--bg);color:var(--txt);
-       font-family:-apple-system,"Noto Sans TC","Microsoft JhengHei",Segoe UI,Roboto,sans-serif;line-height:1.7;}}
-  .wrap{{max-width:880px;margin:0 auto;padding:18px 16px 60px;}}
-  a.back{{color:var(--sub);font-size:.85rem;text-decoration:none}}
-  h1{{font-size:1.5rem;margin:.2em 0 .1em}}
-  h2{{font-size:1.15rem;margin:1.7em 0 .5em;border-left:4px solid var(--accent);padding-left:10px}}
-  .sub{{color:var(--sub);font-size:.9rem;margin-bottom:14px}}
-  .card{{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:12px 0;}}
-  .tv{{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:12px 0}}
-  .kpi{{display:flex;justify-content:space-between;border-bottom:1px dashed var(--line);padding:7px 0}}
-  .kpi:last-child{{border-bottom:0}}.kpi b{{color:#fff}}
-  .dim{{color:var(--sub);font-size:.82rem}}a{{color:#6cb2ff}}
-  .warn{{background:rgba(245,179,1,.12);border:1px solid var(--accent);color:#f7c948}}
-  .tag{{display:inline-block;font-size:.78rem;padding:2px 9px;border-radius:999px;margin:2px 4px 2px 0}}
-  .bull{{background:rgba(38,166,154,.15);color:var(--up);border:1px solid var(--up)}}
-  .bear{{background:rgba(239,83,80,.15);color:var(--down);border:1px solid var(--down)}}
-  ul{{margin:.3em 0 .3em 1.1em;padding:0}}li{{margin:.35em 0}}
-  .disc{{font-size:.8rem;color:var(--sub);border-top:1px solid var(--line);margin-top:26px;padding-top:14px}}
-  .nav{{display:flex;flex-wrap:wrap;gap:6px}}
-  .nav a{{background:#171c26;border:1px solid #252b38;border-radius:8px;padding:4px 10px;font-size:.82rem;text-decoration:none}}
-  .tfbar{{display:flex;gap:6px;margin:4px 0 8px}}
-  .tfbtn{{background:#171c26;border:1px solid #252b38;color:#9aa4b2;border-radius:8px;padding:5px 16px;font-size:.9rem;cursor:pointer}}
-  .tfbtn.active{{background:#f5b301;color:#0e1117;border-color:#f5b301;font-weight:700}}
-  .malegend{{display:flex;gap:14px;flex-wrap:wrap;font-size:.78rem;color:#9aa4b2;margin-bottom:6px}}
-  .malegend i{{display:inline-block;width:14px;height:3px;vertical-align:middle;margin-right:4px;border-radius:2px}}
-  .techgrid{{display:grid;grid-template-columns:1fr 1fr;gap:6px 18px}}
-  @media(max-width:620px){{.techgrid{{grid-template-columns:1fr}}}}
-  .tk{{display:flex;justify-content:space-between;border-bottom:1px dashed var(--line);padding:6px 0}}
-  .ftab{{width:100%;border-collapse:collapse;font-size:.88rem}}
-  .ftab th{{color:var(--sub);font-weight:600;padding:6px 6px;border-bottom:1px solid var(--line)}}
-  .ftab td{{padding:6px 6px;border-bottom:1px solid var(--line)}}
+  :root{ --bg:#0e1117; --card:#171c26; --line:#252b38; --txt:#e6e9ef; --sub:#9aa4b2;
+         --up:#ef5350; --down:#26a69a; --accent:#f5b301; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);
+       font-family:-apple-system,"Noto Sans TC","Microsoft JhengHei",Segoe UI,Roboto,sans-serif;line-height:1.7;}
+  .wrap{max-width:880px;margin:0 auto;padding:18px 16px 60px;}
+  a.back{color:var(--sub);font-size:.85rem;text-decoration:none}
+  h1{font-size:1.5rem;margin:.2em 0 .1em}
+  h2{font-size:1.15rem;margin:1.7em 0 .5em;border-left:4px solid var(--accent);padding-left:10px}
+  .sub{color:var(--sub);font-size:.9rem;margin-bottom:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:12px 0;}
+  .tv{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:12px 0}
+  .kpi{display:flex;justify-content:space-between;border-bottom:1px dashed var(--line);padding:7px 0}
+  .kpi:last-child{border-bottom:0}.kpi b{color:#fff}
+  .dim{color:var(--sub);font-size:.82rem}a{color:#6cb2ff}
+  .warn{background:rgba(245,179,1,.12);border:1px solid var(--accent);color:#f7c948}
+  .tag{display:inline-block;font-size:.78rem;padding:2px 9px;border-radius:999px;margin:2px 4px 2px 0}
+  .bull{background:rgba(38,166,154,.15);color:var(--up);border:1px solid var(--up)}
+  .bear{background:rgba(239,83,80,.15);color:var(--down);border:1px solid var(--down)}
+  ul{margin:.3em 0 .3em 1.1em;padding:0}li{margin:.35em 0}
+  .disc{font-size:.8rem;color:var(--sub);border-top:1px solid var(--line);margin-top:26px;padding-top:14px}
+  .nav{display:flex;flex-wrap:wrap;gap:6px}
+  .nav a{background:#171c26;border:1px solid #252b38;border-radius:8px;padding:4px 10px;font-size:.82rem;text-decoration:none}
+  .tfbar{display:flex;gap:6px;margin:4px 0 8px}
+  .tfbtn{background:#171c26;border:1px solid #252b38;color:#9aa4b2;border-radius:8px;padding:5px 16px;font-size:.9rem;cursor:pointer}
+  .tfbtn.active{background:#f5b301;color:#0e1117;border-color:#f5b301;font-weight:700}
+  .malegend{display:flex;gap:14px;flex-wrap:wrap;font-size:.78rem;color:#9aa4b2;margin-bottom:6px}
+  .malegend i{display:inline-block;width:14px;height:3px;vertical-align:middle;margin-right:4px;border-radius:2px}
+  .techgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px 18px}
+  @media(max-width:620px){.techgrid{grid-template-columns:1fr}}
+  .tk{display:flex;justify-content:space-between;border-bottom:1px dashed var(--line);padding:6px 0}
+  .ftab{width:100%;border-collapse:collapse;font-size:.88rem}
+  .ftab th{color:var(--sub);font-weight:600;padding:6px 6px;border-bottom:1px solid var(--line)}
+  .ftab td{padding:6px 6px;border-bottom:1px solid var(--line)}
 </style>
 </head>
 <body>

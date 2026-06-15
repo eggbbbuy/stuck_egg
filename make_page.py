@@ -77,7 +77,7 @@ TEMPLATE = """<!DOCTYPE html>
 <div class="wrap">
   <a class="back" href="./">← 回首頁</a>
   <h1>{CODE} {NAME} — 股票分析</h1>
-  <div class="sub">{SUB}　|　AI PC 概念股</div>
+  <div class="sub">{SUB}　|　{GROUP}</div>
 
   <div class="card" style="display:flex;justify-content:space-between;align-items:baseline">
     <div><b style="font-size:1.7rem" id="qPrice">—</b> <span id="qChg" class="dim"></span></div>
@@ -151,8 +151,9 @@ TEMPLATE = """<!DOCTYPE html>
 
 def main():
     for code, name, sub in STOCKS:
+        group = "被動元件" if "被動" in sub else "AI PC 概念股"
         html = (TEMPLATE.replace("{CODE}", code).replace("{NAME}", name)
-                .replace("{SUB}", sub).replace("{NAV}", NAV))
+                .replace("{SUB}", sub).replace("{GROUP}", group).replace("{NAV}", NAV))
         with open(f"{code}.html", "w", encoding="utf-8") as f:
             f.write(html)
         print("wrote", code + ".html", name)

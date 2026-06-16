@@ -58,6 +58,20 @@
         '<div class="dim" style="display:flex;justify-content:space-between;margin-top:2px"><span>便宜</span><span>↑ 現在 PE ' + v.pe + '</span><span>貴</span></div>';
     }
     html += '<div class="dim" style="margin-top:8px">判讀：PE 位階越低（靠左綠）相對越便宜、越高（靠右紅）相對越貴；搭配 PEG（&lt;1 通常合理）。<b style="color:#f5b301">⚠️ 但景氣循環股（記憶體/HDD…）獲利在高峰時 PE 會假性偏低，低 PE 反而要小心循環反轉。</b></div>';
+    html += '<details style="margin-top:10px;border:1px solid var(--line);border-radius:8px;overflow:hidden">'
+      + '<summary style="cursor:pointer;padding:10px 12px;font-size:.86rem;color:#6cb2ff">📖 PEG 是什麼？貴的股票貴得有沒有道理？（點開看生活例子）</summary>'
+      + '<div style="padding:2px 12px 12px;font-size:.85rem;color:var(--txt);line-height:1.8">'
+      + '<b>PEG ＝ 本益比 ÷ 盈餘成長率</b>，用來判斷「貴的股票，貴得有沒有道理」。<br><br>'
+      + '🍎 <b>水果攤例子</b>（買「每年賺 1 元」的權利）：<br>'
+      + '・A 攤（AI 股）：本益比 50（很貴），但獲利每年成長 50% → PEG＝50÷50＝<b>1</b><br>'
+      + '・B 攤（傳產）：本益比 10（便宜），但獲利幾乎不成長(5%) → PEG＝10÷5＝<b>2</b><br>'
+      + '→ A 雖然本益比貴，但成長快，PEG 反而比 B 低、其實更划算。<br><br>'
+      + '<b>判讀：</b><br>'
+      + '・<b style="color:var(--down)">PEG &lt; 1</b>：股價可能被低估（成長配得上高股價）<br>'
+      + '・<b style="color:var(--up)">PEG &gt; 2</b>：股價可能太貴（成長跟不上，留意泡沫風險）<br><br>'
+      + '<b>為什麼科技股要看 PEG：</b>AI 股本益比動輒 40~60 倍，只看本益比永遠買不下手；但若它明年獲利預計成長 60%，60÷60＝1，估值其實合理——投資人買的是「未來的成長」。<br><br>'
+      + '<b style="color:var(--accent)">⚠️ 提醒：</b>成長率要用「市場預期的<b>未來</b> 1~3 年」（法人 EPS 預估），不要用「過去」的成長率——用過去算，AI 股往往早就噴完了。'
+      + '</div></details>';
     box.innerHTML = html;
   }
 

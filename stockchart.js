@@ -7,14 +7,28 @@
     { n: 20, color: '#ff8a65' }, { n: 60, color: '#6cb2ff' },
   ];
   var FRAMES = [['D', '日K'], ['W', '週K'], ['M', '月K']];
+  var QUOTES = null, QASOF = '';   // 即時報價(跟首頁同一份 quotes.json,每2分更新)
 
   function el(id) { return document.getElementById(id); }
+
+  // 報價顯示:優先用即時 quotes.json(跟首頁一致),沒有才退回日K收盤
+  function applyPrice(d) {
+    var q = QUOTES && QUOTES[d.code];
+    var price = q ? q.price : d.latest, chg = q ? q.chg : d.chg, pct = q ? q.chgPct : d.chgPct;
+    var up = pct >= 0;
+    if (el('qPrice')) el('qPrice').textContent = Number(price).toLocaleString();
+    if (el('qChg')) { var c = el('qChg'); c.textContent = (up ? '▲ +' : '▼ ') + chg + ' (' + (up ? '+' : '') + pct + '%)'; c.style.color = up ? '#ef5350' : '#26a69a'; }
+    if (el('qAsof')) el('qAsof').textContent = q ? ('報價 ' + QASOF + '（盤中約每2分更新）') : ('收盤 ' + d.asof + '（非即時）');
+  }
 
   function init(code) {
     var store = {};
     function tryVerdict() {
       if (store.tech && store.fund && store.val) renderVerdict(store.tech, store.fund, store.val);
     }
+    fetch('./quotes.json?t=' + Date.now()).then(function (r) { return r.json(); })
+      .then(function (q) { QUOTES = q.quotes || {}; QASOF = q.asof || ''; if (store.tech) applyPrice(store.tech); })
+      .catch(function () {});
     fetch('./' + code + '_tech.json').then(function (r) { return r.json(); })
       .then(function (d) { store.tech = d; renderChart(d); renderTimeline(d); tryVerdict(); }).catch(function (e) {
         if (el('chart')) el('chart').innerHTML = '<div style="padding:24px;color:#9aa4b2">圖表載入失敗：' + e + '</div>';
@@ -76,10 +90,7 @@
   }
 
   function renderChart(d) {
-    var up = d.chgPct >= 0;
-    if (el('qPrice')) el('qPrice').textContent = Number(d.latest).toLocaleString();
-    if (el('qChg')) { var c = el('qChg'); c.textContent = (up ? '▲ +' : '▼ ') + d.chg + ' (' + (up ? '+' : '') + d.chgPct + '%)'; c.style.color = up ? '#ef5350' : '#26a69a'; }
-    if (el('qAsof')) el('qAsof').textContent = '收盤 ' + d.asof + '（非即時）';
+    applyPrice(d);
     if (el('techSummary')) el('techSummary').innerHTML = techHtml(d.tech);
 
     var LC = global.LightweightCharts;

@@ -30,6 +30,11 @@ STOCKS = [
     ("2314", "台揚", "衛星地面站 / 天線設備"),
     ("6285", "啟碁", "衛星終端 / 相位陣列天線"),
     ("6274", "台燿", "高頻 PTFE 基板（衛星 / RF）"),
+    # 功率 / 離散元件
+    ("2481", "強茂", "功率二極體 / MOSFET（IDM・Nexperia 轉單）"),
+    ("5425", "台半", "功率二極體 / 整流器（離散元件）"),
+    ("4960", "德微", "二極體 / MOSFET 功率元件"),
+    ("8255", "朋程", "車用整流二極體（功率元件）"),
 ]
 
 NAV = "".join(
@@ -160,6 +165,9 @@ def main():
         if "被動" in sub:
             group = "被動元件"
             theme = "被動元件漲價循環 + AI 伺服器/終端需求"
+        elif any(k in sub for k in ("功率", "離散", "二極體", "MOSFET", "整流")):
+            group = "功率/離散元件"
+            theme = "功率元件漲價 + Nexperia 轉單/China+1 + AI 伺服器"
         elif any(k in sub for k in ("衛星", "SpaceX", "Starlink", "波導", "化合物半導體", "天線", "CPE")):
             group = "SpaceX 概念"
             theme = "低軌衛星放量 + SpaceX IPO 題材"

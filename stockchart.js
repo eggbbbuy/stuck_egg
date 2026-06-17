@@ -91,6 +91,19 @@
     };
     var main = LC.createChart(el('chart'), common);
     var candle = main.addCandlestickSeries({ upColor: '#ef5350', downColor: '#26a69a', borderUpColor: '#ef5350', borderDownColor: '#26a69a', wickUpColor: '#ef5350', wickDownColor: '#26a69a' });
+    // 事件標記(除息/財報/月營收) — 只在日K顯示
+    var eventMarkers = [], curFrame = 'D';
+    fetch('./' + d.code + '_events.json').then(function (r) { return r.json(); }).then(function (e) {
+      eventMarkers = (e.markers || []).map(function (m) {
+        return {
+          time: m.time,
+          position: m.type === 'div' ? 'belowBar' : 'aboveBar',
+          color: m.type === 'div' ? '#ef5350' : (m.type === 'rpt' ? '#f5b301' : '#6cb2ff'),
+          shape: 'circle', text: m.label || ''
+        };
+      });
+      if (curFrame === 'D') candle.setMarkers(eventMarkers);
+    }).catch(function () {});
     var maSeries = MA.map(function (m) { return main.addLineSeries({ color: m.color, lineWidth: 1, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false }); });
     var bollUp = main.addLineSeries({ color: '#b39ddb', lineWidth: 1, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false, visible: false });
     var bollMid = main.addLineSeries({ color: '#9aa4b2', lineWidth: 1, lineStyle: 2, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false, visible: false });
@@ -118,8 +131,10 @@
     charts.forEach(function (a) { charts.forEach(function (b) { if (a !== b) sync(a, b); }); });
 
     function load(fk) {
+      curFrame = fk;
       var f = d.frames[fk];
       candle.setData(f.ohlc);
+      candle.setMarkers(fk === 'D' ? eventMarkers : []);
       maSeries.forEach(function (s, i) { s.setData(f.ma[MA[i].n] || []); });
       bollUp.setData(f.boll.up); bollMid.setData(f.boll.mid); bollLo.setData(f.boll.lo);
       histS.setData(f.macd.hist.map(function (h) { return { time: h.time, value: h.value, color: h.value >= 0 ? '#ef5350' : '#26a69a' }; }));

@@ -60,6 +60,8 @@ STOCKS = [
     ("2308", "台達電", "工業自動化 / 伺服馬達（機器人）"),
     ("8374", "羅昇", "自動化系統整合（機器人）"),
     ("4585", "達明", "協作型機器人（純度最高）"),
+    # 半導體設備 / 廠務
+    ("6667", "信紘科", "半導體廠務工程 / 特殊氣體化學品供應系統"),
 ]
 
 NAV = "".join(
@@ -199,6 +201,9 @@ def main():
         elif any(k in sub for k in ("機器人", "機器視覺", "Optimus", "減速機", "諧波", "滑軌", "致動")):
             group = "機器人 / Optimus 概念"
             theme = "Tesla Optimus 人形機器人供應鏈（精密傳動 / 機器視覺 / 自動化）"
+        elif any(k in sub for k in ("廠務", "特殊氣體", "化學品供應")):
+            group = "半導體設備 / 廠務"
+            theme = "半導體廠務工程 + 晶圓廠擴產 capex"
         else:
             group = "AI PC 概念股"
             theme = "AI PC 換機潮（NVIDIA RTX Spark / N1X 帶動）"

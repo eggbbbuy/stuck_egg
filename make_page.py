@@ -67,6 +67,16 @@ STOCKS = [
     ("3653", "健策", "均熱片 / 散熱基板（散熱）"),
     ("8996", "高力", "液冷板 / 熱交換器（AI 伺服器液冷）"),
     ("2421", "建準", "DC 散熱風扇 / 液冷"),
+    # 記憶體（與 NVIDIA 有合作者排前）
+    ("6531", "愛普", "客製化高頻寬記憶體 / HBM（切入 NVIDIA·AMD AI 晶片）"),
+    ("2344", "華邦電", "DRAM / NOR Flash 記憶體（NOR 傳切入 NVIDIA 鏈）"),
+    ("5289", "宜鼎", "工控 / 邊緣 AI 記憶體儲存（NVIDIA 夥伴生態）"),
+    ("2408", "南亞科", "DRAM 記憶體廠（DDR5 / HBM 自研）"),
+    ("2337", "旺宏", "NOR / NAND Flash 記憶體（IDM）"),
+    ("3260", "威剛", "DRAM / SSD 記憶體模組"),
+    ("4967", "十銓", "DRAM / SSD 記憶體模組"),
+    ("2451", "創見", "DRAM / 工控記憶體模組"),
+    ("5351", "鈺創", "利基型 DRAM 記憶體"),
 ]
 
 NAV = "".join(
@@ -212,6 +222,9 @@ def main():
         elif any(k in sub for k in ("散熱", "液冷", "均熱", "熱導管", "熱交換", "散熱風扇")):
             group = "散熱元件"
             theme = "AI 伺服器 / AI PC 散熱升級（VC 均熱片 → 液冷）"
+        elif any(k in sub for k in ("記憶體", "DRAM", "Flash", "HBM", "NAND", "儲存")):
+            group = "記憶體"
+            theme = "記憶體超級循環（AI HBM/DDR5 + NVIDIA 供應鏈）"
         else:
             group = "AI PC 概念股"
             theme = "AI PC 換機潮（NVIDIA RTX Spark / N1X 帶動）"

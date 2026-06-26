@@ -10,6 +10,16 @@
   .wrap{max-width:680px;margin:0 auto;padding:28px 18px 60px}
   h1{font-size:1.6rem;margin:.2em 0}
   .sub{color:#9aa4b2;margin-bottom:18px}
+  details.grp{border:1px solid #252b38;border-radius:12px;margin:10px 0;background:#12161f}
+  details.grp>summary{list-style:none;cursor:pointer;padding:14px 16px;font-weight:600;
+       color:#e6e9ef;display:flex;justify-content:space-between;align-items:center;user-select:none}
+  details.grp>summary::-webkit-details-marker{display:none}
+  details.grp>summary::after{content:"▸";color:#9aa4b2;transition:transform .15s ease;margin-left:10px}
+  details.grp[open]>summary::after{transform:rotate(90deg)}
+  details.grp>summary:hover{color:#f5b301}
+  details.grp[open]>summary{border-bottom:1px solid #252b38}
+  .gcount{color:#9aa4b2;font-weight:400;font-size:.82rem;margin-left:8px}
+  .inner{padding:2px 12px 10px}
   a.item{display:flex;justify-content:space-between;align-items:center;background:#171c26;
          border:1px solid #252b38;border-radius:12px;padding:14px 16px;margin:10px 0;
          text-decoration:none;color:#e6e9ef}
@@ -22,84 +32,117 @@
 <body>
 <div class="wrap">
   <h1>🥚 stuck_egg</h1>
-  <div class="sub">個股分析頁集合。網址規則：<b>stuck_egg/股號.html</b></div>
+  <div class="sub">個股分析頁集合，點群組展開。網址規則：<b>stuck_egg/股號.html</b></div>
 
-  <a class="item" href="./3081.html"><span><span class="code">3081</span>　聯亞（AI 光通訊 / 雷射磊晶）</span><span class="arr">看分析 →</span></a>
-  <a class="item" href="./4938.html"><span><span class="code">4938</span>　和碩（電子代工 / AI 伺服器）</span><span class="arr">看分析 →</span></a>
-  <a class="item" href="./8299.html"><span><span class="code">8299</span>　群聯（NAND 控制IC / SSD 儲存）</span><span class="arr">看分析 →</span></a>
-  <a class="item" href="./3060.html"><span><span class="code">3060</span>　銘異（HDD 機械硬碟供應鏈 / VCM）</span><span class="arr">看分析 →</span></a>
+  <details class="grp">
+    <summary><span>⭐ 精選個股 <span class="gcount">4 檔</span></span></summary>
+    <div class="inner">
+      <a class="item" href="./3081.html"><span><span class="code">3081</span>　聯亞（AI 光通訊 / 雷射磊晶）</span><span class="arr">→</span></a>
+      <a class="item" href="./4938.html"><span><span class="code">4938</span>　和碩（電子代工 / AI 伺服器）</span><span class="arr">→</span></a>
+      <a class="item" href="./8299.html"><span><span class="code">8299</span>　群聯（NAND 控制IC / SSD 儲存）</span><span class="arr">→</span></a>
+      <a class="item" href="./3060.html"><span><span class="code">3060</span>　銘異（HDD 機械硬碟供應鏈 / VCM）</span><span class="arr">→</span></a>
+    </div>
+  </details>
 
-  <div style="color:#9aa4b2;font-size:.85rem;margin:18px 0 6px;border-top:1px solid #252b38;padding-top:14px">💻 AI PC 概念股</div>
-  <a class="item" href="./2357.html"><span><span class="code">2357</span>　華碩（NB/主機板品牌）</span><span class="arr">→</span></a>
-  <a class="item" href="./2353.html"><span><span class="code">2353</span>　宏碁（NB 品牌）</span><span class="arr">→</span></a>
-  <a class="item" href="./2377.html"><span><span class="code">2377</span>　微星（主機板/電競NB/伺服器）</span><span class="arr">→</span></a>
-  <a class="item" href="./2376.html"><span><span class="code">2376</span>　技嘉（主機板/AI伺服器/AI PC）</span><span class="arr">→</span></a>
-  <a class="item" href="./2382.html"><span><span class="code">2382</span>　廣達（NB/AI伺服器代工龍頭）</span><span class="arr">→</span></a>
-  <a class="item" href="./3231.html"><span><span class="code">3231</span>　緯創（NB/AI伺服器代工）</span><span class="arr">→</span></a>
-  <a class="item" href="./2324.html"><span><span class="code">2324</span>　仁寶（NB 代工）</span><span class="arr">→</span></a>
-  <a class="item" href="./3037.html"><span><span class="code">3037</span>　欣興（ABF 載板龍頭）</span><span class="arr">→</span></a>
-  <a class="item" href="./2383.html"><span><span class="code">2383</span>　台光電（高頻 CCL 龍頭）</span><span class="arr">→</span></a>
+  <details class="grp">
+    <summary><span>💻 AI PC 概念股 <span class="gcount">9 檔</span></span></summary>
+    <div class="inner">
+      <a class="item" href="./2357.html"><span><span class="code">2357</span>　華碩（NB/主機板品牌）</span><span class="arr">→</span></a>
+      <a class="item" href="./2353.html"><span><span class="code">2353</span>　宏碁（NB 品牌）</span><span class="arr">→</span></a>
+      <a class="item" href="./2377.html"><span><span class="code">2377</span>　微星（主機板/電競NB/伺服器）</span><span class="arr">→</span></a>
+      <a class="item" href="./2376.html"><span><span class="code">2376</span>　技嘉（主機板/AI伺服器/AI PC）</span><span class="arr">→</span></a>
+      <a class="item" href="./2382.html"><span><span class="code">2382</span>　廣達（NB/AI伺服器代工龍頭）</span><span class="arr">→</span></a>
+      <a class="item" href="./3231.html"><span><span class="code">3231</span>　緯創（NB/AI伺服器代工）</span><span class="arr">→</span></a>
+      <a class="item" href="./2324.html"><span><span class="code">2324</span>　仁寶（NB 代工）</span><span class="arr">→</span></a>
+      <a class="item" href="./3037.html"><span><span class="code">3037</span>　欣興（ABF 載板龍頭）</span><span class="arr">→</span></a>
+      <a class="item" href="./2383.html"><span><span class="code">2383</span>　台光電（高頻 CCL 龍頭）</span><span class="arr">→</span></a>
+    </div>
+  </details>
 
-  <div style="color:#9aa4b2;font-size:.85rem;margin:18px 0 6px;border-top:1px solid #252b38;padding-top:14px">❄️ 散熱元件（AI 伺服器/AI PC 散熱・VC→液冷）</div>
-  <a class="item" href="./3017.html"><span><span class="code">3017</span>　奇鋐（散熱龍頭・均熱片/3D VC/液冷）</span><span class="arr">→</span></a>
-  <a class="item" href="./3324.html"><span><span class="code">3324</span>　雙鴻（散熱模組/液冷）</span><span class="arr">→</span></a>
-  <a class="item" href="./6230.html"><span><span class="code">6230</span>　超眾（熱導管/均熱板）</span><span class="arr">→</span></a>
-  <a class="item" href="./3653.html"><span><span class="code">3653</span>　健策（均熱片/散熱基板）</span><span class="arr">→</span></a>
-  <a class="item" href="./8996.html"><span><span class="code">8996</span>　高力（液冷板/熱交換器）</span><span class="arr">→</span></a>
-  <a class="item" href="./2421.html"><span><span class="code">2421</span>　建準（DC散熱風扇/液冷）</span><span class="arr">→</span></a>
+  <details class="grp">
+    <summary><span>❄️ 散熱元件 <span class="gcount">6 檔・AI 伺服器/AI PC・VC→液冷</span></span></summary>
+    <div class="inner">
+      <a class="item" href="./3017.html"><span><span class="code">3017</span>　奇鋐（散熱龍頭・均熱片/3D VC/液冷）</span><span class="arr">→</span></a>
+      <a class="item" href="./3324.html"><span><span class="code">3324</span>　雙鴻（散熱模組/液冷）</span><span class="arr">→</span></a>
+      <a class="item" href="./6230.html"><span><span class="code">6230</span>　超眾（熱導管/均熱板）</span><span class="arr">→</span></a>
+      <a class="item" href="./3653.html"><span><span class="code">3653</span>　健策（均熱片/散熱基板）</span><span class="arr">→</span></a>
+      <a class="item" href="./8996.html"><span><span class="code">8996</span>　高力（液冷板/熱交換器）</span><span class="arr">→</span></a>
+      <a class="item" href="./2421.html"><span><span class="code">2421</span>　建準（DC散熱風扇/液冷）</span><span class="arr">→</span></a>
+    </div>
+  </details>
 
-  <div style="color:#9aa4b2;font-size:.85rem;margin:18px 0 6px;border-top:1px solid #252b38;padding-top:14px">🔌 被動元件</div>
-  <a class="item" href="./2327.html"><span><span class="code">2327</span>　國巨（MLCC 被動龍頭）</span><span class="arr">→</span></a>
-  <a class="item" href="./2492.html"><span><span class="code">2492</span>　華新科（MLCC・第二梯隊）</span><span class="arr">→</span></a>
-  <a class="item" href="./6173.html"><span><span class="code">6173</span>　信昌電（電容・第二梯隊）</span><span class="arr">→</span></a>
-  <a class="item" href="./2428.html"><span><span class="code">2428</span>　興勤（熱敏電阻/保護・供應鏈）</span><span class="arr">→</span></a>
-  <a class="item" href="./2472.html"><span><span class="code">2472</span>　立隆電（鋁電解電容・供應鏈）</span><span class="arr">→</span></a>
-  <a class="item" href="./6175.html"><span><span class="code">6175</span>　立敦（電容材料/化成箔・供應鏈）</span><span class="arr">→</span></a>
+  <details class="grp">
+    <summary><span>🔌 被動元件 <span class="gcount">6 檔</span></span></summary>
+    <div class="inner">
+      <a class="item" href="./2327.html"><span><span class="code">2327</span>　國巨（MLCC 被動龍頭）</span><span class="arr">→</span></a>
+      <a class="item" href="./2492.html"><span><span class="code">2492</span>　華新科（MLCC・第二梯隊）</span><span class="arr">→</span></a>
+      <a class="item" href="./6173.html"><span><span class="code">6173</span>　信昌電（電容・第二梯隊）</span><span class="arr">→</span></a>
+      <a class="item" href="./2428.html"><span><span class="code">2428</span>　興勤（熱敏電阻/保護・供應鏈）</span><span class="arr">→</span></a>
+      <a class="item" href="./2472.html"><span><span class="code">2472</span>　立隆電（鋁電解電容・供應鏈）</span><span class="arr">→</span></a>
+      <a class="item" href="./6175.html"><span><span class="code">6175</span>　立敦（電容材料/化成箔・供應鏈）</span><span class="arr">→</span></a>
+    </div>
+  </details>
 
-  <div style="color:#9aa4b2;font-size:.85rem;margin:18px 0 6px;border-top:1px solid #252b38;padding-top:14px">🛰️ SpaceX / 低軌衛星概念（確定供應鏈）</div>
-  <a class="item" href="./2313.html"><span><span class="code">2313</span>　華通（低軌衛星PCB龍頭・Starlink太空板）</span><span class="arr">→</span></a>
-  <a class="item" href="./3491.html"><span><span class="code">3491</span>　昇達科（微波/波導・衛星純度最高）</span><span class="arr">→</span></a>
-  <a class="item" href="./2314.html"><span><span class="code">2314</span>　台揚（衛星地面站/天線設備）</span><span class="arr">→</span></a>
-  <a class="item" href="./6285.html"><span><span class="code">6285</span>　啟碁（衛星終端/相位陣列天線）</span><span class="arr">→</span></a>
-  <a class="item" href="./6274.html"><span><span class="code">6274</span>　台燿（衛星天線高頻PTFE基板）</span><span class="arr">→</span></a>
+  <details class="grp">
+    <summary><span>🛰️ SpaceX / 低軌衛星概念 <span class="gcount">5 檔・確定供應鏈</span></span></summary>
+    <div class="inner">
+      <a class="item" href="./2313.html"><span><span class="code">2313</span>　華通（低軌衛星PCB龍頭・Starlink太空板）</span><span class="arr">→</span></a>
+      <a class="item" href="./3491.html"><span><span class="code">3491</span>　昇達科（微波/波導・衛星純度最高）</span><span class="arr">→</span></a>
+      <a class="item" href="./2314.html"><span><span class="code">2314</span>　台揚（衛星地面站/天線設備）</span><span class="arr">→</span></a>
+      <a class="item" href="./6285.html"><span><span class="code">6285</span>　啟碁（衛星終端/相位陣列天線）</span><span class="arr">→</span></a>
+      <a class="item" href="./6274.html"><span><span class="code">6274</span>　台燿（衛星天線高頻PTFE基板）</span><span class="arr">→</span></a>
+    </div>
+  </details>
 
-  <div style="color:#9aa4b2;font-size:.85rem;margin:18px 0 6px;border-top:1px solid #252b38;padding-top:14px">⚡ 功率半導體（IDM 漲價循環 / Fabless / 代工產能・股癌 EP672）</div>
-  <a class="item" href="./2481.html"><span><span class="code">2481</span>　強茂（功率二極體/MOSFET・IDM）</span><span class="arr">→</span></a>
-  <a class="item" href="./5425.html"><span><span class="code">5425</span>　台半（功率二極體/整流器・IDM）</span><span class="arr">→</span></a>
-  <a class="item" href="./3675.html"><span><span class="code">3675</span>　德微（二極體/MOSFET・IDM）</span><span class="arr">→</span></a>
-  <a class="item" href="./8255.html"><span><span class="code">8255</span>　朋程（車用整流二極體・IDM）</span><span class="arr">→</span></a>
-  <a class="item" href="./3317.html"><span><span class="code">3317</span>　尼克森（功率MOSFET/二極體・IDM）</span><span class="arr">→</span></a>
-  <a class="item" href="./6435.html"><span><span class="code">6435</span>　大中（MOSFET/DrMOS・AI伺服器電源）</span><span class="arr">→</span></a>
-  <a class="item" href="./8261.html"><span><span class="code">8261</span>　富鼎（MOSFET/DrMOS・Fabless）</span><span class="arr">→</span></a>
-  <a class="item" href="./5299.html"><span><span class="code">5299</span>　杰力（電源管理IC・Fabless）</span><span class="arr">→</span></a>
-  <a class="item" href="./6138.html"><span><span class="code">6138</span>　茂達（類比/電源管理IC・Fabless）</span><span class="arr">→</span></a>
-  <a class="item" href="./6719.html"><span><span class="code">6719</span>　力智（電源管理IC・Fabless）</span><span class="arr">→</span></a>
-  <a class="item" href="./3707.html"><span><span class="code">3707</span>　漢磊（功率/SiC/GaN 晶圓代工）</span><span class="arr">→</span></a>
-  <a class="item" href="./3016.html"><span><span class="code">3016</span>　嘉晶（功率磊晶片・漢磊集團）</span><span class="arr">→</span></a>
-  <a class="item" href="./5347.html"><span><span class="code">5347</span>　世界先進（8吋晶圓代工/功率/驅動IC）</span><span class="arr">→</span></a>
+  <details class="grp">
+    <summary><span>⚡ 功率半導體 <span class="gcount">13 檔・IDM/Fabless/代工・EP672</span></span></summary>
+    <div class="inner">
+      <a class="item" href="./2481.html"><span><span class="code">2481</span>　強茂（功率二極體/MOSFET・IDM）</span><span class="arr">→</span></a>
+      <a class="item" href="./5425.html"><span><span class="code">5425</span>　台半（功率二極體/整流器・IDM）</span><span class="arr">→</span></a>
+      <a class="item" href="./3675.html"><span><span class="code">3675</span>　德微（二極體/MOSFET・IDM）</span><span class="arr">→</span></a>
+      <a class="item" href="./8255.html"><span><span class="code">8255</span>　朋程（車用整流二極體・IDM）</span><span class="arr">→</span></a>
+      <a class="item" href="./3317.html"><span><span class="code">3317</span>　尼克森（功率MOSFET/二極體・IDM）</span><span class="arr">→</span></a>
+      <a class="item" href="./6435.html"><span><span class="code">6435</span>　大中（MOSFET/DrMOS・AI伺服器電源）</span><span class="arr">→</span></a>
+      <a class="item" href="./8261.html"><span><span class="code">8261</span>　富鼎（MOSFET/DrMOS・Fabless）</span><span class="arr">→</span></a>
+      <a class="item" href="./5299.html"><span><span class="code">5299</span>　杰力（電源管理IC・Fabless）</span><span class="arr">→</span></a>
+      <a class="item" href="./6138.html"><span><span class="code">6138</span>　茂達（類比/電源管理IC・Fabless）</span><span class="arr">→</span></a>
+      <a class="item" href="./6719.html"><span><span class="code">6719</span>　力智（電源管理IC・Fabless）</span><span class="arr">→</span></a>
+      <a class="item" href="./3707.html"><span><span class="code">3707</span>　漢磊（功率/SiC/GaN 晶圓代工）</span><span class="arr">→</span></a>
+      <a class="item" href="./3016.html"><span><span class="code">3016</span>　嘉晶（功率磊晶片・漢磊集團）</span><span class="arr">→</span></a>
+      <a class="item" href="./5347.html"><span><span class="code">5347</span>　世界先進（8吋晶圓代工/功率/驅動IC）</span><span class="arr">→</span></a>
+    </div>
+  </details>
 
-  <div style="color:#9aa4b2;font-size:.85rem;margin:18px 0 6px;border-top:1px solid #252b38;padding-top:14px">🤖 機器人 / Tesla Optimus 概念（多為供應鏈聯想，非全已接單）</div>
-  <a class="item" href="./1536.html"><span><span class="code">1536</span>　和大（減速機/齒輪・傳動）</span><span class="arr">→</span></a>
-  <a class="item" href="./2049.html"><span><span class="code">2049</span>　上銀（線性滑軌/滾珠螺桿・關節龍頭）</span><span class="arr">→</span></a>
-  <a class="item" href="./4576.html"><span><span class="code">4576</span>　大銀微系統（精密運動控制/伺服馬達）</span><span class="arr">→</span></a>
-  <a class="item" href="./4583.html"><span><span class="code">4583</span>　台灣精銳（行星減速機・關節）</span><span class="arr">→</span></a>
-  <a class="item" href="./4571.html"><span><span class="code">4571</span>　鈞興-KY（精密齒輪/傳動）</span><span class="arr">→</span></a>
-  <a class="item" href="./1597.html"><span><span class="code">1597</span>　直得（線性滑軌/微型化）</span><span class="arr">→</span></a>
-  <a class="item" href="./3019.html"><span><span class="code">3019</span>　亞光（光學鏡頭・Tesla 夥伴/機器視覺）</span><span class="arr">→</span></a>
-  <a class="item" href="./3362.html"><span><span class="code">3362</span>　先進光（光學鏡頭・機器視覺）</span><span class="arr">→</span></a>
-  <a class="item" href="./2374.html"><span><span class="code">2374</span>　佳能（影像感測/鏡頭・機器視覺）</span><span class="arr">→</span></a>
-  <a class="item" href="./5371.html"><span><span class="code">5371</span>　中光電（光學/影像・機器視覺）</span><span class="arr">→</span></a>
-  <a class="item" href="./2464.html"><span><span class="code">2464</span>　盟立（自動化整合/盟英關節馬達）</span><span class="arr">→</span></a>
-  <a class="item" href="./2308.html"><span><span class="code">2308</span>　台達電（工業自動化/伺服馬達）</span><span class="arr">→</span></a>
-  <a class="item" href="./8374.html"><span><span class="code">8374</span>　羅昇（自動化系統整合）</span><span class="arr">→</span></a>
-  <a class="item" href="./4585.html"><span><span class="code">4585</span>　達明（協作型機器人・純度最高）</span><span class="arr">→</span></a>
+  <details class="grp">
+    <summary><span>🤖 機器人 / Tesla Optimus 概念 <span class="gcount">14 檔・多為供應鏈聯想</span></span></summary>
+    <div class="inner">
+      <a class="item" href="./1536.html"><span><span class="code">1536</span>　和大（減速機/齒輪・傳動）</span><span class="arr">→</span></a>
+      <a class="item" href="./2049.html"><span><span class="code">2049</span>　上銀（線性滑軌/滾珠螺桿・關節龍頭）</span><span class="arr">→</span></a>
+      <a class="item" href="./4576.html"><span><span class="code">4576</span>　大銀微系統（精密運動控制/伺服馬達）</span><span class="arr">→</span></a>
+      <a class="item" href="./4583.html"><span><span class="code">4583</span>　台灣精銳（行星減速機・關節）</span><span class="arr">→</span></a>
+      <a class="item" href="./4571.html"><span><span class="code">4571</span>　鈞興-KY（精密齒輪/傳動）</span><span class="arr">→</span></a>
+      <a class="item" href="./1597.html"><span><span class="code">1597</span>　直得（線性滑軌/微型化）</span><span class="arr">→</span></a>
+      <a class="item" href="./3019.html"><span><span class="code">3019</span>　亞光（光學鏡頭・Tesla 夥伴/機器視覺）</span><span class="arr">→</span></a>
+      <a class="item" href="./3362.html"><span><span class="code">3362</span>　先進光（光學鏡頭・機器視覺）</span><span class="arr">→</span></a>
+      <a class="item" href="./2374.html"><span><span class="code">2374</span>　佳能（影像感測/鏡頭・機器視覺）</span><span class="arr">→</span></a>
+      <a class="item" href="./5371.html"><span><span class="code">5371</span>　中光電（光學/影像・機器視覺）</span><span class="arr">→</span></a>
+      <a class="item" href="./2464.html"><span><span class="code">2464</span>　盟立（自動化整合/盟英關節馬達）</span><span class="arr">→</span></a>
+      <a class="item" href="./2308.html"><span><span class="code">2308</span>　台達電（工業自動化/伺服馬達）</span><span class="arr">→</span></a>
+      <a class="item" href="./8374.html"><span><span class="code">8374</span>　羅昇（自動化系統整合）</span><span class="arr">→</span></a>
+      <a class="item" href="./4585.html"><span><span class="code">4585</span>　達明（協作型機器人・純度最高）</span><span class="arr">→</span></a>
+    </div>
+  </details>
 
-  <div style="color:#9aa4b2;font-size:.85rem;margin:18px 0 6px;border-top:1px solid #252b38;padding-top:14px">🏭 半導體設備 / 廠務</div>
-  <a class="item" href="./6667.html"><span><span class="code">6667</span>　信紘科（半導體廠務工程／特殊氣體化學品供應系統）</span><span class="arr">→</span></a>
+  <details class="grp">
+    <summary><span>🏭 半導體設備 / 廠務 <span class="gcount">1 檔</span></span></summary>
+    <div class="inner">
+      <a class="item" href="./6667.html"><span><span class="code">6667</span>　信紘科（半導體廠務工程／特殊氣體化學品供應系統）</span><span class="arr">→</span></a>
+    </div>
+  </details>
 
   <div class="note">
     要新增一檔：跟我（小助理）說股號，我會建一頁 <b>股號.html</b>，內含即時圖表、族群同類股、急漲催化事件時間軸、多空與買進框架。<br>
-    📌 股價/漲跌：台股盤中（09:00–13:30）約每 10 分鐘自動更新，收盤後顯示當日收盤；月線為日線計算。<span id="quoteAsof"></span><br>
+    📌 股價/漲跌：台股盤中（09:00–13:30）約每 2 分鐘自動更新，收盤後顯示當日收盤；月線為日線計算。<span id="quoteAsof"></span><br>
     所有內容為資訊整理，非投資顧問建議、非買賣推薦，盈虧自負。
   </div>
 </div>

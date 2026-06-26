@@ -77,6 +77,11 @@ STOCKS = [
     ("4967", "十銓", "DRAM / SSD 記憶體模組"),
     ("2451", "創見", "DRAM / 工控記憶體模組"),
     ("5351", "鈺創", "利基型 DRAM 記憶體"),
+    # ETF
+    ("0050", "元大台灣50", "台股大盤 ETF（市值前 50 大）"),
+    ("00981A", "統一台股增長", "主動式台股 ETF"),
+    ("00631L", "元大台灣50正2", "台灣50 槓桿 ETF（2 倍）"),
+    ("00632R", "元大台灣50反1", "台灣50 反向 ETF（-1 倍）"),
 ]
 
 NAV = "".join(
@@ -225,6 +230,9 @@ def main():
         elif any(k in sub for k in ("記憶體", "DRAM", "Flash", "HBM", "NAND", "儲存")):
             group = "記憶體"
             theme = "記憶體超級循環（AI HBM/DDR5 + NVIDIA 供應鏈）"
+        elif "ETF" in sub:
+            group = "ETF"
+            theme = "台股 ETF / 槓桿反向工具"
         else:
             group = "AI PC 概念股"
             theme = "AI PC 換機潮（NVIDIA RTX Spark / N1X 帶動）"

@@ -185,15 +185,18 @@
       var el = document.getElementById('quoteAsof');
       if (el) el.textContent = '（報價更新：' + asof + ' ' + (tz || '') + '）';
     }
+    var qDate = asof ? asof.slice(0, 10) : '';
     document.querySelectorAll('a.item').forEach(function (a) {
-      var m = (a.getAttribute('href') || '').match(/(\d+)\.html/);
+      var m = (a.getAttribute('href') || '').match(/([0-9A-Za-z]+)\.html/);
       if (!m) return;
       var code = m[1];
       fetch('./' + code + '_tech.json').then(function (r) { return r.json(); }).then(function (d) {
         var t = d.tech || {};
         var q = quotes[code];
-        var price = q ? q.price : d.latest;
-        var pct = q ? q.chgPct : d.chgPct;
+        // 收盤後當日日線已更新就用官方收盤，避免顯示尾盤未定盤的即時跳動
+        var useDaily = !q || (d.asof && qDate && d.asof >= qDate);
+        var price = useDaily ? d.latest : q.price;
+        var pct = useDaily ? d.chgPct : q.chgPct;
         var up = pct >= 0;
         var arr = a.querySelector('.arr'); if (!arr) return;
         arr.style.textAlign = 'right';

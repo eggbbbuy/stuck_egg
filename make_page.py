@@ -201,7 +201,7 @@ TEMPLATE = """<!DOCTYPE html>
   </div>
 </div>
 <script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
-<script src="./stockchart.js?v=5"></script>
+<script src="./stockchart.js?v=6"></script>
 <script>StockChart.init('{CODE}');</script>
 </body>
 </html>

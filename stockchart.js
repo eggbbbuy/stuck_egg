@@ -11,14 +11,20 @@
 
   function el(id) { return document.getElementById(id); }
 
-  // 報價顯示:優先用即時 quotes.json(跟首頁一致),沒有才退回日K收盤
+  // 報價顯示:盤中用即時 quotes.json;收盤後若當日「官方收盤」(日線)已更新到同一天,
+  // 就改用官方收盤(避免顯示尾盤未定盤的最後一筆即時跳動,例:13:34 抓到 37.05 但官方收 36.75)
   function applyPrice(d) {
     var q = QUOTES && QUOTES[d.code];
-    var price = q ? q.price : d.latest, chg = q ? q.chg : d.chg, pct = q ? q.chgPct : d.chgPct;
+    var qDate = QASOF ? QASOF.slice(0, 10) : '';   // 即時報價日期 "YYYY-MM-DD"
+    var dailyCaughtUp = d.asof && qDate && d.asof >= qDate;  // 日線已含當日(或更新)收盤
+    var useDaily = !q || dailyCaughtUp;
+    var price = useDaily ? d.latest : q.price;
+    var chg = useDaily ? d.chg : q.chg;
+    var pct = useDaily ? d.chgPct : q.chgPct;
     var up = pct >= 0;
     if (el('qPrice')) el('qPrice').textContent = Number(price).toLocaleString();
     if (el('qChg')) { var c = el('qChg'); c.textContent = (up ? '▲ +' : '▼ ') + chg + ' (' + (up ? '+' : '') + pct + '%)'; c.style.color = up ? '#ef5350' : '#26a69a'; }
-    if (el('qAsof')) el('qAsof').textContent = q ? ('報價 ' + QASOF + '（盤中約每2分更新）') : ('收盤 ' + d.asof + '（非即時）');
+    if (el('qAsof')) el('qAsof').textContent = useDaily ? ('收盤 ' + d.asof) : ('報價 ' + QASOF + '（盤中約每2分更新）');
   }
 
   function init(code) {

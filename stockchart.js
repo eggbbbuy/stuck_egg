@@ -45,6 +45,27 @@
       .then(function (d) { renderChip(d); }).catch(function (e) {
         if (el('chip')) el('chip').innerHTML = '<div class="dim">籌碼面載入失敗：' + e + '</div>';
       });
+    fetch('./us.json?t=' + Date.now()).then(function (r) { return r.json(); })
+      .then(function (u) { renderUS(code, u); }).catch(function () {});
+  }
+
+  // 對應相關美股（昨晚收盤）：紅漲綠跌，含股價 + 漲跌%
+  function renderUS(code, u) {
+    var box = el('usPeers'); if (!box) return;
+    var tks = (u.map && u.map[code]) || [];
+    if (!tks.length) return;
+    var items = tks.map(function (tk) {
+      var d = u.tickers && u.tickers[tk]; if (!d) return '';
+      var up = d.chgPct >= 0, col = up ? '#ef5350' : '#26a69a';
+      return '<span style="display:inline-block;margin:2px 14px 2px 0">' +
+        '<b style="color:#6cb2ff">' + tk + '</b>' +
+        (d.name && d.name !== tk ? '<span style="color:#9aa4b2"> ' + d.name + '</span>' : '') +
+        ' <b>$' + Number(d.price).toLocaleString() + '</b> ' +
+        '<span style="color:' + col + '">' + (up ? '▲+' : '▼') + d.chgPct + '%</span></span>';
+    }).filter(Boolean).join('');
+    if (!items) return;
+    box.innerHTML = '<div class="dim" style="margin-bottom:4px">🇺🇸 對應相關美股（收盤 ' + (u.asof || '') + '）</div>' + items;
+    box.style.display = 'block';
   }
 
   function renderVal(v) {

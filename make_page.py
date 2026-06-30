@@ -141,6 +141,7 @@ TEMPLATE = """<!DOCTYPE html>
     <div><b style="font-size:1.7rem" id="qPrice">—</b> <span id="qChg" class="dim"></span></div>
     <div class="dim" id="qAsof"></div>
   </div>
+  <div class="card" id="usPeers" style="display:none"></div>
   <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
     <div id="tfToggle" class="tfbar"></div>
     <div id="ovToggle" class="tfbar"></div>
@@ -200,7 +201,7 @@ TEMPLATE = """<!DOCTYPE html>
   </div>
 </div>
 <script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
-<script src="./stockchart.js?v=4"></script>
+<script src="./stockchart.js?v=5"></script>
 <script>StockChart.init('{CODE}');</script>
 </body>
 </html>

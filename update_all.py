@@ -28,6 +28,11 @@ def main():
                 run("gen_events.py", [code])
             except Exception as e:
                 print(f"!! {code} 失敗: {e}", flush=True)
+    # 對應相關美股最近收盤（一次抓全部）
+    try:
+        run("gen_us.py", [])
+    except Exception as e:
+        print(f"!! gen_us 失敗: {e}", flush=True)
 
 
 if __name__ == "__main__":

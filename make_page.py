@@ -77,6 +77,11 @@ STOCKS = [
     ("4967", "十銓", "DRAM / SSD 記憶體模組"),
     ("2451", "創見", "DRAM / 工控記憶體模組"),
     ("5351", "鈺創", "利基型 DRAM 記憶體"),
+    # PMIC / 電源管理 IC
+    ("6415", "矽力-KY", "PMIC / 電源管理 IC 設計（類比龍頭）"),
+    ("3588", "通嘉", "PMIC / AC-DC 電源控制 IC"),
+    ("2436", "偉詮電", "PMIC / USB PD 電源控制 IC"),
+    ("3257", "虹冠電", "PMIC / 類比 IC（電源管理）"),
     # ETF
     ("0050", "元大台灣50", "台股大盤 ETF（市值前 50 大）"),
     ("00981A", "統一台股增長", "主動式台股 ETF"),
@@ -231,6 +236,9 @@ def main():
         elif any(k in sub for k in ("散熱", "液冷", "均熱", "熱導管", "熱交換", "散熱風扇")):
             group = "散熱元件"
             theme = "AI 伺服器 / AI PC 散熱升級（VC 均熱片 → 液冷）"
+        elif "PMIC" in sub:
+            group = "PMIC / 電源管理 IC"
+            theme = "電源管理晶片（AI / 伺服器 / 消費電源）"
         elif any(k in sub for k in ("記憶體", "DRAM", "Flash", "HBM", "NAND", "儲存")):
             group = "記憶體"
             theme = "記憶體超級循環（AI HBM/DDR5 + NVIDIA 供應鏈）"

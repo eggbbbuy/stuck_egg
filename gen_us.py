@@ -33,6 +33,8 @@ MAP = {
     # 🧠 記憶體
     "6531": ["MU", "WDC"], "2344": ["MU", "WDC"], "5289": ["MU", "WDC"], "2408": ["MU", "WDC"],
     "2337": ["MU", "WDC"], "3260": ["MU", "WDC"], "4967": ["MU", "WDC"], "2451": ["MU", "WDC"], "5351": ["MU", "WDC"],
+    # 🔋 PMIC / 電源管理 IC
+    "6415": ["MPWR", "TXN"], "3588": ["MPWR", "TXN"], "2436": ["MPWR", "TXN"], "3257": ["MPWR", "TXN"],
     # 🏭 半導體設備 / 廠務
     "6667": ["AMAT", "LRCX"],
     # 📊 ETF
@@ -43,7 +45,7 @@ NAME = {
     "NVDA": "輝達", "MU": "美光", "WDC": "威騰", "STX": "希捷", "NTAP": "NetApp", "TSLA": "特斯拉",
     "AAPL": "蘋果", "DELL": "戴爾", "SMCI": "美超微", "AMD": "超微", "VRT": "Vertiv", "VSH": "威世",
     "TEL": "泰科", "RKLB": "火箭實驗室", "ON": "onsemi", "MPWR": "MPS", "AMAT": "應材", "LRCX": "科林",
-    "EWT": "台灣50ETF", "COHR": "Coherent", "LITE": "Lumentum",
+    "EWT": "台灣50ETF", "COHR": "Coherent", "LITE": "Lumentum", "TXN": "德儀",
 }
 
 

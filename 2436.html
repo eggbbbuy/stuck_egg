@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2436 偉詮電 股票分析 | stuck_egg</title>
+<style>
+  :root{ --bg:#0e1117; --card:#171c26; --line:#252b38; --txt:#e6e9ef; --sub:#9aa4b2;
+         --up:#ef5350; --down:#26a69a; --accent:#f5b301; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);
+       font-family:-apple-system,"Noto Sans TC","Microsoft JhengHei",Segoe UI,Roboto,sans-serif;line-height:1.7;}
+  .wrap{max-width:880px;margin:0 auto;padding:18px 16px 60px;}
+  a.back{position:fixed;left:14px;bottom:16px;z-index:50;background:#1b2230;color:#e6e9ef;
+         border:1px solid #2f3a4d;border-radius:22px;padding:9px 15px;font-size:.9rem;
+         text-decoration:none;box-shadow:0 3px 12px rgba(0,0,0,.45)}
+  a.back:hover{border-color:#f5b301}
+  h1{font-size:1.5rem;margin:.2em 0 .1em}
+  h2{font-size:1.15rem;margin:1.7em 0 .5em;border-left:4px solid var(--accent);padding-left:10px}
+  .sub{color:var(--sub);font-size:.9rem;margin-bottom:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:12px 0;}
+  .tv{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:12px 0}
+  .kpi{display:flex;justify-content:space-between;border-bottom:1px dashed var(--line);padding:7px 0}
+  .kpi:last-child{border-bottom:0}.kpi b{color:#fff}
+  .dim{color:var(--sub);font-size:.82rem}a{color:#6cb2ff}
+  .warn{background:rgba(245,179,1,.12);border:1px solid var(--accent);color:#f7c948}
+  .tag{display:inline-block;font-size:.78rem;padding:2px 9px;border-radius:999px;margin:2px 4px 2px 0}
+  .bull{background:rgba(239,83,80,.15);color:var(--up);border:1px solid var(--up)}
+  .bear{background:rgba(38,166,154,.15);color:var(--down);border:1px solid var(--down)}
+  ul{margin:.3em 0 .3em 1.1em;padding:0}li{margin:.35em 0}
+  .disc{font-size:.8rem;color:var(--sub);border-top:1px solid var(--line);margin-top:26px;padding-top:14px}
+  .nav{display:flex;flex-wrap:wrap;gap:6px}
+  .nav a{background:#171c26;border:1px solid #252b38;border-radius:8px;padding:4px 10px;font-size:.82rem;text-decoration:none}
+  .tfbar{display:flex;gap:6px;margin:4px 0 8px}
+  .tfbtn{background:#171c26;border:1px solid #252b38;color:#9aa4b2;border-radius:8px;padding:5px 16px;font-size:.9rem;cursor:pointer}
+  .tfbtn.active{background:#f5b301;color:#0e1117;border-color:#f5b301;font-weight:700}
+  .malegend{display:flex;gap:14px;flex-wrap:wrap;font-size:.78rem;color:#9aa4b2;margin-bottom:6px}
+  .malegend i{display:inline-block;width:14px;height:3px;vertical-align:middle;margin-right:4px;border-radius:2px}
+  .techgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px 18px}
+  @media(max-width:620px){.techgrid{grid-template-columns:1fr}}
+  .tk{display:flex;justify-content:space-between;border-bottom:1px dashed var(--line);padding:6px 0}
+  .ftab{width:100%;border-collapse:collapse;font-size:.88rem}
+  .ftab th{color:var(--sub);font-weight:600;padding:6px 6px;border-bottom:1px solid var(--line)}
+  .ftab td{padding:6px 6px;border-bottom:1px solid var(--line)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="./">← 回首頁</a>
+  <h1>2436 偉詮電 — 股票分析</h1>
+  <div class="sub">PMIC / USB PD 電源控制 IC　|　PMIC / 電源管理 IC</div>
+
+  <div class="card" style="display:flex;justify-content:space-between;align-items:baseline">
+    <div><b style="font-size:1.7rem" id="qPrice">—</b> <span id="qChg" class="dim"></span></div>
+    <div class="dim" id="qAsof"></div>
+  </div>
+  <div class="card" id="usPeers" style="display:none"></div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+    <div id="tfToggle" class="tfbar"></div>
+    <div id="ovToggle" class="tfbar"></div>
+  </div>
+  <div id="maLegend" class="malegend">
+    <span><i style="background:#e6e9ef"></i>MA5</span><span><i style="background:#f5b301"></i>MA10</span>
+    <span><i style="background:#ff8a65"></i>MA20 月線</span><span><i style="background:#6cb2ff"></i>MA60 季線</span>
+  </div>
+  <div id="bollLegend" class="malegend" style="display:none">
+    <span><i style="background:#b39ddb"></i>布林上軌</span><span><i style="background:#9aa4b2"></i>中軌 MA20</span><span><i style="background:#b39ddb"></i>下軌</span>
+  </div>
+  <div class="tv" style="height:360px"><div id="chart" style="height:100%;width:100%"></div></div>
+  <div class="tv" style="height:140px;margin-top:6px"><div id="macd" style="height:100%;width:100%"></div></div>
+  <div class="dim">MACD（柱＋DIF 橘 / DEA 藍）</div>
+  <div class="tv" style="height:130px;margin-top:6px"><div id="kd" style="height:100%;width:100%"></div></div>
+  <div class="dim">KD（K 橘 / D 藍；80 上方超買、20 下方超賣）。三張圖時間軸同步、可切日/週/月。資料：Yahoo，每日自動更新。</div>
+
+  <h2>技術面</h2>
+  <div class="card" id="techSummary"></div>
+
+  <h2>基本面（月營收 / 季度毛利 / EPS）</h2>
+  <div class="card" id="fundamental"><div class="dim">載入中…</div></div>
+
+  <h2>估值（本益比 / PEG / 近2年PE區間）</h2>
+  <div class="card" id="valuation"><div class="dim">載入中…</div></div>
+
+  <h2>籌碼面（三大法人 / 融資融券）</h2>
+  <div class="card" id="chip"><div class="dim">載入中…</div></div>
+
+  <h2>催化時間軸（最大單日漲跌日）</h2>
+  <div class="card" id="autoTimeline"><div class="dim">載入中…</div></div>
+
+  <h2>多空分析（資料自動）</h2>
+  <div class="card" id="autoVerdict"><div class="dim">載入中…</div></div>
+
+  <h2>公司定位</h2>
+  <div class="card">
+    <div class="kpi"><span>定位</span><b>PMIC / USB PD 電源控制 IC</b></div>
+    <div class="kpi"><span>題材</span><b>電源管理晶片（AI / 伺服器 / 消費電源）</b></div>
+  </div>
+
+  <h2>追蹤清單同類股（點擊切換）</h2>
+  <div class="card"><div class="nav"><a href="./2357.html">2357 華碩</a><a href="./2353.html">2353 宏碁</a><a href="./2377.html">2377 微星</a><a href="./2376.html">2376 技嘉</a><a href="./2382.html">2382 廣達</a><a href="./3231.html">3231 緯創</a><a href="./2324.html">2324 仁寶</a><a href="./3017.html">3017 奇鋐</a><a href="./3324.html">3324 雙鴻</a><a href="./3037.html">3037 欣興</a><a href="./2383.html">2383 台光電</a><a href="./2327.html">2327 國巨</a><a href="./2492.html">2492 華新科</a><a href="./6173.html">6173 信昌電</a><a href="./2428.html">2428 興勤</a><a href="./2472.html">2472 立隆電</a><a href="./6175.html">6175 立敦</a><a href="./2313.html">2313 華通</a><a href="./3491.html">3491 昇達科</a><a href="./2314.html">2314 台揚</a><a href="./6285.html">6285 啟碁</a><a href="./6274.html">6274 台燿</a><a href="./2481.html">2481 強茂</a><a href="./5425.html">5425 台半</a><a href="./3675.html">3675 德微</a><a href="./8255.html">8255 朋程</a><a href="./3317.html">3317 尼克森</a><a href="./6435.html">6435 大中</a><a href="./8261.html">8261 富鼎</a><a href="./5299.html">5299 杰力</a><a href="./6138.html">6138 茂達</a><a href="./6719.html">6719 力智</a><a href="./3707.html">3707 漢磊</a><a href="./3016.html">3016 嘉晶</a><a href="./5347.html">5347 世界先進</a><a href="./1536.html">1536 和大</a><a href="./2049.html">2049 上銀</a><a href="./4576.html">4576 大銀微系統</a><a href="./4583.html">4583 台灣精銳</a><a href="./4571.html">4571 鈞興-KY</a><a href="./1597.html">1597 直得</a><a href="./3019.html">3019 亞光</a><a href="./3362.html">3362 先進光</a><a href="./2374.html">2374 佳能</a><a href="./5371.html">5371 中光電</a><a href="./2464.html">2464 盟立</a><a href="./2308.html">2308 台達電</a><a href="./8374.html">8374 羅昇</a><a href="./4585.html">4585 達明</a><a href="./6667.html">6667 信紘科</a><a href="./6230.html">6230 超眾</a><a href="./3653.html">3653 健策</a><a href="./8996.html">8996 高力</a><a href="./2421.html">2421 建準</a><a href="./6531.html">6531 愛普</a><a href="./2344.html">2344 華邦電</a><a href="./5289.html">5289 宜鼎</a><a href="./2408.html">2408 南亞科</a><a href="./2337.html">2337 旺宏</a><a href="./3260.html">3260 威剛</a><a href="./4967.html">4967 十銓</a><a href="./2451.html">2451 創見</a><a href="./5351.html">5351 鈺創</a><a href="./6415.html">6415 矽力-KY</a><a href="./3588.html">3588 通嘉</a><a href="./2436.html">2436 偉詮電</a><a href="./3257.html">3257 虹冠電</a><a href="./0050.html">0050 元大台灣50</a><a href="./00981A.html">00981A 統一台股增長</a><a href="./00631L.html">00631L 元大台灣50正2</a><a href="./00632R.html">00632R 元大台灣50反1</a></div></div>
+
+  <h2>看圖框架（非投顧建議）</h2>
+  <div class="card">
+    <ul>
+      <li>先看上方<b>技術面</b>綜合訊號（偏多/偏空）＋均線排列，判斷現在多空位階。</li>
+      <li><b>基本面</b>看月營收年增有沒有續強、毛利率方向；<b>估值</b>看 PE 位階（靠右紅=相對貴）＋ PEG。</li>
+      <li>避免追漲停噴出當天；回檔測月線/季線不破再分批，<b>設停損、控部位</b>。</li>
+    </ul>
+    <div class="warn card" style="margin-top:6px">⚠️ 題材股容易先漲一波 price-in，追高風險高；留意是「本業真的受惠」還是只是沾光的概念股（純度高低差很多）。順勢可參與但別追頂、設停損。</div>
+  </div>
+
+  <div class="disc">
+    📌 免責聲明：本頁為個人資訊整理，<b>非投資顧問建議、非買賣推薦</b>。技術/基本面/估值數據來自 Yahoo、FinMind，每日自動更新；圖表由 TradingView lightweight-charts 繪製。盈虧自負。
+  </div>
+</div>
+<script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
+<script src="./stockchart.js?v=6"></script>
+<script>StockChart.init('2436');</script>
+</body>
+</html>

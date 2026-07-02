@@ -33,6 +33,10 @@ MAP = {
     # 🧠 記憶體
     "6531": ["MU", "WDC"], "2344": ["MU", "WDC"], "5289": ["MU", "WDC"], "2408": ["MU", "WDC"],
     "2337": ["MU", "WDC"], "3260": ["MU", "WDC"], "4967": ["MU", "WDC"], "2451": ["MU", "WDC"], "5351": ["MU", "WDC"],
+    # 📦 ABF 載板 / PCB 材料（需求來自 AI GPU/ASIC）
+    "8046": ["NVDA", "AMD"], "3189": ["NVDA", "AMD"], "6213": ["NVDA", "AMD"], "2368": ["NVDA", "AMD"],
+    # 🔬 先進封裝 / 測試
+    "3711": ["AMKR", "NVDA"], "2449": ["AMKR", "TER"], "6239": ["AMKR", "MU"], "3374": ["AMKR", "NVDA"],
     # 🔋 PMIC / 電源管理 IC
     "6415": ["MPWR", "TXN"], "3588": ["MPWR", "TXN"], "2436": ["MPWR", "TXN"], "3257": ["MPWR", "TXN"],
     # 🏭 半導體設備 / 廠務
@@ -46,6 +50,7 @@ NAME = {
     "AAPL": "蘋果", "DELL": "戴爾", "SMCI": "美超微", "AMD": "超微", "VRT": "Vertiv", "VSH": "威世",
     "TEL": "泰科", "RKLB": "火箭實驗室", "ON": "onsemi", "MPWR": "MPS", "AMAT": "應材", "LRCX": "科林",
     "EWT": "台灣50ETF", "COHR": "Coherent", "LITE": "Lumentum", "TXN": "德儀",
+    "AMKR": "艾克爾", "TER": "泰瑞達",
 }
 
 

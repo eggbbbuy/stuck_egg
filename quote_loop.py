@@ -10,7 +10,7 @@ import subprocess, time, datetime, sys, os
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 HERE = os.path.dirname(os.path.abspath(__file__))
-INTERVAL = 120          # 盤中每 2 分鐘更新一次
+INTERVAL = 300          # 盤中每 5 分鐘更新一次(2分鐘太頻繁→GitHub Pages 部署互相衝突、狂寄 build failed email)
 OFF_SLEEP = 300         # 非盤中每 5 分鐘檢查一次
 
 

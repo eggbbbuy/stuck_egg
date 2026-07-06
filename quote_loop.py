@@ -10,8 +10,8 @@ import subprocess, time, datetime, sys, os
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 HERE = os.path.dirname(os.path.abspath(__file__))
-INTERVAL = 300          # 盤中每 5 分鐘更新一次(2分鐘太頻繁→GitHub Pages 部署互相衝突、狂寄 build failed email)
-OFF_SLEEP = 300         # 非盤中每 5 分鐘檢查一次
+INTERVAL = 3600         # 盤中每 1 小時更新一次(5分鐘仍太頻繁→GitHub Pages 部署互相衝突、狂寄 build failed email)
+OFF_SLEEP = 600         # 非盤中每 10 分鐘檢查一次
 
 
 DAILY_STAMP = os.path.join(HERE, "_last_daily.txt")   # 記錄每日更新最後跑的日期

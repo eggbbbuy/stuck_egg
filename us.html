@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>stuck_egg — 美股資訊</title>
+<style>
+  body{margin:0;background:#0e1117;color:#e6e9ef;
+       font-family:-apple-system,"Noto Sans TC","Microsoft JhengHei",Segoe UI,Roboto,sans-serif;line-height:1.7}
+  .wrap{max-width:680px;margin:0 auto;padding:28px 18px 60px}
+  h1{font-size:1.6rem;margin:.2em 0}
+  .sub{color:#9aa4b2;margin-bottom:8px}
+  .asof{color:#f5b301;font-size:.9rem;margin-bottom:16px}
+  a.back{display:inline-block;color:#6cb2ff;text-decoration:none;margin-bottom:14px;font-size:.95rem}
+  a.back:hover{color:#f5b301}
+  details.grp{border:1px solid #252b38;border-radius:12px;margin:10px 0;background:#12161f}
+  details.grp>summary{list-style:none;cursor:pointer;padding:14px 16px;font-weight:600;
+       color:#e6e9ef;display:flex;justify-content:space-between;align-items:center;user-select:none}
+  details.grp>summary::-webkit-details-marker{display:none}
+  details.grp>summary::after{content:"▸";color:#9aa4b2;transition:transform .15s ease;margin-left:10px}
+  details.grp[open]>summary::after{transform:rotate(90deg)}
+  details.grp>summary:hover{color:#f5b301}
+  details.grp[open]>summary{border-bottom:1px solid #252b38}
+  .gcount{color:#9aa4b2;font-weight:400;font-size:.82rem;margin-left:8px}
+  .gnote{color:#9aa4b2;font-size:.8rem;padding:8px 14px 2px}
+  .inner{padding:2px 12px 10px}
+  .row{display:flex;justify-content:space-between;align-items:center;background:#171c26;
+         border:1px solid #252b38;border-radius:12px;padding:12px 14px;margin:10px 0}
+  .row .L .tk{font-weight:700;color:#6cb2ff;font-size:1.05rem}
+  .row .L .nm{color:#e6e9ef;margin-left:6px}
+  .row .L .desc{color:#9aa4b2;font-size:.8rem;margin-top:2px}
+  .row .R{text-align:right;white-space:nowrap;margin-left:10px}
+  .row .R .px{font-weight:700;font-size:1.05rem}
+  .row .R .chg{font-size:.9rem}
+  .up{color:#ef5350}     /* 台股慣例：紅漲 */
+  .down{color:#26a69a}   /* 綠跌 */
+  .flat{color:#9aa4b2}
+  .note{color:#9aa4b2;font-size:.82rem;margin-top:22px;border-top:1px solid #252b38;padding-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="./">← 回首頁</a>
+  <h1>🇺🇸 美股資訊</h1>
+  <div class="sub">對應台股族群的美股同業，看昨晚(最近交易日)收盤。紅漲綠跌。</div>
+  <div class="asof" id="asof">載入中…</div>
+  <div id="groups"></div>
+  <div class="note">資料：Yahoo Finance，每日自動更新。價格為美股「最近已收盤」交易日。<b>非投資建議</b>，僅供追蹤族群氛圍。</div>
+</div>
+<script>
+function cls(p){ return p>0 ? "up" : (p<0 ? "down" : "flat"); }
+function sign(p){ return p>0 ? "▲" : (p<0 ? "▼" : "—"); }
+fetch("./usmkt.json?t="+Date.now()).then(r=>r.json()).then(d=>{
+  document.getElementById("asof").textContent = "收盤日："+(d.asof||"—")+"（美股）";
+  const box = document.getElementById("groups");
+  (d.groups||[]).forEach((g,i)=>{
+    const det = document.createElement("details");
+    det.className = "grp";
+    if(i===0) det.open = true;
+    const n = g.stocks.length;
+    let rows = "";
+    g.stocks.forEach(s=>{
+      const has = (s.price!=null && s.chgPct!=null);
+      const c = has ? cls(s.chgPct) : "flat";
+      const px = has ? s.price.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}) : "—";
+      const chg = has ? (sign(s.chgPct)+" "+(s.chgPct>0?"+":"")+s.chgPct.toFixed(2)+"%") : "無資料";
+      rows += `<div class="row"><div class="L"><div><span class="tk">${s.tk}</span><span class="nm">${s.name}</span></div>`
+            + `<div class="desc">${s.desc}</div></div>`
+            + `<div class="R"><div class="px ${c}">${px}</div><div class="chg ${c}">${chg}</div></div></div>`;
+    });
+    det.innerHTML = `<summary><span>${g.icon} ${g.title} <span class="gcount">${n} 檔</span></span></summary>`
+                  + `<div class="gnote">${g.note||""}</div><div class="inner">${rows}</div>`;
+    box.appendChild(det);
+  });
+}).catch(e=>{
+  document.getElementById("asof").textContent = "資料載入失敗，稍後再試";
+});
+</script>
+</body>
+</html>

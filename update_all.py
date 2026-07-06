@@ -33,6 +33,11 @@ def main():
         run("gen_us.py", [])
     except Exception as e:
         print(f"!! gen_us 失敗: {e}", flush=True)
+    # 美股資訊分頁(us.html) 的資料
+    try:
+        run("gen_usmkt.py", [])
+    except Exception as e:
+        print(f"!! gen_usmkt 失敗: {e}", flush=True)
 
 
 if __name__ == "__main__":

@@ -15,6 +15,7 @@ OFF_SLEEP = 600         # 非盤中每 10 分鐘檢查一次
 
 
 DAILY_STAMP = os.path.join(HERE, "_last_daily.txt")   # 記錄每日更新最後跑的日期
+US_STAMP = os.path.join(HERE, "_last_usmkt.txt")      # 記錄美股資訊最後更新的日期
 
 
 def tw_now():
@@ -31,6 +32,13 @@ def is_market_hours(t):
 def daily_done_today(t):
     try:
         return open(DAILY_STAMP, encoding="utf-8").read().strip() == t.strftime("%Y-%m-%d")
+    except Exception:
+        return False
+
+
+def us_done_today(t):
+    try:
+        return open(US_STAMP, encoding="utf-8").read().strip() == t.strftime("%Y-%m-%d")
     except Exception:
         return False
 
@@ -53,6 +61,23 @@ def run_daily_update(t):
     p = run("git push -q")
     open(DAILY_STAMP, "w", encoding="utf-8").write(t.strftime("%Y-%m-%d"))
     print(f"[{t:%m-%d %H:%M}] 每日更新 {'push 成功' if p.returncode == 0 else 'push 失敗:'+(p.stderr or '')[:120]}", flush=True)
+
+
+def run_us_update(t):
+    """美股收盤後(台灣早上)更新美股資訊分頁資料(us.html / us.json) 並 push。"""
+    print(f"[{t:%m-%d %H:%M}] 美股盤後更新開始…", flush=True)
+    run("python gen_usmkt.py")
+    run("python gen_us.py")
+    run("git add -- usmkt.json us.json")
+    if run("git diff --staged --quiet").returncode == 0:
+        open(US_STAMP, "w", encoding="utf-8").write(t.strftime("%Y-%m-%d"))
+        print(f"[{t:%m-%d %H:%M}] 美股更新無變動", flush=True)
+        return
+    run(f'git commit -q -m "美股盤後更新 {t:%Y-%m-%d}"')
+    run("git pull --rebase --autostash -q")
+    p = run("git push -q")
+    open(US_STAMP, "w", encoding="utf-8").write(t.strftime("%Y-%m-%d"))
+    print(f"[{t:%m-%d %H:%M}] 美股更新 {'push 成功' if p.returncode == 0 else 'push 失敗:'+(p.stderr or '')[:120]}", flush=True)
 
 
 def push_quotes():
@@ -80,7 +105,13 @@ def main():
         else:
             # 收盤後(平日 13:36 起)當天還沒跑過 → 自動補今天的每日更新(僅一次)
             mins = t.hour * 60 + t.minute
-            if t.weekday() < 5 and mins >= 13 * 60 + 36 and not daily_done_today(t):
+            # 美股資訊：台灣早上 05:30–08:55 之間跑一次(美股 16:00 ET 收盤 ≈ 台灣 04:00-05:00)
+            if 5 * 60 + 30 <= mins < 9 * 60 and not us_done_today(t):
+                try:
+                    run_us_update(t)
+                except Exception as e:
+                    print(f"[{t:%m-%d %H:%M}] 美股更新錯誤: {e}", flush=True)
+            elif t.weekday() < 5 and mins >= 13 * 60 + 36 and not daily_done_today(t):
                 try:
                     run_daily_update(t)
                 except Exception as e:

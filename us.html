@@ -24,14 +24,24 @@
   .gcount{color:#9aa4b2;font-weight:400;font-size:.82rem;margin-left:8px}
   .gnote{color:#9aa4b2;font-size:.8rem;padding:8px 14px 2px}
   .inner{padding:2px 12px 10px}
+  .stk{margin:10px 0}
   .row{display:flex;justify-content:space-between;align-items:center;background:#171c26;
-         border:1px solid #252b38;border-radius:12px;padding:12px 14px;margin:10px 0}
+         border:1px solid #252b38;border-radius:12px;padding:12px 14px;cursor:pointer;user-select:none}
+  .row:hover{border-color:#f5b301}
+  .row .L{display:flex;align-items:flex-start;gap:8px}
+  .row .L .caret{color:#9aa4b2;transition:transform .15s ease;margin-top:2px}
+  .stk.open .row .L .caret{transform:rotate(90deg)}
   .row .L .tk{font-weight:700;color:#6cb2ff;font-size:1.05rem}
   .row .L .nm{color:#e6e9ef;margin-left:6px}
   .row .L .desc{color:#9aa4b2;font-size:.8rem;margin-top:2px}
   .row .R{text-align:right;white-space:nowrap;margin-left:10px}
   .row .R .px{font-weight:700;font-size:1.05rem}
   .row .R .chg{font-size:.9rem}
+  .chartbox{display:none;background:#12161f;border:1px solid #252b38;border-top:none;
+         border-radius:0 0 12px 12px;margin-top:-6px;padding:10px 10px 6px}
+  .stk.open .chartbox{display:block}
+  .chartbox .cttl{color:#9aa4b2;font-size:.78rem;margin:0 4px 6px}
+  .chart{height:180px;width:100%}
   .up{color:#ef5350}     /* 台股慣例：紅漲 */
   .down{color:#26a69a}   /* 綠跌 */
   .flat{color:#9aa4b2}
@@ -45,31 +55,66 @@
   <div class="sub">對應台股族群的美股同業，看昨晚(最近交易日)收盤。紅漲綠跌。</div>
   <div class="asof" id="asof">載入中…</div>
   <div id="groups"></div>
-  <div class="note">資料：Yahoo Finance，每日自動更新。價格為美股「最近已收盤」交易日。<b>非投資建議</b>，僅供追蹤族群氛圍。</div>
+  <div class="note">資料：Yahoo Finance，每日自動更新。上方報價為美股「最近已收盤」交易日；點個股展開為<b>近3年週線</b>走勢。<b>非投資建議</b>，僅供追蹤族群氛圍。</div>
 </div>
+<script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
 <script>
 function cls(p){ return p>0 ? "up" : (p<0 ? "down" : "flat"); }
 function sign(p){ return p>0 ? "▲" : (p<0 ? "▼" : "—"); }
+
+function drawChart(el, hist){
+  if(!hist || hist.length < 2){ el.innerHTML = '<div class="cttl">無足夠歷史資料</div>'; return; }
+  const up = hist[hist.length-1].value >= hist[0].value;   // 3年淨漲跌 → 台股紅漲綠跌
+  const color = up ? "#ef5350" : "#26a69a";
+  const chart = LightweightCharts.createChart(el, {
+    height: 180,
+    layout: { background:{ color:"transparent" }, textColor:"#9aa4b2", fontSize:11 },
+    grid: { vertLines:{ color:"#1c2230" }, horzLines:{ color:"#1c2230" } },
+    rightPriceScale: { borderColor:"#252b38" },
+    timeScale: { borderColor:"#252b38", timeVisible:false },
+    handleScale:false, handleScroll:false,
+    crosshair:{ mode:0 },
+  });
+  const s = chart.addAreaSeries({ lineColor:color, topColor:color+"55", bottomColor:color+"08", lineWidth:2 });
+  s.setData(hist);
+  chart.timeScale().fitContent();
+}
+
 fetch("./usmkt.json?t="+Date.now()).then(r=>r.json()).then(d=>{
-  document.getElementById("asof").textContent = "收盤日："+(d.asof||"—")+"（美股）";
+  document.getElementById("asof").textContent = "收盤日："+(d.asof||"—")+"（美股，近3年走勢點個股展開）";
   const box = document.getElementById("groups");
   (d.groups||[]).forEach((g,i)=>{
     const det = document.createElement("details");
     det.className = "grp";
     if(i===0) det.open = true;
     const n = g.stocks.length;
-    let rows = "";
+    const inner = document.createElement("div");
+    inner.className = "inner";
     g.stocks.forEach(s=>{
       const has = (s.price!=null && s.chgPct!=null);
       const c = has ? cls(s.chgPct) : "flat";
       const px = has ? s.price.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}) : "—";
       const chg = has ? (sign(s.chgPct)+" "+(s.chgPct>0?"+":"")+s.chgPct.toFixed(2)+"%") : "無資料";
-      rows += `<div class="row"><div class="L"><div><span class="tk">${s.tk}</span><span class="nm">${s.name}</span></div>`
-            + `<div class="desc">${s.desc}</div></div>`
-            + `<div class="R"><div class="px ${c}">${px}</div><div class="chg ${c}">${chg}</div></div></div>`;
+      const stk = document.createElement("div");
+      stk.className = "stk";
+      stk.innerHTML =
+          `<div class="row"><div class="L"><span class="caret">▸</span><div>`
+        + `<div><span class="tk">${s.tk}</span><span class="nm">${s.name}</span></div>`
+        + `<div class="desc">${s.desc}</div></div></div>`
+        + `<div class="R"><div class="px ${c}">${px}</div><div class="chg ${c}">${chg}</div></div></div>`
+        + `<div class="chartbox"><div class="cttl">${s.tk} 近3年週線走勢（紅漲綠跌）</div><div class="chart"></div></div>`;
+      const row = stk.querySelector(".row");
+      const chartEl = stk.querySelector(".chart");
+      let drawn = false;
+      row.addEventListener("click", ()=>{
+        stk.classList.toggle("open");
+        if(stk.classList.contains("open") && !drawn){ drawn = true; drawChart(chartEl, s.hist); }
+      });
+      inner.appendChild(stk);
     });
     det.innerHTML = `<summary><span>${g.icon} ${g.title} <span class="gcount">${n} 檔</span></span></summary>`
-                  + `<div class="gnote">${g.note||""}</div><div class="inner">${rows}</div>`;
+                  + `<div class="gnote">${g.note||""}</div>`;
+    det.appendChild(inner);
     box.appendChild(det);
   });
 }).catch(e=>{

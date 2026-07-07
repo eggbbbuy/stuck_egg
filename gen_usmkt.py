@@ -52,6 +52,22 @@ def fetch_us(tk):
     return {"price": round(last_c, 2), "chgPct": round(pct, 2), "date": d.strftime("%m/%d")}
 
 
+def fetch_hist(tk):
+    """近3年週線收盤 → [{'time':'YYYY-MM-DD','value':收盤}]，給展開走勢圖用。"""
+    j = cf.get(f"https://query1.finance.yahoo.com/v8/finance/chart/{tk}",
+               params={"range": "3y", "interval": "1wk"}, impersonate="chrome124", timeout=15).json()
+    r = j["chart"]["result"][0]
+    ts = r["timestamp"]
+    cl = r["indicators"]["quote"][0]["close"]
+    out = []
+    for t, c in zip(ts, cl):
+        if c is None:
+            continue
+        d = datetime.datetime.utcfromtimestamp(t).strftime("%Y-%m-%d")
+        out.append({"time": d, "value": round(c, 2)})
+    return out
+
+
 def main():
     asof = ""
     out_groups = []
@@ -61,10 +77,15 @@ def main():
             try:
                 q = fetch_us(tk)
                 asof = q["date"]
-                rows.append({"tk": tk, "name": name, "desc": desc, **q})
-                print(f"  {tk} {q['price']} ({q['chgPct']:+}%) {q['date']}")
+                try:
+                    hist = fetch_hist(tk)
+                except Exception as he:
+                    hist = []
+                    print(f"  {tk} hist FAIL {he}")
+                rows.append({"tk": tk, "name": name, "desc": desc, **q, "hist": hist})
+                print(f"  {tk} {q['price']} ({q['chgPct']:+}%) {q['date']} hist={len(hist)}")
             except Exception as e:
-                rows.append({"tk": tk, "name": name, "desc": desc, "price": None, "chgPct": None, "date": ""})
+                rows.append({"tk": tk, "name": name, "desc": desc, "price": None, "chgPct": None, "date": "", "hist": []})
                 print(f"  {tk} FAIL {e}")
         out_groups.append({"key": g["key"], "icon": g["icon"], "title": g["title"],
                            "note": g["note"], "stocks": rows})

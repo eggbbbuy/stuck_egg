@@ -116,6 +116,12 @@ def main():
                     run_daily_update(t)
                 except Exception as e:
                     print(f"[{t:%m-%d %H:%M}] 每日更新錯誤: {e}", flush=True)
+                # 盯盤:收盤後檢查強茂/台半止穩停損訊號,有訊號才發TG(stock_watch 內部每日去重)
+                try:
+                    import stock_watch
+                    stock_watch.run_stock_watch()
+                except Exception as e:
+                    print(f"[{t:%m-%d %H:%M}] 盯盤錯誤: {e}", flush=True)
             else:
                 print(f"[{t:%m-%d %H:%M}] 非盤中，休息", flush=True)
             time.sleep(OFF_SLEEP)

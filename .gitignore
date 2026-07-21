@@ -1,3 +1,8 @@
 quote_loop.log
 quote_loop.err.log
 __pycache__/
+
+# 本機盤中底部監控(含個人成本,不上傳)
+bottom_watch.py
+bottom_watch*.log
+_bottom_watch_stamp.json

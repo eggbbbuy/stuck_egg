@@ -18,9 +18,12 @@ WATCH = {
     "5425": ("台半", ".TWO"),
 }
 
-# Telegram(沿用 jp_web 的 bot;發到同一個使用者)
-TG_TOKEN = "8762980864:AAFNWZf9ljU54gYKZwAStX9QGRe7khZZ9A8"
+# Telegram(沿用 jp_web 的 bot;token 存本機 _tg_secret.txt,不進版控)
 TG_CHAT = "5072938387"
+try:
+    TG_TOKEN = open(os.path.join(HERE, "_tg_secret.txt"), encoding="utf-8").read().strip()
+except Exception:
+    TG_TOKEN = os.environ.get("TG_BOT_TOKEN", "")
 
 
 def tg_send(text):

@@ -6,3 +6,10 @@ __pycache__/
 bottom_watch.py
 bottom_watch*.log
 _bottom_watch_stamp.json
+
+# 機密與本機籌碼工具(不上傳)
+_tg_secret.txt
+chip_screen.py
+_chip_snaps/
+_chip_agent_stamp.txt
+_stock_watch_stamp.json

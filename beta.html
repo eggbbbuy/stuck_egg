@@ -1,208 +1,191 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>正2 + 現金 Beta 再平衡計算機 | stuck_egg</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚖️ 正2 + 現金 Beta 攤平計算機</title>
 <style>
-  :root{--bg:#0e1117;--card:#161b24;--line:#252b38;--mut:#9aa4b2;--txt:#e6e9ef;
-        --gold:#c9a14a;--up:#ef5350;--down:#26a69a;--ok:#2ecc71}
+  :root{ --bg:#0f1420; --card:#1a2233; --line:#2b3550; --txt:#e8edf6; --sub:#95a3bd;
+         --buy:#22c55e; --sell:#ef4444; --acc:#3b82f6; --warn:#f59e0b; }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--txt);
-       font-family:-apple-system,"Noto Sans TC","Microsoft JhengHei",Segoe UI,Roboto,sans-serif;line-height:1.6}
-  .wrap{max-width:920px;margin:0 auto;padding:24px 16px 60px}
-  h1{font-size:1.35rem;margin:.2em 0}
-  .sub{color:var(--mut);font-size:.9rem;margin-bottom:18px}
-  .inputs{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}
-  .fld{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
-  .fld label{display:block;color:var(--mut);font-size:.78rem;margin-bottom:4px}
-  .fld input{width:100%;background:#0d1219;border:1px solid var(--line);border-radius:6px;
-             color:var(--txt);font-size:1.05rem;padding:6px 8px;outline:none}
-  .fld input:focus{border-color:var(--gold)}
-  .cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  @media(max-width:680px){.cols{grid-template-columns:1fr}}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
-  .card h2{font-size:.78rem;letter-spacing:1px;color:var(--mut);font-weight:600;margin:0 0 10px;text-transform:uppercase}
-  .gauge{position:relative;width:240px;margin:0 auto}
-  .betaNum{text-align:center;font-size:2.4rem;font-weight:800;color:var(--gold);margin-top:-6px}
-  .betaCap{text-align:center;color:var(--mut);font-size:.8rem;margin-bottom:8px}
-  .barRow{margin:12px 0}
-  .barRow .lab{display:flex;justify-content:space-between;font-size:.82rem;color:var(--mut);margin-bottom:3px}
-  .bar{height:18px;border-radius:9px;background:#0d1219;overflow:hidden;display:flex}
-  .bar .lev{background:linear-gradient(90deg,#caa64f,#e0c074)}
-  .bar .cash{background:#3b4a63}
-  .scale{display:flex;justify-content:space-between;color:var(--mut);font-size:.72rem;margin-top:6px}
-  .kv{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line);font-size:.92rem}
-  .kv:last-child{border-bottom:none}
-  .kv b{font-weight:700}
-  .pill{display:inline-block;padding:2px 10px;border-radius:20px;font-size:.85rem;font-weight:700}
-  .pill.ok{background:rgba(46,204,113,.15);color:var(--ok)}
-  .pill.sell{background:rgba(239,83,80,.15);color:var(--up)}
-  .pill.buy{background:rgba(38,166,154,.15);color:var(--down)}
-  .advice{margin-top:12px;border-radius:10px;padding:12px 14px;font-size:.92rem}
-  .advice.ok{background:rgba(46,204,113,.10);border:1px solid rgba(46,204,113,.35)}
-  .advice.act{background:rgba(239,83,80,.10);border:1px solid rgba(239,83,80,.35)}
-  .advice .big{font-size:1.05rem;font-weight:700;margin-bottom:4px}
-  .how{margin-top:22px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
-  .how h2{font-size:.95rem;margin:.2em 0 .6em}
-  .how ol{margin:0;padding-left:20px} .how li{margin:6px 0;font-size:.92rem}
-  .how .mut{color:var(--mut);font-size:.85rem}
-  .thresh{display:flex;align-items:center;gap:6px;background:#0d1219;border:1px solid var(--line);
-          border-radius:8px;padding:6px 10px;margin-bottom:10px;font-size:.85rem;color:var(--mut)}
-  .thresh input{width:56px;background:#0d1219;border:1px solid var(--line);border-radius:6px;color:var(--txt);padding:3px 6px;text-align:center}
+       font-family:-apple-system,"Segoe UI","PingFang TC","Microsoft JhengHei",sans-serif;
+       padding:16px;max-width:760px;margin:0 auto;-webkit-text-size-adjust:100%}
+  h1{font-size:19px;margin:4px 0 2px}
+  .sub{color:var(--sub);font-size:12px;margin-bottom:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  label{display:block;font-size:12px;color:var(--sub);margin-bottom:4px}
+  input,select{width:100%;padding:9px 10px;border-radius:9px;border:1px solid var(--line);
+        background:#0d1320;color:var(--txt);font-size:15px}
+  input:focus,select:focus{outline:none;border-color:var(--acc)}
+  .hint{font-size:11px;color:var(--sub);margin-top:3px}
+  .summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+  .kv{background:#0d1320;border:1px solid var(--line);border-radius:10px;padding:10px}
+  .kv .k{font-size:11px;color:var(--sub)}
+  .kv .v{font-size:17px;font-weight:700;margin-top:2px}
+  .advice{border-radius:12px;padding:14px;font-size:15px;line-height:1.5;margin-bottom:14px;border:1px solid}
+  .advice.buy{background:rgba(34,197,94,.12);border-color:var(--buy)}
+  .advice.wait{background:rgba(59,130,246,.10);border-color:var(--acc)}
+  .advice.full{background:rgba(245,158,11,.12);border-color:var(--warn)}
+  .advice b{font-size:18px}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
+  th,td{padding:7px 6px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+  th{color:var(--sub);font-weight:600;font-size:11px}
+  td.l,th.l{text-align:left}
+  tr.done{background:rgba(34,197,94,.08)}
+  tr.now{background:rgba(245,158,11,.14)}
+  .tag{font-size:10px;padding:1px 6px;border-radius:6px}
+  .tag.d{background:var(--buy);color:#04210f}
+  .tag.w{background:#33415c;color:var(--sub)}
+  .scroll{overflow-x:auto}
+  .pos{color:var(--buy)} .neg{color:var(--sell)}
+  .foot{font-size:11px;color:var(--sub);line-height:1.5;margin-top:6px}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>⚖️ 正2 + 現金　Beta 再平衡計算機</h1>
-  <div class="sub">輸入你手上的「正2市值」與「現金」，自動算出目前 Beta、偏離程度，以及要不要、怎麼再平衡。</div>
+  <h1>⚖️ 正2 + 現金　Beta 攤平計算機</h1>
+  <div class="sub">餵入你的持有成本，自動算「跌到多少價、買幾張、累計成本、新均價、剩多少現金」。純試算，非投資建議。</div>
 
-  <div class="inputs">
-    <div class="fld"><label>正2 市值（元）</label><input id="lev" type="number" value="600000" min="0" step="1000"></div>
-    <div class="fld"><label>現金（元）</label><input id="cash" type="number" value="400000" min="0" step="1000"></div>
-    <div class="fld"><label>目標 Beta</label><input id="tgt" type="number" value="1.2" min="0" step="0.05"></div>
-    <div class="fld"><label>正2 槓桿倍數</label><input id="mult" type="number" value="2" min="1" step="0.1"></div>
-    <div class="fld"><label>觸發閾值 ±%</label><input id="thr" type="number" value="10" min="1" step="1"></div>
-  </div>
-
-  <div class="cols">
-    <!-- 左：Beta 儀表 + 配置 -->
-    <div class="card">
-      <h2>Portfolio Beta</h2>
-      <div class="gauge">
-        <svg viewBox="0 0 240 140" width="240" height="140">
-          <path d="M20 130 A100 100 0 0 1 220 130" fill="none" stroke="#0d1219" stroke-width="16" stroke-linecap="round"/>
-          <path id="arcFill" d="" fill="none" stroke="url(#g)" stroke-width="16" stroke-linecap="round"/>
-          <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0" stop-color="#3b4a63"/><stop offset="1" stop-color="#e0c074"/></linearGradient></defs>
-          <circle id="tgtDot" r="6" fill="#fff" stroke="#0e1117" stroke-width="2"/>
-          <circle id="curDot" r="7" fill="#2ecc71" stroke="#0e1117" stroke-width="2"/>
-        </svg>
+  <div class="card">
+    <div class="grid">
+      <div><label>目前持股（張，1張=1000股）</label><input id="qty" type="number" value="6" step="1"></div>
+      <div><label>目前平均成本（元/股）</label><input id="avg" type="number" value="33.91" step="0.01"></div>
+      <div><label>目前市價（元/股）</label><input id="mkt" type="number" value="28.53" step="0.01"></div>
+      <div><label>正2 資金上限（總投入成本，元）</label><input id="cap" type="number" value="600000" step="10000"><div class="hint">60萬進場、另留40萬現金</div></div>
+      <div><label>每跌幾 % 攤平一次</label><input id="drop" type="number" value="15" step="1"></div>
+      <div><label>每次加碼張數</label><input id="add" type="number" value="1" step="1"></div>
+      <div>
+        <label>跌幅從哪裡起算</label>
+        <select id="ref">
+          <option value="avg" selected>平均成本往下</option>
+          <option value="mkt">目前市價往下</option>
+        </select>
       </div>
-      <div class="betaNum" id="betaNum">1.20x</div>
-      <div class="betaCap">現在 Beta・<span style="color:#fff">白圈</span>=目標 Beta</div>
-
-      <div class="barRow">
-        <div class="lab"><span>目前配置</span><span id="curAlloc">正2 60% / 現金 40%</span></div>
-        <div class="bar"><div class="lev" id="curLev" style="width:60%"></div><div class="cash" id="curCash" style="width:40%"></div></div>
-      </div>
-      <div class="barRow">
-        <div class="lab"><span>目標配置</span><span id="tgtAlloc">正2 60% / 現金 40%</span></div>
-        <div class="bar"><div class="lev" id="tgtLev" style="width:60%;opacity:.55"></div><div class="cash" id="tgtCash" style="width:40%;opacity:.55"></div></div>
-      </div>
-      <div class="scale"><span>0% 全現金<br>(Beta 0)</span><span>平衡</span><span id="fullLev" style="text-align:right">全正2<br>(Beta 2)</span></div>
-    </div>
-
-    <!-- 右：偏離分析 / 再平衡建議 -->
-    <div class="card">
-      <h2>偏離分析・再平衡建議</h2>
-      <div class="thresh">觸發門檻：偏離超過 ±<input id="thr2" type="number" value="10" min="1">% 時觸發</div>
-      <div class="kv"><span>上限 Beta（→賣正2）</span><b id="upBeta" style="color:var(--up)">1.320x</b></div>
-      <div class="kv"><span>下限 Beta（→買正2）</span><b id="loBeta" style="color:var(--down)">1.080x</b></div>
-      <div class="kv"><span>Beta 偏離量</span><b id="dev">+0.00x (+0.0%)</b></div>
-      <div class="kv"><span>目前狀態</span><span id="status" class="pill ok">✅ 正常範圍</span></div>
-      <div id="advice" class="advice ok">
-        <div class="big" id="adviceBig">✅ 無需再平衡</div>
-        <div id="adviceTxt" class="mut"></div>
-      </div>
+      <div><label>保留現金（顯示用，元）</label><input id="reserve" type="number" value="400000" step="10000"></div>
     </div>
   </div>
 
-  <div class="how">
-    <h2>🐣 怎麼用（3 步）</h2>
-    <ol>
-      <li>把你手上的 <b>正2 市值</b>（00631L 之類，市值＝張數×現價）和 <b>現金</b>（你留著要買正2的子彈）填進上面兩格。</li>
-      <li>看左邊 <b>現在 Beta</b>：綠點是你現在的、白圈是目標(1.2)。兩個越接近代表越貼目標，不用動。</li>
-      <li>看右邊 <b>目前狀態</b>：<br>
-        ・<span class="pill ok">✅ 正常範圍</span>→ 什麼都不用做，放著。<br>
-        ・<span class="pill sell">賣正2</span>→ 大盤漲多了、正2佔比太高，照建議<b>賣掉一些正2換現金</b>。<br>
-        ・<span class="pill buy">買正2</span>→ 大盤跌深了、正2縮水，照建議<b>拿現金加碼正2</b>。</li>
-    </ol>
-    <div class="mut">原理：Beta＝正2佔比×槓桿倍數（現金Beta=0）。目標 60%正2+40%現金 → 0.6×2＝1.2。<br>
-      只在「偏離超過 ±10%」才動手，就是機械式的高賣低買。⚠️ 正2有波動耗損，盤整盤會被磨，這工具只幫你守紀律、不是穩賺。本頁僅試算，非投資建議。</div>
+  <div id="advice" class="advice wait"></div>
+
+  <div class="card">
+    <div class="summary" id="summary"></div>
   </div>
-</div>
+
+  <div class="card">
+    <div style="font-size:13px;color:var(--sub);margin-bottom:2px">攤平階梯表（每跌一階買一次）</div>
+    <div class="scroll">
+      <table id="tbl">
+        <thead><tr>
+          <th class="l">階</th><th>觸發價</th><th>距今跌幅</th><th>買進(張)</th><th>該筆金額</th>
+          <th>累計張數</th><th>累計投入</th><th>新均價</th><th>剩餘可投入</th><th class="l">狀態</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="foot">
+      「累計投入」達資金上限就停止。「狀態」＝目前市價是否已跌到該價位。<br>
+      ⚠️ 正2是2倍槓桿ETF，長空/盤整有槓桿耗損，攤平不保證回本；資金上限＝別超過100萬中的60萬。此頁為試算工具、非投資建議。
+    </div>
+  </div>
 
 <script>
-  var $ = function (id) { return document.getElementById(id); };
-  var ids = ['lev','cash','tgt','mult','thr','thr2'];
+const $=id=>document.getElementById(id);
+const nf=n=>Math.round(n).toLocaleString('en-US');
+const SH=1000; // 股/張
+function calc(){
+  const qty0=+$('qty').value||0, avg=+$('avg').value||0, mkt=+$('mkt').value||0;
+  const cap=+$('cap').value||0, dropPct=(+$('drop').value||0)/100, add=+$('add').value||0;
+  const refMode=$('ref').value, reserve=+$('reserve').value||0;
 
-  function fmt(n){ return Math.round(n).toLocaleString(); }
-  function pct(n){ return (Math.round(n*10)/10); }
+  const startPrice = refMode==='avg'? avg : mkt;
+  let cumQty=qty0, cumCost=qty0*SH*avg;          // 從現有持股起算
+  const rows=[]; let price=startPrice, i=0;
 
-  // 角度→座標 (半圓: beta 0 在左 180°, beta max 在右 0°)
-  function pt(beta, maxBeta, r){
-    var frac = Math.max(0, Math.min(1, beta/maxBeta));
-    var ang = Math.PI - frac*Math.PI;        // 180°→0°
-    return { x: 120 + r*Math.cos(ang), y: 130 - r*Math.sin(ang) };
-  }
-  function arc(beta, maxBeta){
-    var p = pt(beta, maxBeta, 100);
-    var large = 0, frac = beta/maxBeta;
-    var sweep = 1;
-    return 'M20 130 A100 100 0 ' + (frac>0.5?1:0) + ' 1 ' + p.x.toFixed(1) + ' ' + p.y.toFixed(1);
-  }
+  // 第0列：現有持股
+  rows.push({step:0, price:avg, drop:null, buyLots:qty0, amt:qty0*SH*avg,
+             cumQty, cumCost, newAvg:avg, left:cap-cumCost, hold:true});
 
-  function calc(){
-    var lev = +$('lev').value || 0, cash = +$('cash').value || 0;
-    var tgt = +$('tgt').value || 1.2, mult = +$('mult').value || 2;
-    var thr = +$('thr').value || 10;
-    $('thr2').value = thr;                      // 兩個閾值輸入同步
-    var total = lev + cash;
-    var wLev = total>0 ? lev/total : 0;
-    var beta = wLev * mult;                      // 現在 Beta
-    var devAbs = beta - tgt;
-    var devPct = tgt>0 ? devAbs/tgt*100 : 0;
-    var up = tgt*(1+thr/100), lo = tgt*(1-thr/100);
-    var maxBeta = mult;
-
-    // 目標配置
-    var wLevTgt = mult>0 ? tgt/mult : 0;        // 例 1.2/2 = 0.6
-    var levTgtVal = total * wLevTgt;
-    var adj = levTgtVal - lev;                   // >0 買正2, <0 賣正2
-
-    // 儀表
-    $('arcFill').setAttribute('d', arc(beta, maxBeta));
-    var c = pt(beta, maxBeta, 100); $('curDot').setAttribute('cx', c.x); $('curDot').setAttribute('cy', c.y);
-    var t = pt(tgt, maxBeta, 100); $('tgtDot').setAttribute('cx', t.x); $('tgtDot').setAttribute('cy', t.y);
-    $('betaNum').textContent = (Math.round(beta*100)/100).toFixed(2) + 'x';
-    $('fullLev').innerHTML = '全正2<br>(Beta ' + (Math.round(maxBeta*10)/10) + ')';
-
-    // 配置條
-    $('curLev').style.width = (wLev*100)+'%'; $('curCash').style.width = ((1-wLev)*100)+'%';
-    $('tgtLev').style.width = (wLevTgt*100)+'%'; $('tgtCash').style.width = ((1-wLevTgt)*100)+'%';
-    $('curAlloc').textContent = '正2 '+pct(wLev*100)+'% / 現金 '+pct((1-wLev)*100)+'%';
-    $('tgtAlloc').textContent = '正2 '+pct(wLevTgt*100)+'% / 現金 '+pct((1-wLevTgt)*100)+'%';
-
-    // 偏離面板
-    $('upBeta').textContent = (Math.round(up*1000)/1000)+'x';
-    $('loBeta').textContent = (Math.round(lo*1000)/1000)+'x';
-    var sign = devAbs>=0?'+':'';
-    $('dev').textContent = sign+(Math.round(devAbs*1000)/1000)+'x ('+sign+pct(devPct)+'%)';
-    $('dev').style.color = Math.abs(devPct)>thr ? (devAbs>0?'var(--up)':'var(--down)') : 'var(--txt)';
-
-    var st = $('status'), ad = $('advice'), big = $('adviceBig'), tx = $('adviceTxt');
-    if (beta >= up){
-      st.className='pill sell'; st.textContent='🔺 觸發：賣正2';
-      ad.className='advice act'; big.textContent='⚠️ 該再平衡：賣正2換現金';
-      tx.innerHTML='正2佔比過高（Beta '+ (Math.round(beta*100)/100) +' ≥ 上限 '+(Math.round(up*1000)/1000)+'）。<br>建議賣出正2約 <b>$'+fmt(-adj)+'</b>、轉現金，拉回目標 '+pct(wLevTgt*100)+'%/'+pct((1-wLevTgt)*100)+'%。';
-    } else if (beta <= lo){
-      st.className='pill buy'; st.textContent='🔻 觸發：買正2';
-      ad.className='advice act'; big.textContent='⚠️ 該再平衡：拿現金加碼正2';
-      tx.innerHTML='正2佔比過低（Beta '+ (Math.round(beta*100)/100) +' ≤ 下限 '+(Math.round(lo*1000)/1000)+'）。<br>建議買進正2約 <b>$'+fmt(adj)+'</b>（動用現金），拉回目標 '+pct(wLevTgt*100)+'%/'+pct((1-wLevTgt)*100)+'%。';
-    } else {
-      st.className='pill ok'; st.textContent='✅ 正常範圍';
-      ad.className='advice ok'; big.textContent='✅ 無需再平衡';
-      var dir = adj>=0 ? ('買進正2 $'+fmt(Math.abs(adj))+' / 減現金') : ('賣出正2 $'+fmt(Math.abs(adj))+' / 增現金');
-      tx.innerHTML='偏離 '+pct(Math.abs(devPct))+'%，未超過 ±'+thr+'%，放著就好。<br><span style="color:var(--mut)">（若想精確貼齊目標 Beta '+tgt+'：'+dir+'）</span>';
-    }
+  while(i<12 && add>0){
+    price = price*(1-dropPct);
+    if(price < startPrice*0.2) break;             // 跌超過80%就不再往下列（不切實際）
+    const amt = price*SH*add;
+    if(cumCost+amt > cap) break;                  // 超過資金上限就停
+    cumQty += add; cumCost += amt; i++;
+    const dropFromMkt = mkt>0? (price/mkt-1) : 0;
+    rows.push({step:i, price, drop:dropFromMkt, buyLots:add, amt,
+               cumQty, cumCost, newAvg:cumCost/(cumQty*SH), left:cap-cumCost,
+               reached: mkt>0 && mkt<=price+1e-9});
   }
 
-  ids.forEach(function(id){ $(id).addEventListener('input', function(){
-    if(id==='thr2'){ $('thr').value=$('thr2').value; }
-    calc();
-  }); });
-  calc();
+  // 找「下一個買點」= 市價尚未跌到的第一個階（狀態=等待中，價最高者）
+  let nextRow=null, buyNowRow=null;
+  for(let k=1;k<rows.length;k++){
+    if(rows[k].reached){ buyNowRow=rows[k]; }      // 已到價（可買）
+    else { nextRow=rows[k]; break; }
+  }
+
+  // 建議框
+  const adv=$('advice');
+  if(rows.length<=1){
+    adv.className='advice full';
+    adv.innerHTML='資金上限已被現有持股用滿（或每次加碼張數為0），沒有可攤平的空間。';
+  } else if(buyNowRow){
+    adv.className='advice buy';
+    adv.innerHTML=`✅ <b>現在就到買點了</b><br>目前市價 $${mkt} 已跌到第 ${buyNowRow.step} 階（$${buyNowRow.price.toFixed(2)}）。`+
+      `建議買進 <b>${buyNowRow.buyLots} 張</b>（約 $${nf(buyNowRow.buyLots*SH*mkt)}）。`+
+      (nextRow? `<br>下一階買點：$${nextRow.price.toFixed(2)}（再跌 ${(Math.abs(nextRow.drop)*100).toFixed(1)}%）`:'');
+  } else if(nextRow){
+    adv.className='advice wait';
+    const need=(1-nextRow.price/mkt)*100;
+    adv.innerHTML=`⏳ <b>還沒到買點</b><br>目前市價 $${mkt}。下一個攤平點：<b>$${nextRow.price.toFixed(2)}</b>`+
+      `（再跌約 ${need.toFixed(1)}%）→ 到價買 ${nextRow.buyLots} 張（約 $${nf(nextRow.buyLots*SH*nextRow.price)}）。`;
+  } else {
+    adv.className='advice full';
+    adv.innerHTML='📦 <b>資金上限已排滿</b>，階梯表已列到 60 萬用完為止。';
+  }
+
+  // 用不滿上限的提醒
+  const maxInvest=rows[rows.length-1].cumCost;
+  if(rows.length>1 && maxInvest < cap*0.98){
+    adv.innerHTML += `<br><span style="color:var(--warn)">⚠️ 此設定（每跌 ${(+$('drop').value)}% 買 ${add} 張）最多只投入約 $${nf(maxInvest)}，用不滿上限 $${nf(cap)}。想用滿 → 調高「每次加碼張數」或縮小「每跌 %」。</span>`;
+  }
+
+  // 摘要
+  const lastPlan=rows[rows.length-1];
+  const curVal=qty0*SH*mkt, curCost=qty0*SH*avg, pl=curVal-curCost;
+  $('summary').innerHTML=`
+    <div class="kv"><div class="k">目前持股市值</div><div class="v">$${nf(curVal)}</div></div>
+    <div class="kv"><div class="k">目前未實現損益</div><div class="v ${pl>=0?'pos':'neg'}">${pl>=0?'+':''}$${nf(pl)} (${(pl/curCost*100).toFixed(1)}%)</div></div>
+    <div class="kv"><div class="k">若排滿：累計張數</div><div class="v">${lastPlan.cumQty} 張</div></div>
+    <div class="kv"><div class="k">若排滿：累計投入</div><div class="v">$${nf(lastPlan.cumCost)}</div></div>
+    <div class="kv"><div class="k">若排滿：最終均價</div><div class="v">$${lastPlan.newAvg.toFixed(2)}</div></div>
+    <div class="kv"><div class="k">保留現金</div><div class="v">$${nf(reserve)}</div></div>`;
+
+  // 表格
+  const tb=$('tbl').querySelector('tbody'); tb.innerHTML='';
+  rows.forEach(r=>{
+    const tr=document.createElement('tr');
+    let statusHtml, cls='';
+    if(r.hold){ statusHtml='<span class="tag w">現有持股</span>'; }
+    else if(r.reached){ statusHtml='<span class="tag d">✅已到價</span>'; cls=(r===buyNowRow)?'now':'done'; }
+    else { statusHtml='<span class="tag w">⏳等跌到</span>'; }
+    tr.className=cls;
+    tr.innerHTML=`<td class="l">${r.hold?'持有':r.step}</td>
+      <td>$${r.price.toFixed(2)}</td>
+      <td>${r.drop==null?'—':(r.drop*100).toFixed(1)+'%'}</td>
+      <td>${r.buyLots}</td>
+      <td>$${nf(r.amt)}</td>
+      <td>${r.cumQty}</td>
+      <td>$${nf(r.cumCost)}</td>
+      <td>$${r.newAvg.toFixed(2)}</td>
+      <td>$${nf(r.left)}</td>
+      <td class="l">${statusHtml}</td>`;
+    tb.appendChild(tr);
+  });
+}
+document.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',calc));
+calc();
 </script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>選品倉庫 · Daytona</title>
+<title>71_egg選品倉庫 · Daytona</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -41,6 +41,11 @@
   .now{font-weight:700;font-size:16px;}.now.sale{color:var(--red);}
   .was{font-size:12px;color:#aaa;text-decoration:line-through;}
   .off{font-size:11px;font-weight:700;color:var(--red);}
+  .pager{display:flex;gap:6px;justify-content:center;align-items:center;flex-wrap:wrap;padding:28px 10px 6px;}
+  .pager button{font-family:inherit;font-size:14px;min-width:38px;padding:8px 12px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer;color:var(--ink);}
+  .pager button.on{background:var(--ink);color:#fff;border-color:var(--ink);font-weight:700;}
+  .pager button:disabled{opacity:.4;cursor:default;}
+  .pager .pinfo{font-size:13px;color:var(--sub);margin:0 8px;}
   footer{text-align:center;color:var(--sub);font-size:12px;padding:30px;}
   .loading{text-align:center;color:var(--sub);padding:60px;font-size:14px;}
   /* modal */
@@ -81,7 +86,7 @@
 <body>
 <header>
   <div class="head-in">
-    <div class="logo">選品倉庫<small>Daytona</small></div>
+    <div class="logo">71_egg選品倉庫<small>Daytona</small></div>
     <div class="controls">
       <div class="toggle" id="saleToggle">🔥 只看特價</div>
       <select id="catSel"></select>
@@ -97,13 +102,14 @@
   </div>
   <div class="count" id="count"></div>
 </header>
-<main><div class="grid" id="grid"></div><div class="loading" id="loading">載入商品中…</div></main>
+<main><div class="grid" id="grid"></div><div class="pager" id="pager"></div><div class="loading" id="loading">載入商品中…</div></main>
 <footer>資料來源：Daytona Park · 價格以官網為準</footer>
 <div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
 
 <script>
 const LINE_URL='https://line.me/R/ti/p/%40344mwpgw';
-let DATA=[], view=[], onlySale=false;
+let DATA=[], view=[], onlySale=false, curPage=1;
+const PER=200;
 const $=id=>document.getElementById(id);
 const grid=$('grid'),catSel=$('catSel'),brandInput=$('brandInput'),brandList=$('brandList'),sortSel=$('sortSel'),saleT=$('saleToggle'),countEl=$('count'),modal=$('modal'),sheet=$('sheet');
 const yen=n=>'¥'+Number(n).toLocaleString();
@@ -128,8 +134,11 @@ function render(){
   else if(s==='plow')list.sort((a,b)=>a.price-b.price);
   else if(s==='phigh')list.sort((a,b)=>b.price-a.price);
   view=list;
-  countEl.textContent=`共 ${list.length} 件`+(onlySale?'（特價中）':'');
-  grid.innerHTML=list.map((p,i)=>{
+  const pages=Math.max(1,Math.ceil(list.length/PER));
+  if(curPage>pages)curPage=1;
+  const start=(curPage-1)*PER, pageItems=list.slice(start,start+PER);
+  countEl.textContent=`共 ${list.length} 件`+(onlySale?'（特價中）':'')+(pages>1?` · 第 ${curPage}/${pages} 頁`:'');
+  grid.innerHTML=pageItems.map((p,ii)=>{const i=start+ii;
     const off=pct(p),c=cols(p);
     const chips=c.slice(0,4).map(x=>`<span class="cchip">${x}</span>`).join('')+(c.length>4?`<span class="cchip">+${c.length-4}</span>`:'');
     const ph=off>0?`<span class="now sale">${yen(p.price)}</span><span class="was">${yen(p.orig)}</span><span class="off">-${off}%</span>`:`<span class="now">${yen(p.price)}</span>`;
@@ -138,7 +147,24 @@ function render(){
       <div class="info"><div class="brand">${p.brand||''}</div><div class="name">${p.title||''}</div>
       <div class="colors">${chips}</div><div class="price">${ph}</div></div></div>`;
   }).join('');
+  renderPager(pages);
+  window.scrollTo(0,0);
 }
+function renderPager(pages){
+  const pager=$('pager');
+  if(pages<=1){pager.innerHTML='';return;}
+  let btns=`<button ${curPage===1?'disabled':''} onclick="goPage(${curPage-1})">‹</button>`;
+  const win=2; const nums=new Set([1,pages]);
+  for(let n=curPage-win;n<=curPage+win;n++){if(n>=1&&n<=pages)nums.add(n);}
+  const sorted=[...nums].sort((a,b)=>a-b); let prev=0;
+  for(const n of sorted){
+    if(prev&&n-prev>1)btns+=`<span class="pinfo">…</span>`;
+    btns+=`<button class="${n===curPage?'on':''}" onclick="goPage(${n})">${n}</button>`;prev=n;
+  }
+  btns+=`<button ${curPage===pages?'disabled':''} onclick="goPage(${curPage+1})">›</button>`;
+  pager.innerHTML=btns;
+}
+function goPage(n){curPage=n;render();}
 function chartHtml(sc){
   if(!sc||!sc.rows||!sc.rows.length)return '';
   const th=sc.headers.map(h=>`<th>${h}</th>`).join('');
@@ -164,8 +190,9 @@ function swap(el,src){$('mMain').src=src;[...el.parentElement.children].forEach(
 function closeM(){modal.classList.remove('open');document.body.style.overflow='';}
 modal.onclick=e=>{if(e.target===modal)closeM();};
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM();});
-saleT.onclick=()=>{onlySale=!onlySale;saleT.classList.toggle('on',onlySale);render();};
-catSel.onchange=render;sortSel.onchange=render;brandInput.oninput=render;
+function reFilter(){curPage=1;render();}
+saleT.onclick=()=>{onlySale=!onlySale;saleT.classList.toggle('on',onlySale);reFilter();};
+catSel.onchange=reFilter;sortSel.onchange=reFilter;brandInput.oninput=reFilter;
 </script>
 </body>
 </html>

@@ -127,15 +127,23 @@
 <script>
 const LINE_URL='https://line.me/R/ti/p/%40344mwpgw';
 let DATA=[], view=[], onlySale=false, curPage=1;
-const PER=200;
+const PER=100;
+const SHARDS={};
 const $=id=>document.getElementById(id);
 const grid=$('grid'),catSel=$('catSel'),brandInput=$('brandInput'),brandDrop=$('brandDrop'),sortSel=$('sortSel'),saleT=$('saleToggle'),countEl=$('count'),modal=$('modal'),sheet=$('sheet');
 let ALL_BRANDS=[], selBrand='';
 const yen=n=>'¥'+Number(n).toLocaleString();
 const pct=p=>p.off||(p.orig&&p.price&&p.orig>p.price?Math.round((1-p.price/p.orig)*100):0);
 const cols=p=>(p.colors&&p.colors.length?p.colors:[]);
-fetch('products.json').then(r=>r.json()).then(d=>{DATA=d;$('loading').style.display='none';initFilters();render();})
+fetch('products_list.json').then(r=>r.json()).then(d=>{DATA=d;$('loading').style.display='none';initFilters();render();})
   .catch(e=>{$('loading').textContent='載入失敗：'+e;});
+async function loadDetail(p){
+  if(!(p.sh in SHARDS)){
+    try{SHARDS[p.sh]=await fetch('detail/detail_'+p.sh+'.json').then(r=>r.json());}
+    catch(e){SHARDS[p.sh]={};}
+  }
+  return SHARDS[p.sh][p.id]||{images:[p.img],size_chart:null};
+}
 function initFilters(){
   const cats=[...new Set(DATA.map(p=>p.cat).filter(Boolean))].sort();
   catSel.innerHTML='<option value="">全部分類</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');
@@ -170,7 +178,7 @@ function render(){
     const chips=c.slice(0,4).map(x=>`<span class="cchip">${x}</span>`).join('')+(c.length>4?`<span class="cchip">+${c.length-4}</span>`:'');
     const ph=off>0?`<span class="now sale">${yen(p.price)}</span><span class="was">${yen(p.orig)}</span><span class="off">-${off}%</span>`:`<span class="now">${yen(p.price)}</span>`;
     return `<div class="card" onclick="openM(${i})"><div class="thumb">${off>0?`<span class="badge">-${off}%</span>`:''}${p.cat?`<span class="cat-tag">${p.cat}</span>`:''}
-      <img loading="lazy" src="${p.images[0]}"><img class="alt" loading="lazy" src="${p.images[1]||p.images[0]}"></div>
+      <img loading="lazy" src="${p.img}"></div>
       <div class="info"><div class="brand">${p.brand||''}</div><div class="name">${p.title||''}</div>
       <div class="colors">${chips}</div><div class="price">${ph}</div></div></div>`;
   }).join('');
@@ -198,19 +206,23 @@ function chartHtml(sc){
   const tb=sc.rows.map(r=>'<tr>'+r.map(c=>`<td>${c}</td>`).join('')+'</tr>').join('');
   return `<div class="m-sec"><div class="m-label"><b>尺寸表</b>（cm）</div><div class="m-chart-wrap"><table class="m-chart"><thead><tr>${th}</tr></thead><tbody>${tb}</tbody></table></div></div>`;
 }
-function openM(i){
+async function openM(i){
   const p=view[i],off=pct(p),c=cols(p);
+  modal.classList.add('open');document.body.style.overflow='hidden';
+  sheet.innerHTML=`<div style="padding:60px;text-align:center;color:#999;grid-column:1/-1">載入中…</div>`;
+  const detail=await loadDetail(p);
+  const imgs=(detail.images&&detail.images.length)?detail.images:[p.img];
+  const chart=detail.size_chart;
   const ph=off>0?`<span class="m-now sale">${yen(p.price)}</span><span class="m-was">${yen(p.orig)}</span><span class="m-off">-${off}%</span>`:`<span class="m-now">${yen(p.price)}</span>`;
   const colHtml=c.length?`<div class="m-sec"><div class="m-label">顏色：<b class="selVal" data-g="c">${c[0]}</b></div><div class="m-opts">${c.map((x,j)=>`<span class="m-opt${j===0?' first':''}" onclick="selOpt(this,'c')">${x}</span>`).join('')}</div></div>`:'';
   const szHtml=(p.sizes&&p.sizes.length)?`<div class="m-sec"><div class="m-label">尺寸：<b class="selVal" data-g="s">${p.sizes[0]}</b></div><div class="m-opts">${p.sizes.map((x,j)=>`<span class="m-opt${j===0?' first':''}" onclick="selOpt(this,'s')">${x}</span>`).join('')}</div></div>`:'';
-  const thumbs=p.images.map((im,j)=>`<img src="${im}" class="${j===0?'sel':''}" onclick="swap(this,'${im}')">`).join('');
-  sheet.innerHTML=`<div class="m-gallery"><div class="m-main"><img id="mMain" src="${p.images[0]}"></div><div class="m-thumbs">${thumbs}</div></div>
+  const thumbs=imgs.map((im,j)=>`<img src="${im}" class="${j===0?'sel':''}" onclick="swap(this,'${im}')">`).join('');
+  sheet.innerHTML=`<div class="m-gallery"><div class="m-main"><img id="mMain" src="${imgs[0]}"></div><div class="m-thumbs">${thumbs}</div></div>
     <div class="m-info"><button class="m-close" onclick="closeM()">×</button>
     <div class="m-brand">${p.brand||''}${p.cat?' · '+p.cat:''}</div><div class="m-name">${p.title||''}</div>
     <div class="m-price">${ph}</div><div class="m-sku">商品編號：${p.id||''}</div>
-    ${colHtml}${szHtml}${chartHtml(p.size_chart)}
+    ${colHtml}${szHtml}${chartHtml(chart)}
     <a class="m-cta" href="${LINE_URL}" target="_blank" rel="noopener">送出訂購單（轉導LINE）</a></div>`;
-  modal.classList.add('open');document.body.style.overflow='hidden';
 }
 function selOpt(el,g){[...el.parentElement.children].forEach(t=>t.classList.remove('first'));el.classList.add('first');const l=document.querySelector(`.selVal[data-g="${g}"]`);if(l)l.textContent=el.textContent;}
 function swap(el,src){$('mMain').src=src;[...el.parentElement.children].forEach(t=>t.classList.remove('sel'));el.classList.add('sel');}

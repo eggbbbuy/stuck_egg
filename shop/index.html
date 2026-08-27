@@ -14,9 +14,10 @@
   .head-in{max-width:1280px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
   .logo{font-weight:800;font-size:20px;letter-spacing:.5px;}
   .logo small{font-weight:500;color:var(--sub);font-size:12px;margin-left:8px;}
-  .controls{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
   select,input,.toggle{font-family:inherit;font-size:13px;padding:8px 12px;border:1px solid #ddd;border-radius:999px;background:#fff;cursor:pointer;color:var(--ink);}
-  .combo{position:relative;}
+  .combo{position:relative;margin-left:auto;order:1;}
+  .controls{order:2;}
   #brandInput{cursor:text;min-width:170px;width:100%;padding-right:26px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
   .combo-drop{display:none;position:fixed;min-width:200px;max-width:min(320px,90vw);max-height:60vh;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#fff;border:1px solid #ddd;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.18);z-index:200;padding:4px;}
   .combo-drop.open{display:block;}
@@ -27,11 +28,12 @@
   .count{font-size:12px;color:var(--sub);width:100%;max-width:1280px;margin:0 auto;padding:8px 20px 0;}
   @media(max-width:640px){
     .head-in{padding:9px 12px;gap:8px;}
-    .logo{font-size:16px;}
+    .logo{font-size:16px;flex:1 1 auto;}
     .logo small{display:none;}
-    .controls{margin-left:0;width:100%;flex-wrap:wrap;gap:6px;}/* 換行,不橫向滑(品牌框位置固定) */
+    #brandCombo{margin-left:8px;flex:0 0 auto;width:148px;}/* 跟logo同排,右上角 */
+    .controls{margin-left:0;width:100%;flex-wrap:wrap;gap:6px;}/* 下一排,換行不橫滑 */
     select,input,.toggle{font-size:12px;padding:7px 11px;}
-    #brandInput{min-width:150px;font-size:16px;}/* 16px 防止 iOS 點輸入框自動放大 */
+    #brandInput{min-width:0;font-size:16px;}/* 16px 防止 iOS 點輸入框自動放大 */
     .count{padding:5px 12px 0;font-size:11px;}
   }
   main{max-width:1280px;margin:0 auto;padding:14px 16px 60px;}
@@ -104,13 +106,13 @@
 <header>
   <div class="head-in">
     <div class="logo">71_egg選品倉庫<small>Daytona</small></div>
+    <div class="combo" id="brandCombo">
+      <input id="brandInput" placeholder="全部品牌" autocomplete="off">
+      <div class="combo-drop" id="brandDrop"></div>
+    </div>
     <div class="controls">
       <div class="toggle" id="saleToggle">🔥 只看特價</div>
       <select id="catSel"></select>
-      <div class="combo" id="brandCombo">
-        <input id="brandInput" placeholder="全部品牌" autocomplete="off">
-        <div class="combo-drop" id="brandDrop"></div>
-      </div>
       <select id="sortSel">
         <option value="new">預設(新到舊)</option>
         <option value="off">折扣多→少</option>

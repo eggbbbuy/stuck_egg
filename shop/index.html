@@ -41,30 +41,33 @@
   .was{font-size:12px;color:#aaa;text-decoration:line-through;}
   .off{font-size:11px;font-weight:700;color:var(--red);}
   footer{text-align:center;color:var(--sub);font-size:12px;padding:30px;}
-  /* modal */
-  .modal{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:24px 12px;}
+  /* modal — Shopify 商品頁風格, 圖片不超出視窗 */
+  .modal{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;padding:20px;}
   .modal.open{display:flex;}
-  .sheet{background:#fff;border-radius:16px;max-width:960px;width:100%;overflow:hidden;display:grid;grid-template-columns:1fr;}
-  @media(min-width:760px){.sheet{grid-template-columns:1.1fr 1fr;}}
-  .m-gallery{background:#f4f4f4;padding:14px;}
-  .m-main{width:100%;aspect-ratio:1/1.15;background:#eee;border-radius:10px;overflow:hidden;}
-  .m-main img{width:100%;height:100%;object-fit:cover;}
-  .m-thumbs{display:flex;gap:8px;overflow-x:auto;margin-top:10px;padding-bottom:4px;}
-  .m-thumbs img{width:60px;height:72px;object-fit:cover;border-radius:6px;cursor:pointer;border:2px solid transparent;flex:0 0 auto;}
+  .sheet{background:#fff;border-radius:14px;max-width:1040px;width:100%;max-height:90vh;overflow:hidden;display:grid;grid-template-columns:1fr;}
+  @media(min-width:820px){.sheet{grid-template-columns:1.15fr 1fr;}}
+  .m-gallery{padding:22px;display:flex;flex-direction:column;min-height:0;background:#fff;}
+  .m-main{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;background:#f6f6f6;border-radius:10px;overflow:hidden;max-height:60vh;}
+  .m-main img{max-width:100%;max-height:60vh;width:auto;height:auto;object-fit:contain;display:block;}
+  .m-thumbs{display:flex;gap:8px;overflow-x:auto;margin-top:12px;padding-bottom:4px;flex:0 0 auto;}
+  .m-thumbs img{width:56px;height:66px;object-fit:cover;border-radius:6px;cursor:pointer;border:2px solid #eee;flex:0 0 auto;}
   .m-thumbs img.sel{border-color:var(--ink);}
-  .m-info{padding:22px 22px 26px;position:relative;}
-  .m-close{position:absolute;top:14px;right:16px;font-size:26px;line-height:1;color:#999;cursor:pointer;background:none;border:none;}
+  .m-info{padding:26px 26px 24px;position:relative;overflow-y:auto;max-height:90vh;border-left:1px solid #f0f0f0;}
+  .m-close{position:absolute;top:14px;right:16px;font-size:28px;line-height:1;color:#bbb;cursor:pointer;background:none;border:none;z-index:2;}
   .m-brand{font-size:12px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.6px;}
-  .m-name{font-size:19px;font-weight:600;line-height:1.4;margin:6px 0 14px;}
-  .m-price{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:20px;}
-  .m-now{font-weight:800;font-size:24px;}.m-now.sale{color:var(--red);}
-  .m-was{font-size:15px;color:#aaa;text-decoration:line-through;}
+  .m-name{font-size:22px;font-weight:600;line-height:1.4;margin:8px 0 16px;color:#1b3a6b;}
+  .m-price{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px;}
+  .m-now{font-weight:800;font-size:26px;}.m-now.sale{color:var(--red);}
+  .m-was{font-size:16px;color:#aaa;text-decoration:line-through;}
   .m-off{font-size:13px;font-weight:700;color:#fff;background:var(--red);padding:2px 8px;border-radius:6px;}
-  .m-sec{margin-bottom:18px;}
-  .m-label{font-size:12px;font-weight:700;color:#666;margin-bottom:8px;letter-spacing:.5px;}
-  .m-opts{display:flex;gap:8px;flex-wrap:wrap;}
-  .m-opt{font-size:13px;padding:7px 13px;border:1px solid #ddd;border-radius:8px;background:#fff;}
-  .m-src{display:inline-block;margin-top:8px;font-size:12px;color:#aaa;text-decoration:none;}
+  .m-sku{font-size:12px;color:#aaa;margin:2px 0 20px;padding-bottom:18px;border-bottom:1px solid #eee;}
+  .m-sec{margin-bottom:20px;}
+  .m-label{font-size:13px;color:#333;margin-bottom:9px;}
+  .m-label b{font-weight:700;}
+  .m-opts{display:flex;gap:9px;flex-wrap:wrap;}
+  .m-opt{font-size:14px;min-width:52px;text-align:center;padding:9px 15px;border:1px solid #ccc;border-radius:4px;background:#fff;color:#222;}
+  .m-opt.first{border-color:#111;border-width:2px;}
+  .m-cta{display:block;width:100%;text-align:center;margin-top:8px;background:#c0563f;color:#fff;font-weight:700;font-size:15px;padding:15px;border-radius:6px;text-decoration:none;letter-spacing:1px;}
 </style>
 </head>
 <body>
@@ -121,20 +124,28 @@ function render(){
         <div class="colors">${chips}</div><div class="price">${ph}</div></div></div>`;
   }).join('');
 }
+const LINE_URL='https://line.me/R/ti/p/%40344mwpgw';
 function openM(idx){
   const p=view[idx], off=pct(p), c=cols(p);
   const ph=off>0?`<span class="m-now sale">${yen(p.price)}</span><span class="m-was">${yen(p.orig)}</span><span class="m-off">-${off}%</span>`:`<span class="m-now">${yen(p.price)}</span>`;
-  const colHtml=c.length?`<div class="m-sec"><div class="m-label">顏色（${c.length}色）</div><div class="m-opts">${c.map(x=>`<span class="m-opt">${x}</span>`).join('')}</div></div>`:'';
-  const szHtml=(p.sizes&&p.sizes.length)?`<div class="m-sec"><div class="m-label">尺寸</div><div class="m-opts">${p.sizes.map(x=>`<span class="m-opt">${x}</span>`).join('')}</div></div>`:'';
+  const colHtml=c.length?`<div class="m-sec"><div class="m-label">顏色：<b class="selVal" data-g="c">${c[0]}</b></div><div class="m-opts">${c.map((x,i)=>`<span class="m-opt${i===0?' first':''}" onclick="selOpt(this,'c')">${x}</span>`).join('')}</div></div>`:'';
+  const szHtml=(p.sizes&&p.sizes.length)?`<div class="m-sec"><div class="m-label">尺寸：<b class="selVal" data-g="s">${p.sizes[0]}</b></div><div class="m-opts">${p.sizes.map((x,i)=>`<span class="m-opt${i===0?' first':''}" onclick="selOpt(this,'s')">${x}</span>`).join('')}</div></div>`:'';
   const thumbs=p.images.map((im,i)=>`<img src="${im}" class="${i===0?'sel':''}" onclick="swap(this,'${im}')">`).join('');
   sheet.innerHTML=`
     <div class="m-gallery"><div class="m-main"><img id="mMain" src="${p.images[0]}"></div>
       <div class="m-thumbs">${thumbs}</div></div>
     <div class="m-info"><button class="m-close" onclick="closeM()">×</button>
       <div class="m-brand">${p.brand||''}</div><div class="m-name">${p.title||''}</div>
-      <div class="m-price">${ph}</div>${colHtml}${szHtml}
-      <a class="m-src" href="${p.url}" target="_blank" rel="noopener">在 Daytona 查看原頁 ↗</a></div>`;
+      <div class="m-price">${ph}</div>
+      <div class="m-sku">商品編號：${p.id||''}</div>
+      ${colHtml}${szHtml}
+      <a class="m-cta" href="${LINE_URL}" target="_blank" rel="noopener">送出訂購單（轉導LINE）</a></div>`;
   modal.classList.add('open');document.body.style.overflow='hidden';
+}
+function selOpt(el,g){
+  [...el.parentElement.children].forEach(t=>t.classList.remove('first'));
+  el.classList.add('first');
+  const lbl=document.querySelector(`.selVal[data-g="${g}"]`); if(lbl) lbl.textContent=el.textContent;
 }
 function swap(el,src){document.getElementById('mMain').src=src;[...el.parentElement.children].forEach(t=>t.classList.remove('sel'));el.classList.add('sel');}
 function closeM(){modal.classList.remove('open');document.body.style.overflow='';}

@@ -156,7 +156,6 @@ function render(){
   if(onlySale)list=list.filter(p=>p.on_sale);
   if(catSel.value)list=list.filter(p=>p.cat===catSel.value);
   if(selBrand){list=list.filter(p=>p.brand===selBrand);}
-  else{const bq=(brandInput.value||'').trim().toUpperCase();if(bq)list=list.filter(p=>(p.brand||'').toUpperCase().startsWith(bq));}
   const s=sortSel.value;
   if(s==='off')list.sort((a,b)=>pct(b)-pct(a));
   else if(s==='plow')list.sort((a,b)=>a.price-b.price);
@@ -221,8 +220,11 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM();});
 function reFilter(){curPage=1;render();}
 saleT.onclick=()=>{onlySale=!onlySale;saleT.classList.toggle('on',onlySale);reFilter();};
 catSel.onchange=reFilter;sortSel.onchange=reFilter;
-brandInput.onfocus=()=>{buildBrandDrop(brandInput.value);brandDrop.classList.add('open');};
-brandInput.oninput=()=>{selBrand='';buildBrandDrop(brandInput.value);brandDrop.classList.add('open');reFilter();};
+function openBrandDrop(){buildBrandDrop(brandInput.value);brandDrop.classList.add('open');}
+brandInput.onfocus=openBrandDrop;
+brandInput.onclick=openBrandDrop;
+// 打字只篩「品牌清單」,底下商品不變(只有點選品牌才變)
+brandInput.oninput=()=>{buildBrandDrop(brandInput.value);brandDrop.classList.add('open');};
 document.addEventListener('click',e=>{if(!$('brandCombo').contains(e.target))brandDrop.classList.remove('open');});
 </script>
 </body>

@@ -41,21 +41,23 @@
   .was{font-size:12px;color:#aaa;text-decoration:line-through;}
   .off{font-size:11px;font-weight:700;color:var(--red);}
   footer{text-align:center;color:var(--sub);font-size:12px;padding:30px;}
-  /* modal — Shopify 商品頁風格, 圖片不超出視窗 */
-  .modal{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;padding:20px;}
-  .modal.open{display:flex;}
-  .sheet{background:#fff;border-radius:14px;max-width:1040px;width:100%;max-height:90vh;overflow:hidden;display:grid;grid-template-columns:1fr;}
-  @media(min-width:820px){.sheet{grid-template-columns:1.15fr 1fr;}}
-  .m-gallery{padding:22px;display:flex;flex-direction:column;min-height:0;background:#fff;}
-  .m-main{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;background:#f6f6f6;border-radius:10px;overflow:hidden;max-height:60vh;}
-  .m-main img{max-width:100%;max-height:60vh;width:auto;height:auto;object-fit:contain;display:block;}
-  .m-thumbs{display:flex;gap:8px;overflow-x:auto;margin-top:12px;padding-bottom:4px;flex:0 0 auto;}
+  /* modal — Shopify 商品頁風格; 讓整個 modal 可捲動(手機也能滑) */
+  .modal{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.55);display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:24px 14px;}
+  .modal.open{display:block;}
+  .sheet{background:#fff;border-radius:14px;max-width:1040px;width:100%;margin:0 auto;display:grid;grid-template-columns:1fr;position:relative;}
+  @media(min-width:820px){.sheet{grid-template-columns:1.1fr .9fr;align-items:start;}}
+  .m-gallery{padding:20px;background:#fff;}
+  .m-main{width:100%;height:420px;display:flex;align-items:center;justify-content:center;background:#f6f6f6;border-radius:10px;overflow:hidden;}
+  @media(min-width:820px){.m-main{height:520px;}}
+  .m-main img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;margin:auto;}
+  .m-thumbs{display:flex;gap:8px;overflow-x:auto;margin-top:12px;padding-bottom:4px;}
   .m-thumbs img{width:56px;height:66px;object-fit:cover;border-radius:6px;cursor:pointer;border:2px solid #eee;flex:0 0 auto;}
   .m-thumbs img.sel{border-color:var(--ink);}
-  .m-info{padding:26px 26px 24px;position:relative;overflow-y:auto;max-height:90vh;border-left:1px solid #f0f0f0;}
-  .m-close{position:absolute;top:14px;right:16px;font-size:28px;line-height:1;color:#bbb;cursor:pointer;background:none;border:none;z-index:2;}
+  .m-info{padding:24px 26px 28px;position:relative;}
+  @media(min-width:820px){.m-info{border-left:1px solid #f0f0f0;}}
+  .m-close{position:absolute;top:12px;right:14px;font-size:30px;line-height:1;color:#bbb;cursor:pointer;background:none;border:none;z-index:2;}
   .m-brand{font-size:12px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.6px;}
-  .m-name{font-size:22px;font-weight:600;line-height:1.4;margin:8px 0 16px;color:#1b3a6b;}
+  .m-name{font-size:21px;font-weight:600;line-height:1.45;margin:8px 30px 16px 0;color:#1b3a6b;}
   .m-price{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px;}
   .m-now{font-weight:800;font-size:26px;}.m-now.sale{color:var(--red);}
   .m-was{font-size:16px;color:#aaa;text-decoration:line-through;}
@@ -65,7 +67,7 @@
   .m-label{font-size:13px;color:#333;margin-bottom:9px;}
   .m-label b{font-weight:700;}
   .m-opts{display:flex;gap:9px;flex-wrap:wrap;}
-  .m-opt{font-size:14px;min-width:52px;text-align:center;padding:9px 15px;border:1px solid #ccc;border-radius:4px;background:#fff;color:#222;}
+  .m-opt{font-size:14px;min-width:52px;text-align:center;padding:9px 15px;border:1px solid #ccc;border-radius:4px;background:#fff;color:#222;cursor:pointer;user-select:none;}
   .m-opt.first{border-color:#111;border-width:2px;}
   .m-cta{display:block;width:100%;text-align:center;margin-top:8px;background:#c0563f;color:#fff;font-weight:700;font-size:15px;padding:15px;border-radius:6px;text-decoration:none;letter-spacing:1px;}
 </style>

@@ -15,7 +15,8 @@
   .logo{font-weight:800;font-size:20px;letter-spacing:.5px;}
   .logo small{font-weight:500;color:var(--sub);font-size:12px;margin-left:8px;}
   .controls{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
-  select,.toggle{font-family:inherit;font-size:13px;padding:8px 12px;border:1px solid #ddd;border-radius:999px;background:#fff;cursor:pointer;color:var(--ink);}
+  select,input,.toggle{font-family:inherit;font-size:13px;padding:8px 12px;border:1px solid #ddd;border-radius:999px;background:#fff;cursor:pointer;color:var(--ink);}
+  #brandInput{cursor:text;min-width:170px;}
   .toggle.on{background:var(--red);color:#fff;border-color:var(--red);}
   .count{font-size:12px;color:var(--sub);width:100%;max-width:1280px;margin:0 auto;padding:8px 20px 0;}
   main{max-width:1280px;margin:0 auto;padding:14px 16px 60px;}
@@ -84,7 +85,8 @@
     <div class="controls">
       <div class="toggle" id="saleToggle">🔥 只看特價</div>
       <select id="catSel"></select>
-      <select id="brandSel"></select>
+      <input id="brandInput" list="brandList" placeholder="搜尋品牌(輸入A→A開頭)" autocomplete="off">
+      <datalist id="brandList"></datalist>
       <select id="sortSel">
         <option value="new">預設(新到舊)</option>
         <option value="off">折扣多→少</option>
@@ -103,7 +105,7 @@
 const LINE_URL='https://line.me/R/ti/p/%40344mwpgw';
 let DATA=[], view=[], onlySale=false;
 const $=id=>document.getElementById(id);
-const grid=$('grid'),catSel=$('catSel'),brandSel=$('brandSel'),sortSel=$('sortSel'),saleT=$('saleToggle'),countEl=$('count'),modal=$('modal'),sheet=$('sheet');
+const grid=$('grid'),catSel=$('catSel'),brandInput=$('brandInput'),brandList=$('brandList'),sortSel=$('sortSel'),saleT=$('saleToggle'),countEl=$('count'),modal=$('modal'),sheet=$('sheet');
 const yen=n=>'¥'+Number(n).toLocaleString();
 const pct=p=>p.off||(p.orig&&p.price&&p.orig>p.price?Math.round((1-p.price/p.orig)*100):0);
 const cols=p=>(p.colors&&p.colors.length?p.colors:[]);
@@ -113,13 +115,14 @@ function initFilters(){
   const cats=[...new Set(DATA.map(p=>p.cat).filter(Boolean))].sort();
   catSel.innerHTML='<option value="">全部分類</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');
   const brands=[...new Set(DATA.map(p=>p.brand).filter(Boolean))].sort();
-  brandSel.innerHTML='<option value="">全部品牌</option>'+brands.map(b=>`<option value="${b}">${b}</option>`).join('');
+  brandList.innerHTML=brands.map(b=>`<option value="${b}">`).join('');
 }
 function render(){
   let list=DATA.slice();
   if(onlySale)list=list.filter(p=>p.on_sale);
   if(catSel.value)list=list.filter(p=>p.cat===catSel.value);
-  if(brandSel.value)list=list.filter(p=>p.brand===brandSel.value);
+  const bq=(brandInput.value||'').trim().toUpperCase();
+  if(bq)list=list.filter(p=>(p.brand||'').toUpperCase().startsWith(bq));
   const s=sortSel.value;
   if(s==='off')list.sort((a,b)=>pct(b)-pct(a));
   else if(s==='plow')list.sort((a,b)=>a.price-b.price);
@@ -162,7 +165,7 @@ function closeM(){modal.classList.remove('open');document.body.style.overflow=''
 modal.onclick=e=>{if(e.target===modal)closeM();};
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM();});
 saleT.onclick=()=>{onlySale=!onlySale;saleT.classList.toggle('on',onlySale);render();};
-catSel.onchange=render;brandSel.onchange=render;sortSel.onchange=render;
+catSel.onchange=render;sortSel.onchange=render;brandInput.oninput=render;
 </script>
 </body>
 </html>

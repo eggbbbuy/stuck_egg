@@ -18,7 +18,7 @@
   select,input,.toggle{font-family:inherit;font-size:13px;padding:8px 12px;border:1px solid #ddd;border-radius:999px;background:#fff;cursor:pointer;color:var(--ink);}
   .combo{position:relative;}
   #brandInput{cursor:text;min-width:170px;width:100%;padding-right:26px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
-  .combo-drop{display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:200px;max-width:280px;max-height:320px;overflow-y:auto;background:#fff;border:1px solid #ddd;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:50;padding:4px;}
+  .combo-drop{display:none;position:fixed;min-width:200px;max-width:min(320px,90vw);max-height:60vh;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#fff;border:1px solid #ddd;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.18);z-index:200;padding:4px;}
   .combo-drop.open{display:block;}
   .combo-item{padding:9px 13px;font-size:13px;border-radius:8px;cursor:pointer;white-space:nowrap;}
   .combo-item:hover,.combo-item.hl{background:#f2f2f2;}
@@ -232,7 +232,14 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM();});
 function reFilter(){curPage=1;render();}
 saleT.onclick=()=>{onlySale=!onlySale;saleT.classList.toggle('on',onlySale);reFilter();};
 catSel.onchange=reFilter;sortSel.onchange=reFilter;
-function openBrandDrop(){buildBrandDrop(brandInput.value);brandDrop.classList.add('open');}
+function openBrandDrop(){
+  buildBrandDrop(brandInput.value);
+  const r=brandInput.getBoundingClientRect();
+  brandDrop.style.left=Math.max(8,Math.min(r.left,window.innerWidth-320-8))+'px';
+  brandDrop.style.top=(r.bottom+4)+'px';
+  brandDrop.style.minWidth=Math.max(r.width,180)+'px';
+  brandDrop.classList.add('open');
+}
 brandInput.onfocus=openBrandDrop;
 brandInput.onclick=openBrandDrop;
 // 打字只篩「品牌清單」,底下商品不變(只有點選品牌才變)

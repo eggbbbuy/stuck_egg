@@ -29,8 +29,7 @@
     .head-in{padding:9px 12px;gap:8px;}
     .logo{font-size:16px;}
     .logo small{display:none;}
-    .controls{margin-left:0;width:100%;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;}
-    .controls>*{flex:0 0 auto;}
+    .controls{margin-left:0;width:100%;flex-wrap:wrap;gap:6px;}/* 換行,不橫向滑(品牌框位置固定) */
     select,input,.toggle{font-size:12px;padding:7px 11px;}
     #brandInput{min-width:150px;font-size:16px;}/* 16px 防止 iOS 點輸入框自動放大 */
     .count{padding:5px 12px 0;font-size:11px;}
@@ -239,9 +238,15 @@ catSel.onchange=reFilter;sortSel.onchange=reFilter;
 function openBrandDrop(){
   buildBrandDrop(brandInput.value);
   const r=brandInput.getBoundingClientRect();
-  brandDrop.style.left=Math.max(8,Math.min(r.left,window.innerWidth-320-8))+'px';
-  brandDrop.style.top=(r.bottom+4)+'px';
-  brandDrop.style.minWidth=Math.max(r.width,180)+'px';
+  const s=brandDrop.style;
+  if(window.innerWidth<=640){/* 手機: 幾乎滿版, 不跟輸入框x跑,避免被裁 */
+    s.left='8px';s.right='8px';s.width='auto';s.minWidth='0';s.maxWidth='none';
+    s.top=(r.bottom+4)+'px';
+  }else{
+    s.right='auto';s.width='';s.maxWidth='';
+    s.left=Math.max(8,Math.min(r.left,window.innerWidth-320-8))+'px';
+    s.top=(r.bottom+4)+'px';s.minWidth=Math.max(r.width,180)+'px';
+  }
   brandDrop.classList.add('open');
 }
 brandInput.onfocus=openBrandDrop;

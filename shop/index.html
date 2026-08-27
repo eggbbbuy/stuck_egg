@@ -32,7 +32,7 @@
     .controls{margin-left:0;width:100%;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;}
     .controls>*{flex:0 0 auto;}
     select,input,.toggle{font-size:12px;padding:7px 11px;}
-    #brandInput{min-width:140px;}
+    #brandInput{min-width:150px;font-size:16px;}/* 16px 防止 iOS 點輸入框自動放大 */
     .count{padding:5px 12px 0;font-size:11px;}
   }
   main{max-width:1280px;margin:0 auto;padding:14px 16px 60px;}
@@ -162,7 +162,7 @@ function buildBrandDrop(q){
   if(!items.length)html+=`<div class="combo-item" style="color:#aaa">找不到品牌</div>`;
   brandDrop.innerHTML=html;
 }
-function pickBrand(b){selBrand=b;brandInput.value=b;brandDrop.classList.remove('open');reFilter();}
+function pickBrand(b){selBrand=b;brandInput.value='';brandInput.placeholder=b||'全部品牌';brandInput.blur();brandDrop.classList.remove('open');reFilter();}
 function render(){
   let list=DATA.slice();
   if(onlySale)list=list.filter(p=>p.on_sale);

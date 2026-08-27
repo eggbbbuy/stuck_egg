@@ -16,9 +16,25 @@
   .logo small{font-weight:500;color:var(--sub);font-size:12px;margin-left:8px;}
   .controls{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
   select,input,.toggle{font-family:inherit;font-size:13px;padding:8px 12px;border:1px solid #ddd;border-radius:999px;background:#fff;cursor:pointer;color:var(--ink);}
-  #brandInput{cursor:text;min-width:170px;}
+  .combo{position:relative;}
+  #brandInput{cursor:text;min-width:170px;width:100%;padding-right:26px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
+  .combo-drop{display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:200px;max-width:280px;max-height:320px;overflow-y:auto;background:#fff;border:1px solid #ddd;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:50;padding:4px;}
+  .combo-drop.open{display:block;}
+  .combo-item{padding:9px 13px;font-size:13px;border-radius:8px;cursor:pointer;white-space:nowrap;}
+  .combo-item:hover,.combo-item.hl{background:#f2f2f2;}
+  .combo-item.sel{font-weight:700;color:var(--red);}
   .toggle.on{background:var(--red);color:#fff;border-color:var(--red);}
   .count{font-size:12px;color:var(--sub);width:100%;max-width:1280px;margin:0 auto;padding:8px 20px 0;}
+  @media(max-width:640px){
+    .head-in{padding:9px 12px;gap:8px;}
+    .logo{font-size:16px;}
+    .logo small{display:none;}
+    .controls{margin-left:0;width:100%;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;}
+    .controls>*{flex:0 0 auto;}
+    select,input,.toggle{font-size:12px;padding:7px 11px;}
+    #brandInput{min-width:140px;}
+    .count{padding:5px 12px 0;font-size:11px;}
+  }
   main{max-width:1280px;margin:0 auto;padding:14px 16px 60px;}
   .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
   @media(min-width:640px){.grid{grid-template-columns:repeat(3,1fr);gap:18px;}}
@@ -90,8 +106,10 @@
     <div class="controls">
       <div class="toggle" id="saleToggle">🔥 只看特價</div>
       <select id="catSel"></select>
-      <input id="brandInput" list="brandList" placeholder="搜尋品牌(輸入A→A開頭)" autocomplete="off">
-      <datalist id="brandList"></datalist>
+      <div class="combo" id="brandCombo">
+        <input id="brandInput" placeholder="全部品牌" autocomplete="off">
+        <div class="combo-drop" id="brandDrop"></div>
+      </div>
       <select id="sortSel">
         <option value="new">預設(新到舊)</option>
         <option value="off">折扣多→少</option>
@@ -111,7 +129,8 @@ const LINE_URL='https://line.me/R/ti/p/%40344mwpgw';
 let DATA=[], view=[], onlySale=false, curPage=1;
 const PER=200;
 const $=id=>document.getElementById(id);
-const grid=$('grid'),catSel=$('catSel'),brandInput=$('brandInput'),brandList=$('brandList'),sortSel=$('sortSel'),saleT=$('saleToggle'),countEl=$('count'),modal=$('modal'),sheet=$('sheet');
+const grid=$('grid'),catSel=$('catSel'),brandInput=$('brandInput'),brandDrop=$('brandDrop'),sortSel=$('sortSel'),saleT=$('saleToggle'),countEl=$('count'),modal=$('modal'),sheet=$('sheet');
+let ALL_BRANDS=[], selBrand='';
 const yen=n=>'¥'+Number(n).toLocaleString();
 const pct=p=>p.off||(p.orig&&p.price&&p.orig>p.price?Math.round((1-p.price/p.orig)*100):0);
 const cols=p=>(p.colors&&p.colors.length?p.colors:[]);
@@ -120,15 +139,24 @@ fetch('products.json').then(r=>r.json()).then(d=>{DATA=d;$('loading').style.disp
 function initFilters(){
   const cats=[...new Set(DATA.map(p=>p.cat).filter(Boolean))].sort();
   catSel.innerHTML='<option value="">全部分類</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');
-  const brands=[...new Set(DATA.map(p=>p.brand).filter(Boolean))].sort();
-  brandList.innerHTML=brands.map(b=>`<option value="${b}">`).join('');
+  ALL_BRANDS=[...new Set(DATA.map(p=>p.brand).filter(Boolean))].sort((a,b)=>a.toUpperCase()<b.toUpperCase()?-1:1);
+  buildBrandDrop('');
 }
+function buildBrandDrop(q){
+  q=(q||'').trim().toUpperCase();
+  const items=ALL_BRANDS.filter(b=>!q||b.toUpperCase().startsWith(q));
+  let html=`<div class="combo-item ${selBrand===''?'sel':''}" onclick="pickBrand('')">全部品牌</div>`;
+  html+=items.map(b=>`<div class="combo-item ${selBrand===b?'sel':''}" onclick="pickBrand('${b.replace(/'/g,"\\'")}')">${b}</div>`).join('');
+  if(!items.length)html+=`<div class="combo-item" style="color:#aaa">找不到品牌</div>`;
+  brandDrop.innerHTML=html;
+}
+function pickBrand(b){selBrand=b;brandInput.value=b;brandDrop.classList.remove('open');reFilter();}
 function render(){
   let list=DATA.slice();
   if(onlySale)list=list.filter(p=>p.on_sale);
   if(catSel.value)list=list.filter(p=>p.cat===catSel.value);
-  const bq=(brandInput.value||'').trim().toUpperCase();
-  if(bq)list=list.filter(p=>(p.brand||'').toUpperCase().startsWith(bq));
+  if(selBrand){list=list.filter(p=>p.brand===selBrand);}
+  else{const bq=(brandInput.value||'').trim().toUpperCase();if(bq)list=list.filter(p=>(p.brand||'').toUpperCase().startsWith(bq));}
   const s=sortSel.value;
   if(s==='off')list.sort((a,b)=>pct(b)-pct(a));
   else if(s==='plow')list.sort((a,b)=>a.price-b.price);
@@ -192,7 +220,10 @@ modal.onclick=e=>{if(e.target===modal)closeM();};
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM();});
 function reFilter(){curPage=1;render();}
 saleT.onclick=()=>{onlySale=!onlySale;saleT.classList.toggle('on',onlySale);reFilter();};
-catSel.onchange=reFilter;sortSel.onchange=reFilter;brandInput.oninput=reFilter;
+catSel.onchange=reFilter;sortSel.onchange=reFilter;
+brandInput.onfocus=()=>{buildBrandDrop(brandInput.value);brandDrop.classList.add('open');};
+brandInput.oninput=()=>{selBrand='';buildBrandDrop(brandInput.value);brandDrop.classList.add('open');reFilter();};
+document.addEventListener('click',e=>{if(!$('brandCombo').contains(e.target))brandDrop.classList.remove('open');});
 </script>
 </body>
 </html>

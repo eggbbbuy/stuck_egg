@@ -3,7 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>71_egg選品倉庫 · Daytona</title>
+<title>71_egg選品倉庫｜日本代購精選服飾．LINE 下單</title>
+<meta name="description" content="71_egg 選品倉庫：精選日本 Daytona 等品牌服飾、包包、鞋履與配件，男女生活全系列，每週更新特價。喜歡的商品可直接透過 LINE 下單代購。">
+<link rel="canonical" href="https://eggbbbuy.github.io/stuck_egg/shop/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="71_egg選品倉庫">
+<meta property="og:title" content="71_egg選品倉庫｜日本代購精選服飾">
+<meta property="og:description" content="精選日本品牌服飾．每週更新特價．LINE 直接下單代購">
+<meta property="og:url" content="https://eggbbbuy.github.io/stuck_egg/shop/">
+<meta name="twitter:card" content="summary">
+<link rel="sitemap" type="application/xml" href="sitemap.xml">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"71_egg選品倉庫","url":"https://eggbbbuy.github.io/stuck_egg/shop/","description":"日本代購精選服飾．LINE 下單"}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -124,7 +134,7 @@
   <div class="count" id="count"></div>
 </header>
 <main><div class="grid" id="grid"></div><div class="pager" id="pager"></div><div class="loading" id="loading">載入商品中…</div></main>
-<footer>資料來源：Daytona Park · 價格以官網為準</footer>
+<footer>資料來源：Daytona Park · 價格以官網為準 · <a href="all.html" style="color:#e0281e;text-decoration:none">全部商品列表</a></footer>
 <div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
 
 <script>
@@ -235,7 +245,8 @@ async function openM(i){
     <div class="m-brand">${p.brand||''}${p.cat?' · '+p.cat:''}</div><div class="m-name">${p.title||''}</div>
     <div class="m-price">${ph}</div><div class="m-sku">商品編號：${p.id||''}</div>
     ${colHtml}${szHtml}${chartHtml(chart)}
-    <a class="m-cta" href="${LINE_URL}" target="_blank" rel="noopener">送出訂購單（轉導LINE）</a></div>`;
+    <a class="m-cta" href="${LINE_URL}" target="_blank" rel="noopener">送出訂購單（轉導LINE）</a>
+    <a class="m-perma" href="p/${p.id}.html" style="display:block;text-align:center;margin-top:10px;color:#8a8a8a;font-size:12px;text-decoration:none">🔗 商品專頁（可分享網址）</a></div>`;
 }
 function selOpt(el,g){[...el.parentElement.children].forEach(t=>t.classList.remove('first'));el.classList.add('first');const l=document.querySelector(`.selVal[data-g="${g}"]`);if(l)l.textContent=el.textContent;}
 function swap(el,src){$('mMain').src=src;document.querySelectorAll('.m-thumbs img').forEach(t=>t.classList.remove('sel'));el.classList.add('sel');}

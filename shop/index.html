@@ -149,26 +149,34 @@ async function loadDetail(p){
   }
   return SHARDS[p.sh][p.id]||{images:[p.img],size_chart:null};
 }
+// 聯名 A×B / A x B / A|B / A for B → 取第一個品牌 A
+function brandBase(b){return (b||'').split(/\s*[×✕✖╳/｜|]\s*|\s+x\s+|\s+for\s+/i)[0].trim();}
+// 正規化比對鍵:大寫、去彎/直引號與所有標點空白 (ARC'TERYX 與 ARC’TERYX 都→ARCTERYX)
+function brandKey(b){return brandBase(b).toUpperCase().replace(/[^A-Z0-9]/g,'');}
 function initFilters(){
   const cats=[...new Set(DATA.map(p=>p.cat).filter(Boolean))].sort();
   catSel.innerHTML='<option value="">全部分類</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');
-  ALL_BRANDS=[...new Set(DATA.map(p=>p.brand).filter(Boolean))].sort((a,b)=>a.toUpperCase()<b.toUpperCase()?-1:1);
+  // 依 key 合併同品牌,標籤選最常出現的寫法
+  const bmap={};
+  DATA.forEach(p=>{const k=brandKey(p.brand);if(!k)return;const lab=brandBase(p.brand);(bmap[k]=bmap[k]||{});bmap[k][lab]=(bmap[k][lab]||0)+1;});
+  ALL_BRANDS=Object.keys(bmap).map(k=>{const labs=bmap[k];const label=Object.keys(labs).sort((a,b)=>labs[b]-labs[a]||a.length-b.length)[0];return {key:k,label};})
+    .sort((a,b)=>a.label.toUpperCase()<b.label.toUpperCase()?-1:1);
   buildBrandDrop('');
 }
 function buildBrandDrop(q){
   q=(q||'').trim().toUpperCase();
-  const items=ALL_BRANDS.filter(b=>!q||b.toUpperCase().startsWith(q));
-  let html=`<div class="combo-item ${selBrand===''?'sel':''}" onclick="pickBrand('')">全部品牌</div>`;
-  html+=items.map(b=>`<div class="combo-item ${selBrand===b?'sel':''}" onclick="pickBrand('${b.replace(/'/g,"\\'")}')">${b}</div>`).join('');
+  const items=ALL_BRANDS.filter(o=>!q||o.label.toUpperCase().startsWith(q));
+  let html=`<div class="combo-item ${selBrand===''?'sel':''}" onclick="pickBrand('','')">全部品牌</div>`;
+  html+=items.map(o=>`<div class="combo-item ${selBrand===o.key?'sel':''}" onclick="pickBrand('${o.key}','${o.label.replace(/'/g,"\\'")}')">${o.label}</div>`).join('');
   if(!items.length)html+=`<div class="combo-item" style="color:#aaa">找不到品牌</div>`;
   brandDrop.innerHTML=html;
 }
-function pickBrand(b){selBrand=b;brandInput.value='';brandInput.placeholder=b||'全部品牌';brandInput.blur();brandDrop.classList.remove('open');reFilter();}
+function pickBrand(k,label){selBrand=k;brandInput.value='';brandInput.placeholder=label||'全部品牌';brandInput.blur();brandDrop.classList.remove('open');reFilter();}
 function render(){
   let list=DATA.slice();
   if(onlySale)list=list.filter(p=>p.on_sale);
   if(catSel.value)list=list.filter(p=>p.cat===catSel.value);
-  if(selBrand){list=list.filter(p=>p.brand===selBrand);}
+  if(selBrand){list=list.filter(p=>brandKey(p.brand)===selBrand);}
   const s=sortSel.value;
   if(s==='off')list.sort((a,b)=>pct(b)-pct(a));
   else if(s==='plow')list.sort((a,b)=>a.price-b.price);

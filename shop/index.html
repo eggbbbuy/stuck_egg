@@ -3,17 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="favicon.ico?v=2" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=2">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DFDJR04SH9"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-DFDJR04SH9');</script>
 <title>71_egg選品倉庫｜日本代購精選服飾．LINE 下單</title>
 <meta name="description" content="71_egg 選品倉庫：精選日本 Daytona 等品牌服飾、包包、鞋履與配件，男女生活全系列，每週更新特價。喜歡的商品可直接透過 LINE 下單代購。">
-<link rel="canonical" href="https://kiwiegg.eggy.csie.io/">
+<link rel="canonical" href="https://eggy.csie.io/kiwiegg/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="71_egg選品倉庫">
 <meta property="og:title" content="71_egg選品倉庫｜日本代購精選服飾">
 <meta property="og:description" content="精選日本品牌服飾．每週更新特價．LINE 直接下單代購">
-<meta property="og:url" content="https://kiwiegg.eggy.csie.io/">
+<meta property="og:url" content="https://eggy.csie.io/kiwiegg/">
 <meta name="twitter:card" content="summary">
 <link rel="sitemap" type="application/xml" href="sitemap.xml">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"71_egg選品倉庫","url":"https://kiwiegg.eggy.csie.io/","description":"日本代購精選服飾．LINE 下單"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"71_egg選品倉庫","url":"https://eggy.csie.io/kiwiegg/","description":"日本代購精選服飾．LINE 下單"}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -21,8 +26,9 @@
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:'Inter','Noto Sans TC',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
   header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
-  .head-in{max-width:1280px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
-  .logo{font-weight:800;font-size:20px;letter-spacing:.5px;}
+  .head-in{max-width:1280px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .logo{font-weight:800;font-size:20px;letter-spacing:.5px;flex:1 1 auto;text-align:left;cursor:pointer;}
+  .hicon{width:30px;height:30px;border-radius:7px;border:1px solid #ddd;background:#fff;font-size:16px;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0;flex:0 0 auto;color:var(--ink);}
   .logo small{font-weight:500;color:var(--sub);font-size:12px;margin-left:8px;}
   .controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
   select,input,.toggle{font-family:inherit;font-size:13px;padding:8px 12px;border:1px solid #ddd;border-radius:999px;background:#fff;cursor:pointer;color:var(--ink);}
@@ -38,7 +44,7 @@
   .count{font-size:12px;color:var(--sub);width:100%;max-width:1280px;margin:0 auto;padding:8px 20px 0;}
   @media(max-width:640px){
     .head-in{padding:9px 12px;gap:8px;}
-    .logo{font-size:16px;flex:1 1 auto;}
+    .logo{font-size:16px;flex:1 1 auto;text-align:center;}
     .logo small{display:none;}
     #brandCombo{margin-left:8px;flex:0 0 auto;width:148px;}/* 跟logo同排,右上角 */
     .controls{margin-left:0;width:100%;flex-wrap:wrap;gap:6px;}/* 下一排,換行不橫滑 */
@@ -51,12 +57,40 @@
   @media(min-width:640px){.grid{grid-template-columns:repeat(3,1fr);gap:18px;}}
   @media(min-width:960px){.grid{grid-template-columns:repeat(4,1fr);}}
   @media(min-width:1200px){.grid{grid-template-columns:repeat(5,1fr);}}
-  .card{background:#fff;border-radius:14px;overflow:hidden;cursor:pointer;border:1px solid #f0f0f0;transition:.18s;display:flex;flex-direction:column;}
+  .card{background:#fff;border-radius:14px;overflow:hidden;cursor:pointer;border:1px solid #f0f0f0;transition:.18s;display:flex;flex-direction:column;content-visibility:auto;contain-intrinsic-size:auto 300px;}
   .card:hover{box-shadow:0 8px 24px rgba(0,0,0,.09);transform:translateY(-2px);}
   .thumb{position:relative;aspect-ratio:1/1.18;background:#f3f3f3;overflow:hidden;}
-  .thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .25s;}
-  .thumb img.alt{position:absolute;inset:0;opacity:0;}
-  .card:hover .thumb img.alt{opacity:1;}
+  .cg-strip{display:flex;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+  .cg-strip::-webkit-scrollbar{display:none;}
+  .cg-strip img{flex:0 0 100%;width:100%;height:100%;object-fit:cover;display:block;scroll-snap-align:center;}
+  .cg-nav{position:absolute;top:50%;transform:translateY(-50%);width:26px;height:26px;border:none;border-radius:50%;background:rgba(255,255,255,.82);color:#333;font-size:15px;line-height:1;cursor:pointer;opacity:0;transition:.15s;z-index:2;display:flex;align-items:center;justify-content:center;padding:0;}
+  .cg-nav.prev{left:6px;} .cg-nav.next{right:6px;}
+  .card:hover .cg-nav{opacity:1;}
+  .cg-count{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.55);color:#fff;font-size:10px;padding:1px 7px;border-radius:10px;z-index:2;pointer-events:none;}
+  .sortwrap{position:relative;}
+  .sort-icon{width:34px;height:34px;border:1px solid #ddd;border-radius:9px;background:#fff;cursor:pointer;font-size:15px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;}
+  .sort-pop{display:none;position:absolute;right:0;top:calc(100% + 6px);background:#fff;border:1px solid #eee;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:30;min-width:150px;overflow:hidden;}
+  .sort-pop.open{display:block;}
+  .sp-item{padding:10px 14px;font-size:13px;cursor:pointer;white-space:nowrap;}
+  .sp-item:hover{background:#f5f5f5;}
+  .sp-item.on{color:var(--red);font-weight:600;}
+  #sortwrap{margin-left:auto;}
+  #menuOverlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:2000;display:none;}
+  #menuOverlay.open{display:block;}
+  #menuPanel{position:absolute;top:0;left:0;height:100%;width:82%;max-width:340px;background:#fff;box-shadow:4px 0 24px rgba(0,0,0,.15);display:flex;flex-direction:column;overflow:hidden;}
+  .menu-view{display:flex;flex-direction:column;height:100%;overflow-y:auto;}
+  .menu-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #eee;font-size:16px;flex:0 0 auto;}
+  .menu-head button{border:none;background:none;font-size:26px;line-height:1;cursor:pointer;color:#888;padding:0;width:32px;height:32px;}
+  .menu-back{padding:14px 18px;color:var(--red);font-size:14px;cursor:pointer;border-bottom:1px solid #f0f0f0;flex:0 0 auto;}
+  .menu-row{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;border-bottom:1px solid #f2f2f2;font-size:15px;cursor:pointer;color:#222;text-decoration:none;}
+  .menu-row:hover{background:#fafafa;}.menu-row i{color:#ccc;font-style:normal;font-size:18px;}
+  #menuBrand>input{margin:12px 16px;padding:11px 14px;border:1px solid #ddd;border-radius:9px;font-size:16px;outline:none;background:#fff;flex:0 0 auto;width:auto;min-width:0;box-sizing:border-box;}
+  .menu-list{overflow-y:auto;flex:1;}
+  .menu-search{display:flex;gap:6px;padding:12px 16px;border-bottom:1px solid #f2f2f2;}
+  .menu-search input{flex:1;min-width:0;padding:10px 12px;border:1px solid #ddd;border-radius:9px;font-size:16px;outline:none;}
+  .menu-search button{border:1px solid #ddd;background:#fff;border-radius:9px;padding:0 13px;cursor:pointer;font-size:15px;flex:0 0 auto;}
+  .menu-item{padding:13px 18px;border-bottom:1px solid #f4f4f4;font-size:14px;cursor:pointer;}
+  .menu-item:hover{background:#fafafa;}.menu-item.on{color:var(--red);font-weight:700;}
   .badge{position:absolute;top:10px;left:10px;background:var(--red);color:#fff;font-weight:700;font-size:12px;padding:3px 8px;border-radius:6px;}
   .cat-tag{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.6);color:#fff;font-size:11px;padding:2px 8px;border-radius:6px;}
   .info{padding:11px 12px 14px;display:flex;flex-direction:column;gap:5px;flex:1;}
@@ -115,24 +149,50 @@
 <body>
 <header>
   <div class="head-in">
-    <div class="logo">71_egg選品倉庫<small>Daytona</small></div>
-    <div class="combo" id="brandCombo">
-      <input id="brandInput" placeholder="全部品牌" autocomplete="off">
-      <div class="combo-drop" id="brandDrop"></div>
-    </div>
+    <button id="menuBtn" class="hicon" type="button" aria-label="選單">☰</button>
+    <div class="logo" onclick="goHome()">71_egg選品倉庫<small>Daytona</small></div>
+    <span id="cartSlot"></span>
     <div class="controls">
       <div class="toggle" id="saleToggle">🔥 只看特價</div>
-      <select id="catSel"></select>
-      <select id="sortSel">
-        <option value="new">預設(新到舊)</option>
-        <option value="off">折扣多→少</option>
-        <option value="plow">價格低→高</option>
-        <option value="phigh">價格高→低</option>
+      <select id="genSel">
+        <option value="">全部性別</option>
+        <option value="男">男裝</option>
+        <option value="女">女裝</option>
+        <option value="生活">生活</option>
       </select>
+      <div class="sortwrap" id="sortwrap">
+        <button class="sort-icon" id="sortBtn" type="button" title="排序" aria-label="排序">⇅</button>
+        <div class="sort-pop" id="sortPop">
+          <div class="sp-item on" data-v="new" onclick="pickSort('new')">預設(新到舊)</div>
+          <div class="sp-item" data-v="off" onclick="pickSort('off')">折扣多→少</div>
+          <div class="sp-item" data-v="plow" onclick="pickSort('plow')">價格低→高</div>
+          <div class="sp-item" data-v="phigh" onclick="pickSort('phigh')">價格高→低</div>
+        </div>
+      </div>
     </div>
   </div>
   <div class="count" id="count"></div>
 </header>
+<div id="menuOverlay">
+  <div id="menuPanel">
+    <div class="menu-view" id="menuRoot">
+      <div class="menu-head"><b>選單</b><button id="menuClose" type="button" aria-label="關閉">×</button></div>
+      <div class="menu-row" id="mHome">🏠 回首頁</div>
+      <div class="menu-search"><input id="searchInput" placeholder="搜尋商品標題、品牌…" autocomplete="off"><button id="searchBtn" type="button" aria-label="搜尋">🔍</button></div>
+      <div class="menu-row" id="mBrandOpen">品牌搜尋<i>›</i></div>
+      <div class="menu-row" id="mCatOpen">商品分類<i>›</i></div>
+    </div>
+    <div class="menu-view" id="menuBrand" style="display:none">
+      <div class="menu-back" onclick="showMenu('menuRoot')">‹ 返回</div>
+      <input id="brandInput" placeholder="搜尋品牌…" autocomplete="off">
+      <div id="brandList" class="menu-list"></div>
+    </div>
+    <div class="menu-view" id="menuCat" style="display:none">
+      <div class="menu-back" onclick="showMenu('menuRoot')">‹ 返回</div>
+      <div id="catList" class="menu-list"></div>
+    </div>
+  </div>
+</div>
 <main><div class="grid" id="grid"></div><div class="pager" id="pager"></div><div class="loading" id="loading">載入商品中…</div></main>
 <footer>資料來源：Daytona Park · 價格以官網為準 · <a href="all.html" style="color:#e0281e;text-decoration:none">全部商品列表</a></footer>
 <div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
@@ -143,15 +203,30 @@ let DATA=[], view=[], onlySale=false, curPage=1;
 const PER=100;
 const SHARDS={};
 const $=id=>document.getElementById(id);
-const grid=$('grid'),catSel=$('catSel'),brandInput=$('brandInput'),brandDrop=$('brandDrop'),sortSel=$('sortSel'),saleT=$('saleToggle'),countEl=$('count'),modal=$('modal'),sheet=$('sheet');
-let ALL_BRANDS=[], selBrand='';
-// 把品牌清單移到 body 底下,脫離 header(header有 backdrop-filter 會讓 fixed 失效並被裁切)
-document.body.appendChild(brandDrop);
+const grid=$('grid'),genSel=$('genSel'),brandInput=$('brandInput'),brandList=$('brandList'),catList=$('catList'),sortBtn=$('sortBtn'),sortPop=$('sortPop'),saleT=$('saleToggle'),countEl=$('count'),modal=$('modal'),sheet=$('sheet'),menuOverlay=$('menuOverlay');
+let ALL_BRANDS=[], selBrand='', selBrandLabel='', selCat='', searchQ='', sortVal='new';
 const yen=n=>'¥'+Number(n).toLocaleString();
 const pct=p=>p.off||(p.orig&&p.price&&p.orig>p.price?Math.round((1-p.price/p.orig)*100):0);
 const cols=p=>(p.colors&&p.colors.length?p.colors:[]);
-fetch('products_list.json').then(r=>r.json()).then(d=>{DATA=d;$('loading').style.display='none';initFilters();render();})
+// 商品圖:清單只存檔名,這裡組回完整網址(省流量)
+const IMGBASE='https://images.daytona-park.com/items/original/';
+function cimg(p,fn){return (fn&&fn.slice(0,4)==='http')?fn:IMGBASE+p.id+'/'+fn;}
+// 卡片圖:一開始每張卡只載第一張,滑動該卡才載其餘(省流量+避免記憶體爆掉)
+function loadStrip(s){s.querySelectorAll('img[data-src]').forEach(im=>{im.src=im.getAttribute('data-src');im.removeAttribute('data-src');});}
+function cgScroll(e,btn,dir){e.preventDefault();e.stopPropagation();const s=btn.parentElement.querySelector('.cg-strip');loadStrip(s);s.scrollBy({left:dir*s.clientWidth,behavior:'smooth'});}
+function cgCount(s){const n=s.children.length,i=Math.min(n,Math.round(s.scrollLeft/s.clientWidth)+1);const c=s.parentElement.querySelector('.cg-count');if(c)c.textContent=i+'/'+n;}
+function onStrip(s){loadStrip(s);cgCount(s);}
+function pickSort(v){sortVal=v;document.querySelectorAll('.sp-item').forEach(x=>x.classList.toggle('on',x.dataset.v===v));sortPop.classList.remove('open');reFilter();}
+fetch('products_list.json').then(r=>r.json()).then(d=>{DATA=d;$('loading').style.display='none';initFilters();restoreOrRender();})
   .catch(e=>{$('loading').textContent='載入失敗：'+e;});
+// 記住捲動位置/分頁/篩選,從商品頁按返回時回到原位
+function saveState(){try{sessionStorage.setItem('shopState',JSON.stringify({y:window.scrollY,page:curPage,brand:selBrand,bl:selBrandLabel,cat:selCat,q:searchQ,gen:genSel.value,sort:sortVal,sale:onlySale}));}catch(e){}}
+function restoreOrRender(){
+  let s=null;try{s=JSON.parse(sessionStorage.getItem('shopState')||'null');}catch(e){}
+  if(s){selBrand=s.brand||'';selBrandLabel=s.bl||'';selCat=s.cat||'';searchQ=s.q||'';if(searchQ)$('searchInput').value=searchQ;buildBrandList('');buildCatList();genSel.value=s.gen||'';sortVal=s.sort||'new';document.querySelectorAll('.sp-item').forEach(x=>x.classList.toggle('on',x.dataset.v===sortVal));onlySale=!!s.sale;saleT.classList.toggle('on',onlySale);curPage=s.page||1;render();
+    let tries=0;(function sc(){window.scrollTo(0,s.y||0);if(++tries<10&&Math.abs(window.scrollY-(s.y||0))>4)requestAnimationFrame(sc);})();
+  }else{render();}
+}
 async function loadDetail(p){
   if(!(p.sh in SHARDS)){
     try{SHARDS[p.sh]=await fetch('detail/detail_'+p.sh+'.json').then(r=>r.json());}
@@ -164,30 +239,44 @@ function brandBase(b){return (b||'').split(/\s*[×✕✖╳/｜|]\s*|\s+x\s+|\s+
 // 正規化比對鍵:大寫、去彎/直引號與所有標點空白 (ARC'TERYX 與 ARC’TERYX 都→ARCTERYX)
 function brandKey(b){return brandBase(b).toUpperCase().replace(/[^A-Z0-9]/g,'');}
 function initFilters(){
-  const cats=[...new Set(DATA.map(p=>p.cat).filter(Boolean))].sort();
-  catSel.innerHTML='<option value="">全部分類</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');
-  // 依 key 合併同品牌,標籤選最常出現的寫法
+  buildCatList();
   const bmap={};
   DATA.forEach(p=>{const k=brandKey(p.brand);if(!k)return;const lab=brandBase(p.brand);(bmap[k]=bmap[k]||{});bmap[k][lab]=(bmap[k][lab]||0)+1;});
   ALL_BRANDS=Object.keys(bmap).map(k=>{const labs=bmap[k];const label=Object.keys(labs).sort((a,b)=>labs[b]-labs[a]||a.length-b.length)[0];return {key:k,label};})
     .sort((a,b)=>a.label.toUpperCase()<b.label.toUpperCase()?-1:1);
-  buildBrandDrop('');
+  buildBrandList('');
 }
-function buildBrandDrop(q){
+function buildCatList(){
+  const cats=[...new Set(DATA.map(p=>p.cat).filter(Boolean))].sort();
+  let html=`<div class="menu-item ${selCat===''?'on':''}" data-v="">全部分類</div>`;
+  html+=cats.map(c=>`<div class="menu-item ${selCat===c?'on':''}" data-v="${c}">${c}</div>`).join('');
+  catList.innerHTML=html;
+  catList.querySelectorAll('.menu-item').forEach(el=>el.onclick=()=>pickCat(el.getAttribute('data-v')));
+}
+function buildBrandList(q){
   q=(q||'').trim().toUpperCase();
   const items=ALL_BRANDS.filter(o=>!q||o.label.toUpperCase().startsWith(q));
-  let html=`<div class="combo-item ${selBrand===''?'sel':''}" onclick="pickBrand('','')">全部品牌</div>`;
-  html+=items.map(o=>`<div class="combo-item ${selBrand===o.key?'sel':''}" onclick="pickBrand('${o.key}','${o.label.replace(/'/g,"\\'")}')">${o.label}</div>`).join('');
-  if(!items.length)html+=`<div class="combo-item" style="color:#aaa">找不到品牌</div>`;
-  brandDrop.innerHTML=html;
+  let html=`<div class="menu-item ${selBrand===''?'on':''}" data-k="">全部品牌</div>`;
+  html+=items.map(o=>`<div class="menu-item ${selBrand===o.key?'on':''}" data-k="${o.key}" data-l="${o.label.replace(/"/g,'&quot;')}">${o.label}</div>`).join('');
+  if(!items.length)html+=`<div class="menu-item" style="color:#aaa">找不到品牌</div>`;
+  brandList.innerHTML=html;
+  brandList.querySelectorAll('.menu-item[data-k]').forEach(el=>el.onclick=()=>pickBrand(el.getAttribute('data-k'),el.getAttribute('data-l')||''));
 }
-function pickBrand(k,label){selBrand=k;brandInput.value='';brandInput.placeholder=label||'全部品牌';brandInput.blur();brandDrop.classList.remove('open');reFilter();}
+// 搜尋/品牌/分類互斥:選其中一個會清掉其他(不連動)
+function pickBrand(k,label){selBrand=k;selBrandLabel=label||'';selCat='';searchQ='';$('searchInput').value='';buildBrandList('');buildCatList();closeMenu();reFilter();}
+function pickCat(v){selCat=v;selBrand='';selBrandLabel='';searchQ='';$('searchInput').value='';buildCatList();buildBrandList('');closeMenu();reFilter();}
+function doSearch(){searchQ=$('searchInput').value.trim();selBrand='';selBrandLabel='';selCat='';buildBrandList('');buildCatList();closeMenu();reFilter();}
+function showMenu(id){document.querySelectorAll('.menu-view').forEach(v=>v.style.display='none');$(id).style.display='flex';}
+function openMenu(){menuOverlay.classList.add('open');showMenu('menuRoot');document.body.style.overflow='hidden';}
+function closeMenu(){menuOverlay.classList.remove('open');document.body.style.overflow='';}
 function render(){
   let list=DATA.slice();
   if(onlySale)list=list.filter(p=>p.on_sale);
-  if(catSel.value)list=list.filter(p=>p.cat===catSel.value);
+  if(selCat)list=list.filter(p=>p.cat===selCat);
+  if(searchQ){const q=searchQ.toLowerCase();list=list.filter(p=>((p.title||'')+' '+(p.brand||'')+' '+(p.cat||'')).toLowerCase().indexOf(q)>-1);}
+  if(genSel.value){const gv=genSel.value;list=list.filter(p=>gv==='生活'?p.g==='生活':(p.g===gv||p.g==='男女通用'));}
   if(selBrand){list=list.filter(p=>brandKey(p.brand)===selBrand);}
-  const s=sortSel.value;
+  const s=sortVal;
   if(s==='off')list.sort((a,b)=>pct(b)-pct(a));
   else if(s==='plow')list.sort((a,b)=>a.price-b.price);
   else if(s==='phigh')list.sort((a,b)=>b.price-a.price);
@@ -195,15 +284,18 @@ function render(){
   const pages=Math.max(1,Math.ceil(list.length/PER));
   if(curPage>pages)curPage=1;
   const start=(curPage-1)*PER, pageItems=list.slice(start,start+PER);
-  countEl.textContent=`共 ${list.length} 件`+(onlySale?'（特價中）':'')+(pages>1?` · 第 ${curPage}/${pages} 頁`:'');
+  const fchips=[searchQ?('搜尋:'+searchQ):'',selBrandLabel?('品牌:'+selBrandLabel):'',selCat?('分類:'+selCat):''].filter(Boolean).join(' · ');
+  countEl.textContent=`共 ${list.length} 件`+(fchips?' · '+fchips:'')+(onlySale?'（特價中）':'')+(pages>1?` · 第 ${curPage}/${pages} 頁`:'');
   grid.innerHTML=pageItems.map((p,ii)=>{const i=start+ii;
-    const off=pct(p),c=cols(p);
-    const chips=c.slice(0,4).map(x=>`<span class="cchip">${x}</span>`).join('')+(c.length>4?`<span class="cchip">+${c.length-4}</span>`:'');
+    const off=pct(p);
+    const ims=(p.imk&&p.imk.length?p.imk:[p.img]).slice(0,10);
+    const slides=ims.map((fn,j)=>`<img loading="lazy" ${j===0?'src':'data-src'}="${cimg(p,fn)}">`).join('');
+    const nav=ims.length>1?`<button class="cg-nav prev" type="button" onclick="cgScroll(event,this,-1)">‹</button><button class="cg-nav next" type="button" onclick="cgScroll(event,this,1)">›</button><span class="cg-count">1/${ims.length}</span>`:'';
     const ph=off>0?`<span class="now sale">${yen(p.price)}</span><span class="was">${yen(p.orig)}</span><span class="off">-${off}%</span>`:`<span class="now">${yen(p.price)}</span>`;
-    return `<div class="card" onclick="openM(${i})"><div class="thumb">${off>0?`<span class="badge">-${off}%</span>`:''}${p.cat?`<span class="cat-tag">${p.cat}</span>`:''}
-      <img loading="lazy" src="${p.img}"></div>
+    return `<a class="card" href="p/${p.id}.html" onclick="saveState()" style="text-decoration:none;color:inherit"><div class="thumb">${off>0?`<span class="badge">-${off}%</span>`:''}${p.cat?`<span class="cat-tag">${p.cat}</span>`:''}
+      <div class="cg-strip" onscroll="onStrip(this)">${slides}</div>${nav}</div>
       <div class="info"><div class="brand">${p.brand||''}</div><div class="name">${p.title||''}</div>
-      <div class="colors">${chips}</div><div class="price">${ph}</div></div></div>`;
+      <div class="price">${ph}</div></div></a>`;
   }).join('');
   renderPager(pages);
   window.scrollTo(0,0);
@@ -222,7 +314,7 @@ function renderPager(pages){
   btns+=`<button ${curPage===pages?'disabled':''} onclick="goPage(${curPage+1})">›</button>`;
   pager.innerHTML=btns;
 }
-function goPage(n){curPage=n;render();}
+function goPage(n){curPage=n;render();saveState();}
 function chartHtml(sc){
   if(!sc||!sc.rows||!sc.rows.length)return '';
   const th=sc.headers.map(h=>`<th>${h}</th>`).join('');
@@ -253,28 +345,26 @@ function swap(el,src){$('mMain').src=src;document.querySelectorAll('.m-thumbs im
 function closeM(){modal.classList.remove('open');document.body.style.overflow='';}
 modal.onclick=e=>{if(e.target===modal)closeM();};
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM();});
-function reFilter(){curPage=1;render();}
+function reFilter(){curPage=1;render();saveState();}
+let _scrollSaveT;window.addEventListener('scroll',()=>{clearTimeout(_scrollSaveT);_scrollSaveT=setTimeout(saveState,300);});
 saleT.onclick=()=>{onlySale=!onlySale;saleT.classList.toggle('on',onlySale);reFilter();};
-catSel.onchange=reFilter;sortSel.onchange=reFilter;
-function openBrandDrop(){
-  buildBrandDrop(brandInput.value);
-  const r=brandInput.getBoundingClientRect();
-  const s=brandDrop.style;
-  if(window.innerWidth<=640){/* 手機: 幾乎滿版, 不跟輸入框x跑,避免被裁 */
-    s.left='8px';s.right='8px';s.width='auto';s.minWidth='0';s.maxWidth='none';
-    s.top=(r.bottom+4)+'px';
-  }else{
-    s.right='auto';s.width='';s.maxWidth='';
-    s.left=Math.max(8,Math.min(r.left,window.innerWidth-320-8))+'px';
-    s.top=(r.bottom+4)+'px';s.minWidth=Math.max(r.width,180)+'px';
-  }
-  brandDrop.classList.add('open');
-}
-brandInput.onfocus=openBrandDrop;
-brandInput.onclick=openBrandDrop;
-// 打字只篩「品牌清單」,底下商品不變(只有點選品牌才變)
-brandInput.oninput=()=>{buildBrandDrop(brandInput.value);brandDrop.classList.add('open');};
-document.addEventListener('click',e=>{if(!$('brandCombo').contains(e.target)&&!brandDrop.contains(e.target))brandDrop.classList.remove('open');});
+genSel.onchange=reFilter;
+sortBtn.onclick=e=>{e.stopPropagation();sortPop.classList.toggle('open');};
+sortPop.onclick=e=>e.stopPropagation();
+// 左側漢堡選單
+$('menuBtn').onclick=openMenu;
+$('menuClose').onclick=closeMenu;
+function goHome(){try{sessionStorage.removeItem('shopState');}catch(e){}location.href='index.html';}
+$('mHome').onclick=goHome;
+$('searchBtn').onclick=doSearch;
+$('searchInput').addEventListener('keydown',function(e){if(e.key==='Enter')doSearch();});
+$('mBrandOpen').onclick=()=>{brandInput.value='';buildBrandList('');showMenu('menuBrand');};
+$('mCatOpen').onclick=()=>{buildCatList();showMenu('menuCat');};
+menuOverlay.addEventListener('click',e=>{if(e.target===menuOverlay)closeMenu();});
+brandInput.oninput=()=>buildBrandList(brandInput.value);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();});
+document.addEventListener('click',e=>{if(!$('sortBtn').contains(e.target)&&!sortPop.contains(e.target))sortPop.classList.remove('open');});
 </script>
+<script src="cart.js?v=3"></script>
 </body>
 </html>

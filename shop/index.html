@@ -255,16 +255,6 @@
     <a class="nav-item" data-g="生活">LIFESTYLE<div class="nav-drop" data-g="生活"></div></a>
     <a class="nav-item" id="navBrand">品牌</a>
     <a class="nav-item" id="navSale">SALE</a>
-    <span class="nav-spacer"></span>
-    <div class="sortwrap" id="sortwrap">
-      <button class="sort-icon" id="sortBtn" type="button" title="排序" aria-label="排序">⇅</button>
-      <div class="sort-pop" id="sortPop">
-        <div class="sp-item on" data-v="new" onclick="pickSort('new')">預設(新到舊)</div>
-        <div class="sp-item" data-v="off" onclick="pickSort('off')">折扣多→少</div>
-        <div class="sp-item" data-v="plow" onclick="pickSort('plow')">價格低→高</div>
-        <div class="sp-item" data-v="phigh" onclick="pickSort('phigh')">價格高→低</div>
-      </div>
-    </div>
   </nav>
   <div class="count" id="count"></div>
 </header>
@@ -352,7 +342,7 @@ function loadStrip(s){s.querySelectorAll('img[data-src]').forEach(im=>{im.src=im
 function cgScroll(e,btn,dir){e.preventDefault();e.stopPropagation();const s=btn.parentElement.querySelector('.cg-strip');loadStrip(s);s.scrollBy({left:dir*s.clientWidth,behavior:'smooth'});}
 function cgCount(s){const n=s.children.length,i=Math.min(n,Math.round(s.scrollLeft/s.clientWidth)+1);const c=s.parentElement.querySelector('.cg-count');if(c)c.textContent=i+'/'+n;}
 function onStrip(s){loadStrip(s);cgCount(s);}
-function pickSort(v){sortVal=v;document.querySelectorAll('.sp-item').forEach(x=>x.classList.toggle('on',x.dataset.v===v));sortPop.classList.remove('open');reFilter();}
+function pickSort(v){sortVal=v;document.querySelectorAll('.sp-item').forEach(x=>x.classList.toggle('on',x.dataset.v===v));if(sortPop)sortPop.classList.remove('open');reFilter();}
 const CAT_MERGE={'傘具':'傘'};
 fetch('products_list.json').then(r=>r.json()).then(d=>{DATA=d;DATA.forEach(p=>{if(CAT_MERGE[p.cat])p.cat=CAT_MERGE[p.cat];});$('loading').style.display='none';initFilters();restoreOrRender();})
   .catch(e=>{$('loading').textContent='載入失敗：'+e;});
@@ -623,8 +613,7 @@ function reFilter(){curPage=1;render();saveState();}
 let _scrollSaveT;window.addEventListener('scroll',()=>{clearTimeout(_scrollSaveT);_scrollSaveT=setTimeout(saveState,300);});
 saleT.onclick=()=>{onlySale=!onlySale;saleT.classList.toggle('on',onlySale);reFilter();};
 genSel.onchange=reFilter;
-sortBtn.onclick=e=>{e.stopPropagation();sortPop.classList.toggle('open');};
-sortPop.onclick=e=>e.stopPropagation();
+if(sortBtn){sortBtn.onclick=e=>{e.stopPropagation();sortPop.classList.toggle('open');};sortPop.onclick=e=>e.stopPropagation();}
 // 左側漢堡選單
 $('menuBtn').onclick=openMenu;
 $('menuClose').onclick=closeMenu;
@@ -637,7 +626,7 @@ $('mCatOpen').onclick=()=>{buildCatList();showMenu('menuCat');};
 menuOverlay.addEventListener('click',e=>{if(e.target===menuOverlay)closeMenu();});
 brandInput.oninput=()=>buildBrandList(brandInput.value);
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();});
-document.addEventListener('click',e=>{if(!$('sortBtn').contains(e.target)&&!sortPop.contains(e.target))sortPop.classList.remove('open');});
+document.addEventListener('click',e=>{if(sortBtn&&!sortBtn.contains(e.target)&&!sortPop.contains(e.target))sortPop.classList.remove('open');});
 </script>
 <script src="cart.js?v=7"></script>
 </body>

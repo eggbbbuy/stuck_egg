@@ -17,13 +17,23 @@ a{color:inherit}.wrap{max-width:1200px;margin:0 auto;padding:16px 20px 60px}
 .notice{background:#fafafa;border:1px solid #eee;border-radius:10px;padding:14px 16px;margin-top:16px;font-size:12px;line-height:1.9;color:#555}
 .notice b{display:block;font-size:13px;color:#111;margin-bottom:5px}
 .phead{position:sticky;top:0;z-index:20;background:rgba(201,199,193,.94);backdrop-filter:blur(8px);border-bottom:1px solid #b0aea7}
-.phead-in{max-width:1200px;margin:0 auto;padding:11px 20px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px}
-.phead .back-btn{justify-self:start;border:1px solid #8a8880;background:rgba(255,255,255,.4);border-radius:20px;padding:5px 14px;font-weight:600;font-size:13px;white-space:nowrap;color:#2b2b2b;text-decoration:none}
-.phead .back-btn:hover{background:#fff}
-.phead .logo{justify-self:center;display:flex;align-items:center;gap:9px;font-weight:800;font-size:18px;color:#2b2b2b;text-decoration:none;cursor:pointer}
-.plogo-ico{width:30px;height:30px;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.18)}
-.phead #cartSlot{justify-self:end}
+.phead-in{max-width:1200px;margin:0 auto;padding:11px 16px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px}
+.head-left{display:flex;align-items:center;gap:8px;justify-self:start;min-width:0}
+.head-right{display:flex;align-items:center;gap:8px;justify-self:end}
+.phead .logo{justify-self:center;display:flex;align-items:center;gap:9px;font-weight:800;font-size:20px;letter-spacing:.5px;color:#2b2b2b;text-decoration:none;cursor:pointer;white-space:nowrap}
+.plogo-ico{width:34px;height:34px;object-fit:contain;border-radius:9px;box-shadow:0 1px 3px rgba(0,0,0,.18)}
+.hicon{width:32px;height:32px;border-radius:8px;border:1px solid #a9a7a0;background:rgba(255,255,255,.55);font-size:16px;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0;flex:0 0 auto;color:#333;text-decoration:none}
+.hicon:hover{background:#fff}
+.hsearch{position:relative}
+.hsearch input{width:200px;padding:8px 34px 8px 14px;border:1px solid #a9a7a0;border-radius:999px;background:rgba(255,255,255,.75);color:#2b2b2b;font-size:13px;outline:none}
+.hsearch input::placeholder{color:#6f6d67}
+.hsearch .hs-go{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:26px;height:26px;border:none;background:none;color:#555;font-size:14px;cursor:pointer;padding:0}
+.ptopnav{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:2px;padding:0 12px;border-top:1px solid #b0aea7}
+.ptopnav a{padding:12px 15px;font-size:14px;font-weight:600;letter-spacing:.5px;color:#3a3a38;text-decoration:none;white-space:nowrap}
+.ptopnav a:hover{color:#000}
 #cartBtn{background:rgba(255,255,255,.55)!important;border-color:#a9a7a0!important;color:#333!important}
+@media(max-width:820px){.ptopnav{display:none}.hsearch{display:none}}
+@media(max-width:640px){.phead .logo{font-size:16px}.plogo-ico{width:26px;height:26px}}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:28px}@media(max-width:720px){.grid{grid-template-columns:1fr}}
 .gal .main{position:relative;width:100%;background:#fff;border:1px solid #eee;border-radius:10px;overflow:hidden;aspect-ratio:1/1}
 .pstrip{display:flex;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
@@ -75,7 +85,7 @@ table{border-collapse:collapse;font-size:12px;margin-top:4px;width:100%}th,td{bo
 .rn{font-size:12px;line-height:1.35;margin:2px 0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;height:33px}
 .rp{font-size:13px;font-weight:700}
 .pfoot{background:#c9c7c1;color:#4a4844;text-align:center;font-size:12px;padding:26px 20px;margin-top:50px}</style></head><body>
-<header class="phead"><div class="phead-in"><a class="back-btn" href="../" onclick="if(document.referrer.indexOf(location.host)>-1&&history.length>1){history.back();return false;}">← 返回</a><a class="logo" href="../index.html" onclick="try{sessionStorage.removeItem('shopState');}catch(e){}"><img class="plogo-ico" src="../icon-512.png?v=7" alt=""><span>71_egg選品倉庫</span></a><span id="cartSlot"></span></div></header>
+<header class="phead"><div class="phead-in"><div class="head-left"><a class="hicon" href="../index.html" aria-label="選單">☰</a><div class="hsearch"><input id="topSearch" type="text" placeholder="搜尋商品、品牌…" autocomplete="off"><button class="hs-go" type="button" onclick="psearch()">🔍</button></div></div><a class="logo" href="../index.html" onclick="try{sessionStorage.removeItem('shopState');}catch(e){}"><img class="plogo-ico" src="../icon-512.png?v=7" alt=""><span>71_egg選品倉庫</span></a><div class="head-right"><span id="cartSlot"></span></div></div><nav class="ptopnav"><a href="../index.html?g=%E7%94%B7">MEN</a><a href="../index.html?g=%E5%A5%B3">WOMEN</a><a href="../index.html?g=%E7%94%9F%E6%B4%BB">LIFESTYLE</a><a href="../index.html">品牌</a><a href="../index.html?sale=1">SALE</a></nav></header>
 <div class="wrap">
  <div class="grid">
   <div class="gal"><div class="main"><div class="pstrip" id="pstrip"><img src="https://images.daytona-park.com/items/original/1121248901615/1121248901615-_03.jpg" alt="透膚圓領T恤/羊毛混紡短袖T恤"><img src="https://images.daytona-park.com/items/original/1121248901615/1121248901615-_15.jpg" alt="透膚圓領T恤/羊毛混紡短袖T恤"><img src="https://images.daytona-park.com/items/original/1121248901615/1121248901615-_20.jpg" alt="透膚圓領T恤/羊毛混紡短袖T恤"><img src="https://images.daytona-park.com/items/original/1121248901615/1121248901615-_30.jpg" alt="透膚圓領T恤/羊毛混紡短袖T恤"><img src="https://images.daytona-park.com/items/original/1121248901615/item69b259ad207a8.jpg" alt="透膚圓領T恤/羊毛混紡短袖T恤"><img src="https://images.daytona-park.com/items/original/1121248901615/item69b259ad6d63e.jpg" alt="透膚圓領T恤/羊毛混紡短袖T恤"><img src="https://images.daytona-park.com/items/original/1121248901615/item69b259ae857a2.jpg" alt="透膚圓領T恤/羊毛混紡短袖T恤"><img src="https://images.daytona-park.com/items/original/1121248901615/item69b259adee63e.jpg" alt="透膚圓領T恤/羊毛混紡短袖T恤"><img src="https://images.daytona-park.com/items/original/1121248901615/item69b259aebb46f.jpg" alt="透膚圓領T恤/羊毛混紡短袖T恤"><img src="https://images.daytona-park.com/items/original/1121248901615/item69b259dce07a3.jpg" alt="透膚圓領T恤/羊毛混紡短袖T恤"><img src="https://images.daytona-park.com/items/original/1121248901615/item69b259dd2d212.jpg" alt="透膚圓領T恤/羊毛混紡短袖T恤"><img src="https://images.daytona-park.com/items/original/1121248901615/item69b259dd5fa85.jpg" alt="透膚圓領T恤/羊毛混紡短袖T恤"></div><button class="pnav prev" type="button" onclick="pmove(-1)">‹</button><button class="pnav next" type="button" onclick="pmove(1)">›</button><span class="pcount" id="pcount">1/12</span></div><div class="thumbs"><img src="https://images.daytona-park.com/items/original/1121248901615/1121248901615-_03.jpg" class="sel" alt="透膚圓領T恤/羊毛混紡短袖T恤"><img src="https://images.daytona-park.com/items/original/1121248901615/1121248901615-_15.jpg" class="" alt="透膚圓領T恤/羊毛混紡短袖T恤"><img src="https://images.daytona-park.com/items/original/1121248901615/1121248901615-_20.jpg" class="" alt="透膚圓領T恤/羊毛混紡短袖T恤"><img src="https://images.daytona-park.com/items/original/1121248901615/1121248901615-_30.jpg" class="" alt="透膚圓領T恤/羊毛混紡短袖T恤"><img src="https://images.daytona-park.com/items/original/1121248901615/item69b259ad207a8.jpg" class="" alt="透膚圓領T恤/羊毛混紡短袖T恤"><img src="https://images.daytona-park.com/items/original/1121248901615/item69b259ad6d63e.jpg" class="" alt="透膚圓領T恤/羊毛混紡短袖T恤"><img src="https://images.daytona-park.com/items/original/1121248901615/item69b259ae857a2.jpg" class="" alt="透膚圓領T恤/羊毛混紡短袖T恤"><img src="https://images.daytona-park.com/items/original/1121248901615/item69b259adee63e.jpg" class="" alt="透膚圓領T恤/羊毛混紡短袖T恤"><img src="https://images.daytona-park.com/items/original/1121248901615/item69b259aebb46f.jpg" class="" alt="透膚圓領T恤/羊毛混紡短袖T恤"><img src="https://images.daytona-park.com/items/original/1121248901615/item69b259dce07a3.jpg" class="" alt="透膚圓領T恤/羊毛混紡短袖T恤"><img src="https://images.daytona-park.com/items/original/1121248901615/item69b259dd2d212.jpg" class="" alt="透膚圓領T恤/羊毛混紡短袖T恤"><img src="https://images.daytona-park.com/items/original/1121248901615/item69b259dd5fa85.jpg" class="" alt="透膚圓領T恤/羊毛混紡短袖T恤"></div></div>
@@ -96,6 +106,8 @@ table{border-collapse:collapse;font-size:12px;margin-top:4px;width:100%}th,td{bo
 <footer class="pfoot">71_egg選品倉庫｜日本代購選品．透過 LINE 下單．資料每週更新</footer>
 <div id="lb"><button id="lbClose" type="button" aria-label="關閉">×</button><button class="lb-nav prev" type="button" onclick="lbNav(-1,event)">‹</button><img id="lbImg" alt=""><button class="lb-nav next" type="button" onclick="lbNav(1,event)">›</button></div>
 <script>
+function psearch(){var el=document.getElementById('topSearch');if(!el)return;var v=el.value.trim();if(v)location.href='../index.html?search='+encodeURIComponent(v);}
+document.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target&&e.target.id==='topSearch')psearch();});
 function pmove(d){var ps=document.getElementById('pstrip');ps.scrollBy({left:d*ps.clientWidth,behavior:'smooth'});}
 var LBsrcs=[],LBi=0;
 function lbOpen(i){LBi=i;document.getElementById('lbImg').src=LBsrcs[i];document.getElementById('lb').classList.add('open');document.body.style.overflow='hidden';}

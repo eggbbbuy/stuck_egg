@@ -42,7 +42,7 @@
   <label class="dayt"><input type="checkbox" id="day"> 當沖（證交稅減半 0.15%）</label>
   <div class="out">
     <div class="big std"><div class="lab">淨賺<small>標準手續費</small></div><div class="val" id="netStd">–</div></div>
-    <div class="big d28"><div class="lab">淨賺<small>手續費打 3 折</small></div><div class="val" id="net28">–</div></div>
+    <div class="big d28"><div class="lab">淨賺<small>手續費打 2.8 折</small></div><div class="val" id="net28">–</div></div>
   </div>
   <div class="brk" id="brk"></div>
   <div class="foot">※ 一般買賣（非當沖）。手續費未達 20 元以 20 元計。實際以券商為準；此為估算，不構成投資建議。</div>
@@ -61,7 +61,7 @@
     var tax=sellAmt*trate;
     var gross=sellAmt-buyAmt;
     var netStd=Math.round(sellAmt-feeOut-tax-(buyAmt+feeIn));
-    var net28=Math.round((sellAmt-feeOut*0.30-tax)-(buyAmt+feeIn*0.30));
+    var net28=Math.round((sellAmt-feeOut*0.28-tax)-(buyAmt+feeIn*0.28));
     var rStd=(netStd/buyAmt*100), r28=(net28/buyAmt*100);
     $('netStd').textContent=money(netStd)+' ';
     $('net28').textContent=money(net28)+' ';
@@ -70,9 +70,9 @@
     $('brk').innerHTML=
       '<div class="r"><span>毛利（價差）</span><b>'+money(Math.round(gross))+'</b></div>'+
       '<div class="r"><span>手續費 買+賣（標準）</span><b>'+money(Math.round(feeIn+feeOut))+'</b></div>'+
-      '<div class="r"><span>手續費 買+賣（3折）</span><b>'+money(Math.round((feeIn+feeOut)*0.30))+'</b></div>'+
+      '<div class="r"><span>手續費 買+賣（2.8折）</span><b>'+money(Math.round((feeIn+feeOut)*0.28))+'</b></div>'+
       '<div class="r"><span>證交稅（賣 '+(isDay?'0.15% 當沖':'0.3%')+'）</span><b>'+money(Math.round(tax))+'</b></div>'+
-      '<div class="r"><span>報酬率</span><b>'+rStd.toFixed(2)+'%（標準）／ '+r28.toFixed(2)+'%（3折）</b></div>';
+      '<div class="r"><span>報酬率</span><b>'+rStd.toFixed(2)+'%（標準）／ '+r28.toFixed(2)+'%（2.8折）</b></div>';
   }
   $('buy').addEventListener('input',calc);
   $('sell').addEventListener('input',calc);

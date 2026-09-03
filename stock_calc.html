@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>台股買賣損益試算（1張）</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Noto Sans TC',system-ui,-apple-system,sans-serif;background:#f4f3ef;color:#222;-webkit-font-smoothing:antialiased;padding:20px;display:flex;justify-content:center}
+  .card{background:#fff;max-width:440px;width:100%;border-radius:16px;box-shadow:0 6px 24px rgba(0,0,0,.08);padding:26px 22px}
+  h1{font-size:19px;font-weight:800;letter-spacing:.5px;margin-bottom:4px}
+  .sub{font-size:12px;color:#999;margin-bottom:20px}
+  .row{display:flex;gap:12px;margin-bottom:14px}
+  .fld{flex:1}
+  label{display:block;font-size:13px;color:#666;margin-bottom:6px;font-weight:600}
+  input{width:100%;font-size:22px;font-weight:700;padding:12px 14px;border:1px solid #e0ded8;border-radius:10px;background:#fafafa;color:#111;outline:none;text-align:center}
+  input:focus{border-color:#b0aea7;background:#fff}
+  .out{margin-top:6px}
+  .big{display:flex;justify-content:space-between;align-items:center;padding:16px;border-radius:12px;margin-top:12px}
+  .big.std{background:#eef1ee}
+  .big.d28{background:#e9eff3}
+  .big .lab{font-size:13px;color:#555;font-weight:600}
+  .big .lab small{display:block;color:#999;font-weight:400;font-size:11px;margin-top:2px}
+  .big .val{font-size:26px;font-weight:800}
+  .pos{color:#128a4b}.neg{color:#d0281e}
+  .brk{margin-top:18px;border-top:1px solid #eee;padding-top:14px;font-size:13px;color:#666;line-height:2}
+  .brk b{color:#222;font-weight:700}
+  .brk .r{display:flex;justify-content:space-between}
+  .foot{margin-top:16px;font-size:11px;color:#aaa;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>台股買賣損益試算</h1>
+  <div class="sub">固定 1 張（1,000 股）· 手續費 0.1425%（最低 20 元）· 證交稅 0.3%</div>
+  <div class="row">
+    <div class="fld"><label>買進價</label><input id="buy" type="number" inputmode="decimal" step="0.01" placeholder="152" value="152"></div>
+    <div class="fld"><label>賣出價</label><input id="sell" type="number" inputmode="decimal" step="0.01" placeholder="155.5" value="155.5"></div>
+  </div>
+  <div class="out">
+    <div class="big std"><div class="lab">淨賺<small>標準手續費</small></div><div class="val" id="netStd">–</div></div>
+    <div class="big d28"><div class="lab">淨賺<small>手續費打 2.8 折</small></div><div class="val" id="net28">–</div></div>
+  </div>
+  <div class="brk" id="brk"></div>
+  <div class="foot">※ 一般買賣（非當沖）。手續費未達 20 元以 20 元計。實際以券商為準；此為估算，不構成投資建議。</div>
+</div>
+<script>
+  var $=function(id){return document.getElementById(id);};
+  function money(n){return (n<0?'-':'')+'$'+Math.abs(n).toLocaleString();}
+  function calc(){
+    var IN=parseFloat($('buy').value), OUT=parseFloat($('sell').value);
+    if(isNaN(IN)||isNaN(OUT)||IN<=0||OUT<=0){$('netStd').textContent='–';$('net28').textContent='–';$('brk').innerHTML='';return;}
+    var unit=1000, fee=0.001425;
+    var buyAmt=IN*unit, sellAmt=OUT*unit;
+    var feeIn=Math.max(IN*unit*fee,20), feeOut=Math.max(OUT*unit*fee,20);
+    var tax=sellAmt*0.003;
+    var gross=sellAmt-buyAmt;
+    var netStd=Math.round(sellAmt-feeOut-tax-(buyAmt+feeIn));
+    var net28=Math.round((sellAmt-feeOut*0.28-tax)-(buyAmt+feeIn*0.28));
+    var rStd=(netStd/buyAmt*100), r28=(net28/buyAmt*100);
+    $('netStd').textContent=money(netStd)+' ';
+    $('net28').textContent=money(net28)+' ';
+    $('netStd').className='val '+(netStd>=0?'pos':'neg');
+    $('net28').className='val '+(net28>=0?'pos':'neg');
+    $('brk').innerHTML=
+      '<div class="r"><span>毛利（價差）</span><b>'+money(Math.round(gross))+'</b></div>'+
+      '<div class="r"><span>手續費 買+賣（標準）</span><b>'+money(Math.round(feeIn+feeOut))+'</b></div>'+
+      '<div class="r"><span>手續費 買+賣（2.8折）</span><b>'+money(Math.round((feeIn+feeOut)*0.28))+'</b></div>'+
+      '<div class="r"><span>證交稅（賣 0.3%）</span><b>'+money(Math.round(tax))+'</b></div>'+
+      '<div class="r"><span>報酬率</span><b>'+rStd.toFixed(2)+'%（標準）／ '+r28.toFixed(2)+'%（2.8折）</b></div>';
+  }
+  $('buy').addEventListener('input',calc);
+  $('sell').addEventListener('input',calc);
+  calc();
+</script>
+</body>
+</html>
